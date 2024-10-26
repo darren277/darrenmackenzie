@@ -1,0 +1,435 @@
+<html><head><link crossorigin="anonymous" referrerpolicy="no-referrer" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"></link>
+<style>* {
+	padding: 0;
+	margin: 0;
+	font-family: 'Josefin Sans', sans-serif;
+	box-sizing: border-box;
+}
+
+html, body {
+	height: 100%;
+	margin: 0;
+}
+
+.main {
+	width: 1130px;
+	max-width: 95%;
+	margin: 0 auto;
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+}
+
+html, body {
+	margin: 0;
+	height: 100%;
+}
+
+:root {
+	--header-height: 3rem;
+	--font-medium: 500;
+	--first-color: #5361FF;
+	--white-color: ;
+	--dark-color: ;
+	--text-color: ;
+	--body-font: Montserrat,sans-serif;
+	--big-font-size: 6.25rem;
+	--normal-font-size: 0.938rem;
+	--small-font-size: 0.813rem;
+	--h1-font-size: 75px;
+	--h2-font-size: 50px;
+	--h3-font-size: 25px;
+	--h4-font-size: 20px;
+	--cards-section-vertical-padding: 10%;
+}
+
+
+@media (min-width: 0px) {
+	:root {
+	--big-font-size: 1rem;
+	--h2-font-size: 1rem;
+	--normal-font-size: 0.5rem;
+	--small-font-size: 0.4rem;
+	--title-width: 200px;
+	--contact-form-width: 100px;
+}
+
+}
+
+@media (max-width: 768px) {
+	:root {
+	--big-font-size: 2rem;
+	--h2-font-size: 1.5rem;
+	--normal-font-size: 0.75rem;
+	--small-font-size: 0.625rem;
+	--title-width: 550px;
+	--contact-form-width: 300px;
+}
+
+	.column {
+	width: 100%;
+	display: block;
+	margin-bottom: 20px;
+}
+
+}
+
+@media (min-width: 768px) {
+	:root {
+	--big-font-size: 3rem;
+	--h2-font-size: 2rem;
+	--normal-font-size: 1rem;
+	--small-font-size: 0.875rem;
+	--title-width: 1130px;
+	--contact-form-width: 380px;
+}
+
+}
+
+@media (max-width: 300px) {
+	:root {
+	--paragraph-font-size: 6.0px;
+	--h6-font-size: 7.5px;
+	--h5-font-size: 9.0px;
+	--h4-font-size: 10.5px;
+	--h3-font-size: 12.0px;
+	--h2-font-size: 13.5px;
+	--h1-font-size: 15.0px;
+}
+
+}
+
+@media (max-width: 768px) {
+	:root {
+	--paragraph-font-size: 8px;
+	--h6-font-size: 10px;
+	--h5-font-size: 12px;
+	--h4-font-size: 14px;
+	--h3-font-size: 16px;
+	--h2-font-size: 18px;
+	--h1-font-size: 20px;
+}
+
+}
+
+@media (max-width: 1024px) {
+	:root {
+	--paragraph-font-size: 10.0px;
+	--h6-font-size: 12.5px;
+	--h5-font-size: 15.0px;
+	--h4-font-size: 17.5px;
+	--h3-font-size: 20.0px;
+	--h2-font-size: 22.5px;
+	--h1-font-size: 25.0px;
+}
+
+}
+
+@media (max-width: 9999px) {
+	:root {
+	--paragraph-font-size: 12.0px;
+	--h6-font-size: 15.0px;
+	--h5-font-size: 18.0px;
+	--h4-font-size: 21.0px;
+	--h3-font-size: 24.0px;
+	--h2-font-size: 27.0px;
+	--h1-font-size: 30.0px;
+}
+
+}
+
+textarea {
+	resize: vertical;
+}
+
+
+.logo {
+	color: white;
+	font-size: 35px;
+	letter-spacing: 1px;
+	cursor: pointer;
+}
+
+
+span {
+	color: #d1347b;
+}
+
+
+html {
+	background-color: black;
+}
+
+
+.btn {
+	background-color: #d1347b;
+	color: white;
+	text-decoration: none;
+	border-style: solid;
+	border-color: transparent;
+	border-size: 2px;
+	font-weight: bold;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 25px;
+	padding-right: 25px;
+	border-radius: 10px;
+	transition: transform .4s;
+}
+
+
+.btn:hover {
+	transform: scale(1.2);
+	color: white;
+}
+
+
+.content {
+	position: absolute;
+	top: 50%;
+	left: 8%;
+	transform: translateY(-50%);
+}
+
+
+h1 {
+	color: white;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	margin-left: 0px;
+	margin-right: 0px;
+	font-size: var(--h1-font-size);
+}
+
+
+h3 {
+	color: white;
+	margin-bottom: 50px;
+	font-size: var(--h3-font-size);
+}
+
+
+h4 {
+	color: #fcfc;
+	letter-spacing: 2px;
+	font-size: var(--h4-font-size);
+}
+
+
+h5 {
+	color: white;
+	font-size: 23px;
+	margin-bottom: 15px;
+}
+
+
+button {
+	background-color: #d1347b;
+	color: white;
+	text-decoration: none;
+	border-size: 2px;
+	border-style: solid;
+	border-color: transparent;
+	font-weight: bold;
+	padding-top: 13px;
+	padding-bottom: 13px;
+	padding-left: 30px;
+	padding-right: 30px;
+	border-radius: 10px;
+	transition: 0.4s;
+}
+
+
+button:hover {
+	background-color: transparent;
+	border-size: 2px;
+	border-style: solid;
+	border-color: #d1347b;
+	cursor: pointer;
+}
+
+
+.title h2 {
+	color: white;
+	font-size: var(--big-font-size);
+	width: var(--title-width);
+	margin: 30px auto;
+	text-align: center;
+}
+
+
+.end {
+	position: absolute;
+	color: #d1347b;
+	bottom: 35px;
+	font-size: 14px;
+}
+
+
+.logo {
+	color: #d1347b;
+	filter: hue-rotate(0deg);
+	animation: hue_rotation 5s infinite ease-out alternate;;
+}
+
+
+@keyframes hue_rotation{
+	to {
+		filter: hue-rotate(30deg);
+}
+
+}
+
+
+@media (min-width: 0px) {
+	nav ul li {
+	list-style-type: none;
+	display: inline-block;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 5px;
+}
+
+}
+
+@media (min-width: 600px) {
+	nav ul li {
+	list-style-type: none;
+	display: inline-block;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 10px;
+}
+
+}
+
+@media (min-width: 0px) {
+	.cards {
+	grid-template-columns: repeat(1, 1fr);
+}
+
+}
+
+@media (min-width: 800px) {
+	.cards {
+	grid-template-columns: repeat(2, 1fr);
+}
+
+}
+
+@media (min-width: 1200px) {
+	.cards {
+	grid-template-columns: repeat(3, 1fr);
+}
+
+}
+canvas {
+	position: absolute;
+	display: block;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	z-index: -9999;
+	overflow: hidden;
+}
+</style>
+<link rel="stylesheet" href="/style.css"></link>
+<link crossorigin="anonymous" referrerpolicy="no-referrer" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"></link></head>
+<body><div style="	position: relative;"><canvas></canvas>
+<div class="hero"><nav><h2 class="logo">dm creations</h2>
+<ul>{% for entry in menu %}
+<li>
+ <a href="{{ entry.url }}">
+  {{ entry.title }}
+ </a>
+</li>
+{% endfor %}
+<li><a href="https://github.com/darren277"><i class="fa-brands fa-github"></i> GitHub</a></li>
+<li><a href="#contact" id="contactbutton" class="btn">Contact</a></li></ul></nav>
+<div class="content"><div><h1><span>Darren MacKenzie</span></h1>
+<h3>Software developer and solution architect.</h3></div>
+<h1>This site is largely unmaintained at the moment. Check out <a href="https://tech.jfdmconsulting.com">JFDM Tech</a> for now!</h1>
+<div><div class="contact" id="herocontactformParent"><h5>Get in touch</h5>
+<form class="ui form" method="POST" action="/contact" id="herocontactform"><input type="email" name="email" placeholder="Email" id="email">
+<textarea name="message" id="message" placeholder="Enter a brief message"></textarea>
+<input type="submit" name="submit" placeholder="None" id="submit"></form></div></div></div></div></div>
+<section class="about" id="about"><div class="main"><!-- <img src='img/main-img.png' /> -->
+<div class="about-text"><h2>About</h2>
+<h5>Full stack. Solutions architect. DevOps.</h5><p><a href="https://github.com/darren277"><i class="fa-brands fa-github"></i> GitHub</a></p></div>
+</div></section>
+<section><div class="service services" id="services"><div class="title"><h2>Services</h2></div>
+<div class="cards">{% for service in services %}
+<div class="card">
+ <div class='icons'>{% for icon in service.icons %}<a href='/icons/{{icon}}'><i class='{{icon}}'></i></a>{{ ' | ' if not loop.last else '' }}{% endfor %}</div><div class='tags'>{% for tag in service.tags %}<a href='/tags/{{tag}}'><span class='tag'>{{tag}}</span></a>{{ ' | ' if not loop.last else '' }}{% endfor %}</div>
+ <h5>
+  {{ service.title }}
+ </h5>
+ <img src="{{ service.thumbnail }}">
+ </img>
+ <div class="pra">
+  <p style="text-align: center;">
+   {{ service.description }}
+  </p>
+  <a class="button" href="{{ service.url }}">
+   Read More
+  </a>
+ </div>
+</div>
+{% endfor %}
+</div></div></section>
+<section><div class="service work" id="work"><div class="title"><h2>Work</h2></div>
+<div class="cards">{% for project in projects %}
+<div class="card">
+ <div class='icons'>{% for icon in project.icons %}<a href='/icons/{{icon}}'><i class='{{icon}}'></i></a>{{ ' | ' if not loop.last else '' }}{% endfor %}</div><div class='tags'>{% for tag in project.tags %}<a href='/tags/{{tag}}'><span class='tag'>{{tag}}</span></a>{{ ' | ' if not loop.last else '' }}{% endfor %}</div>
+ <h5>
+  {{ project.title }}
+ </h5>
+ <img src="{{ project.thumbnail }}">
+ </img>
+ <div class="pra">
+  <p style="text-align: center;">
+   {{ project.description }}
+  </p>
+  <a class="button" href="{{ project.url }}">
+   Read More
+  </a>
+ </div>
+</div>
+{% endfor %}
+</div></div></section>
+<section><div class="service blogarticles" id="blogarticles"><div class="title"><h2>Blog</h2></div>
+<div class="cards">{% for article in articles %}
+<div class="card">
+ <div class='icons'>{% for icon in article.icons %}<a href='/icons/{{icon}}'><i class='{{icon}}'></i></a>{{ ' | ' if not loop.last else '' }}{% endfor %}</div><div class='tags'>{% for tag in article.tags %}<a href='/tags/{{tag}}'><span class='tag'>{{tag}}</span></a>{{ ' | ' if not loop.last else '' }}{% endfor %}</div>
+ <h5>
+  {{ article.title }}
+ </h5>
+ <img src="{{ article.thumbnail }}">
+ </img>
+ <div class="pra">
+  <p style="text-align: center;">
+   {{ article.description }}
+  </p>
+  <a class="button" href="{{ article.url }}">
+   Read More
+  </a>
+ </div>
+</div>
+{% endfor %}
+</div></div></section>
+<section><div id="contact_section"><div id="contact"><div><div class="contact" id="footercontactformParent"><h5>Get in touch</h5>
+<form class="ui form" method="POST" action="/contact" id="footercontactform"><input type="email" name="email" placeholder="Email" id="email">
+<textarea name="message" id="message" placeholder="Enter a brief message"></textarea>
+<input type="submit" name="submit" placeholder="None" id="submit"></form></div></div></div></div></section>
+<footer><p>Darren MacKenzie</p>
+<p></p>
+<div class="social">{% for entry in social %}
+<a href="{{ entry.url }}">
+ <i class="{{ entry.icon }}">
+ </i>
+</a>
+{% endfor %}
+</div>
+<p></p></footer>
+</body></html>

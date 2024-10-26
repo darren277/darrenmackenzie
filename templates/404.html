@@ -1,0 +1,586 @@
+<html><head><link crossorigin="anonymous" referrerpolicy="no-referrer" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"></link>
+<style>* {
+	padding: 0;
+	margin: 0;
+	font-family: 'Josefin Sans', sans-serif;
+	box-sizing: border-box;
+}
+
+html, body {
+	height: 100%;
+	margin: 0;
+}
+
+.main {
+	width: 1130px;
+	max-width: 95%;
+	margin: 0 auto;
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+}
+
+html, body {
+	margin: 0;
+	height: 100%;
+}
+
+:root {
+	--header-height: 3rem;
+	--font-medium: 500;
+	--first-color: #5361FF;
+	--white-color: ;
+	--dark-color: ;
+	--text-color: ;
+	--body-font: Montserrat,sans-serif;
+	--big-font-size: 6.25rem;
+	--normal-font-size: 0.938rem;
+	--small-font-size: 0.813rem;
+	--h1-font-size: 75px;
+	--h2-font-size: 50px;
+	--h3-font-size: 25px;
+	--h4-font-size: 20px;
+	--cards-section-vertical-padding: 10%;
+}
+
+
+@media (min-width: 0px) {
+	:root {
+	--big-font-size: 1rem;
+	--h2-font-size: 1rem;
+	--normal-font-size: 0.5rem;
+	--small-font-size: 0.4rem;
+	--title-width: 200px;
+	--contact-form-width: 100px;
+}
+
+}
+
+@media (max-width: 768px) {
+	:root {
+	--big-font-size: 2rem;
+	--h2-font-size: 1.5rem;
+	--normal-font-size: 0.75rem;
+	--small-font-size: 0.625rem;
+	--title-width: 550px;
+	--contact-form-width: 300px;
+}
+
+	.column {
+	width: 100%;
+	display: block;
+	margin-bottom: 20px;
+}
+
+}
+
+@media (min-width: 768px) {
+	:root {
+	--big-font-size: 3rem;
+	--h2-font-size: 2rem;
+	--normal-font-size: 1rem;
+	--small-font-size: 0.875rem;
+	--title-width: 1130px;
+	--contact-form-width: 380px;
+}
+
+}
+
+@media (max-width: 300px) {
+	:root {
+	--paragraph-font-size: 6.0px;
+	--h6-font-size: 7.5px;
+	--h5-font-size: 9.0px;
+	--h4-font-size: 10.5px;
+	--h3-font-size: 12.0px;
+	--h2-font-size: 13.5px;
+	--h1-font-size: 15.0px;
+}
+
+}
+
+@media (max-width: 768px) {
+	:root {
+	--paragraph-font-size: 8px;
+	--h6-font-size: 10px;
+	--h5-font-size: 12px;
+	--h4-font-size: 14px;
+	--h3-font-size: 16px;
+	--h2-font-size: 18px;
+	--h1-font-size: 20px;
+}
+
+}
+
+@media (max-width: 1024px) {
+	:root {
+	--paragraph-font-size: 10.0px;
+	--h6-font-size: 12.5px;
+	--h5-font-size: 15.0px;
+	--h4-font-size: 17.5px;
+	--h3-font-size: 20.0px;
+	--h2-font-size: 22.5px;
+	--h1-font-size: 25.0px;
+}
+
+}
+
+@media (max-width: 9999px) {
+	:root {
+	--paragraph-font-size: 12.0px;
+	--h6-font-size: 15.0px;
+	--h5-font-size: 18.0px;
+	--h4-font-size: 21.0px;
+	--h3-font-size: 24.0px;
+	--h2-font-size: 27.0px;
+	--h1-font-size: 30.0px;
+}
+
+}
+
+textarea {
+	resize: vertical;
+}
+
+
+.logo {
+	color: white;
+	font-size: 35px;
+	letter-spacing: 1px;
+	cursor: pointer;
+}
+
+
+span {
+	color: #d1347b;
+}
+
+
+html {
+	background-color: black;
+}
+
+
+.btn {
+	background-color: #d1347b;
+	color: white;
+	text-decoration: none;
+	border-style: solid;
+	border-color: transparent;
+	border-size: 2px;
+	font-weight: bold;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 25px;
+	padding-right: 25px;
+	border-radius: 10px;
+	transition: transform .4s;
+}
+
+
+.btn:hover {
+	transform: scale(1.2);
+	color: white;
+}
+
+
+.content {
+	position: absolute;
+	top: 50%;
+	left: 8%;
+	transform: translateY(-50%);
+}
+
+
+h1 {
+	color: white;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	margin-left: 0px;
+	margin-right: 0px;
+	font-size: var(--h1-font-size);
+}
+
+
+h3 {
+	color: white;
+	margin-bottom: 50px;
+	font-size: var(--h3-font-size);
+}
+
+
+h4 {
+	color: #fcfc;
+	letter-spacing: 2px;
+	font-size: var(--h4-font-size);
+}
+
+
+h5 {
+	color: white;
+	font-size: 23px;
+	margin-bottom: 15px;
+}
+
+
+button {
+	background-color: #d1347b;
+	color: white;
+	text-decoration: none;
+	border-size: 2px;
+	border-style: solid;
+	border-color: transparent;
+	font-weight: bold;
+	padding-top: 13px;
+	padding-bottom: 13px;
+	padding-left: 30px;
+	padding-right: 30px;
+	border-radius: 10px;
+	transition: 0.4s;
+}
+
+
+button:hover {
+	background-color: transparent;
+	border-size: 2px;
+	border-style: solid;
+	border-color: #d1347b;
+	cursor: pointer;
+}
+
+
+.title h2 {
+	color: white;
+	font-size: var(--big-font-size);
+	width: var(--title-width);
+	margin: 30px auto;
+	text-align: center;
+}
+
+
+.end {
+	position: absolute;
+	color: #d1347b;
+	bottom: 35px;
+	font-size: 14px;
+}
+
+
+.logo {
+	color: #d1347b;
+	filter: hue-rotate(0deg);
+	animation: hue_rotation 5s infinite ease-out alternate;;
+}
+
+
+@keyframes hue_rotation{
+	to {
+		filter: hue-rotate(30deg);
+}
+
+}
+
+
+@media (min-width: 0px) {
+	nav ul li {
+	list-style-type: none;
+	display: inline-block;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 5px;
+}
+
+}
+
+@media (min-width: 600px) {
+	nav ul li {
+	list-style-type: none;
+	display: inline-block;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 10px;
+}
+
+}
+
+@media (min-width: 0px) {
+	.cards {
+	grid-template-columns: repeat(1, 1fr);
+}
+
+}
+
+@media (min-width: 800px) {
+	.cards {
+	grid-template-columns: repeat(2, 1fr);
+}
+
+}
+
+@media (min-width: 1200px) {
+	.cards {
+	grid-template-columns: repeat(3, 1fr);
+}
+
+}
+canvas {
+	position: absolute;
+	display: block;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	z-index: -9999;
+	overflow: hidden;
+}
+</style>
+<link rel="stylesheet" href="/style.css"></link>
+<link crossorigin="anonymous" referrerpolicy="no-referrer" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"></link></head>
+<body><div style="	position: relative;"><canvas></canvas>
+<div class="hero"><nav><h2 class="logo">dm creations</h2>
+<ul>{% for entry in menu %}
+<li>
+ <a href="{{ entry.url }}">
+  {{ entry.title }}
+ </a>
+</li>
+{% endfor %}
+
+<li><a href="#contact" id="contactbutton" class="btn">Contact</a></li></ul></nav>
+<div class="content"><div><h1><span>Darren MacKenzie</span></h1>
+<h3>Software developer and solution architect.</h3></div>
+<div><div class="contact" id="herocontactformParent"><h5>Get in touch</h5>
+<form class="ui form" method="POST" action="/contact" id="herocontactform"><input type="email" name="email" placeholder="Email" id="email">
+<textarea name="message" id="message" placeholder="Enter a brief message"></textarea>
+<input type="submit" name="submit" placeholder="None" id="submit"></form></div></div></div></div></div>
+<div><h1>Page Not Found</h1>
+<p>What you were looking for is just not there.</p>
+<p><a href="https://www.darrenmackenzie.com">go somewhere nice</a></p></div>
+<section><div id="contact_section"><div id="contact"><div><div class="contact" id="footercontactformParent"><h5>Get in touch</h5>
+<form class="ui form" method="POST" action="/contact" id="footercontactform"><input type="email" name="email" placeholder="Email" id="email">
+<textarea name="message" id="message" placeholder="Enter a brief message"></textarea>
+<input type="submit" name="submit" placeholder="None" id="submit"></form></div></div></div></div></section>
+<footer><p>Darren MacKenzie</p>
+<p></p>
+<div class="social">{% for entry in social %}
+<a href="{{ entry.url }}">
+ <i class="{{ entry.icon }}">
+ </i>
+</a>
+{% endfor %}
+</div>
+<p></p></footer>
+<script>// constants
+const BG_COLOR = "black";
+const CUBE_COLOR = "green";
+const SPEED_X = 0.05; // rps
+const SPEED_Y = 0.15; // rps
+const SPEED_Z = 0.1; // rps
+
+const SPEED_C = 1;
+
+const POINT3D = function(x, y, z) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
+};
+
+let canvas = document.getElementsByTagName('canvas')[0];
+var ctx = canvas.getContext("2d");
+
+// dimensions
+var h = parseInt(canvas.clientHeight);
+var w = parseInt(canvas.clientWidth);
+
+canvas.height = h;
+canvas.width = w;
+
+// colours and lines
+ctx.fillStyle = BG_COLOR;
+ctx.strokeStyle = CUBE_COLOR;
+ctx.lineWidth = w / 20;
+ctx.lineCap = "round";
+
+// cube parameters
+var cx = w / 10;
+var cy = h / 10;
+var cz = 0;
+var size = h / 50;
+var vertices = [new POINT3D(cx - size, cy - size, cz - size), new POINT3D(cx + size, cy - size, cz - size), new POINT3D(cx + size, cy + size, cz - size), new POINT3D(cx - size, cy + size, cz - size), new POINT3D(cx - size, cy - size, cz + size), new POINT3D(cx + size, cy - size, cz + size), new POINT3D(cx + size, cy + size, cz + size), new POINT3D(cx - size, cy + size, cz + size)];
+var edges = [
+    [0, 1],
+    [1, 2],
+    [2, 3],
+    [3, 0], // back face
+    [4, 5],
+    [5, 6],
+    [6, 7],
+    [7, 4], // front face
+    [0, 4],
+    [1, 5],
+    [2, 6],
+    [3, 7] // connecting sides
+];
+
+// set up the animation loop
+var timeDelta, timeLast = 0;
+
+let shift_index = 1;
+let i = 0;
+
+let reverse = false;
+var colorCycleDelta = 0;
+
+let start;
+
+requestAnimationFrame(loop);
+
+function setCharAt(str, index, chr) {
+    if (index > str.length - 1) return str;
+    return str.substring(0, index) + chr + str.substring(index + 1);
+}
+
+function loop(timeNow) {
+
+    // calculate the time difference
+    timeDelta = timeNow - timeLast;
+    timeLast = timeNow;
+
+    // background
+    ctx.fillRect(0, 0, w, h);
+
+    // CYCLE COLORS...
+    if (start === undefined || start < 100) {
+        start = timeNow;
+    };
+    colorCycleDelta = timeNow - start;
+    if (colorCycleDelta > 100) {
+        start = 0;
+        if (reverse) {
+            if (i < 0) {
+                shift_index++;
+            };
+        } else {
+            if (i > 9) {
+                shift_index++;
+            };
+        };
+        if (shift_index === 6 && i === 9) {
+            shift_index = 1;
+        };
+        i = parseInt(ctx.strokeStyle[shift_index]);
+        if (reverse) {
+            i--;
+        } else {
+            i++;
+        };
+        var new_i = (i).toString();
+        ctx.strokeStyle = setCharAt(ctx.strokeStyle, shift_index, new_i);
+        if (ctx.strokeStyle === '#999999') {
+            if (reverse === false && shift_index === 6) {
+                reverse = true;
+                shift_index = 1;
+            }
+
+        };
+        if (ctx.strokeStyle === '#000000') {
+            if (reverse === true && shift_index === 6) {
+                reverse = false;
+                shift_index = 1;
+            }
+        };
+    }
+
+
+
+    // some kind of orbit lol wtf?
+    for (let v of vertices) {
+        v.x += 0.1;
+        v.y += 0.1;
+        v.z += 0.1;
+    }
+
+
+
+    // rotate the cube along the z axis
+    let angle = timeDelta * 0.001 * SPEED_Z * Math.PI * 2;
+    for (let v of vertices) {
+        let dx = v.x - cx;
+        let dy = v.y - cy;
+        let x = dx * Math.cos(angle) - dy * Math.sin(angle);
+        let y = dx * Math.sin(angle) + dy * Math.cos(angle);
+        v.x = x + cx;
+        v.y = y + cy;
+    }
+
+    // rotate the cube along the x axis
+    angle = timeDelta * 0.001 * SPEED_X * Math.PI * 2;
+    for (let v of vertices) {
+        let dy = v.y - cy;
+        let dz = v.z - cz;
+        let y = dy * Math.cos(angle) - dz * Math.sin(angle);
+        let z = dy * Math.sin(angle) + dz * Math.cos(angle);
+        v.y = y + cy;
+        v.z = z + cz;
+    }
+
+    // rotate the cube along the y axis
+    angle = timeDelta * 0.001 * SPEED_Y * Math.PI * 2;
+    for (let v of vertices) {
+        let dx = v.x - cx;
+        let dz = v.z - cz;
+        let x = dz * Math.sin(angle) + dx * Math.cos(angle);
+        let z = dz * Math.cos(angle) - dx * Math.sin(angle);
+        v.x = x + cx;
+        v.z = z + cz;
+    }
+
+    // draw each edge
+    for (let edge of edges) {
+        ctx.beginPath();
+        ctx.moveTo(vertices[edge[0]].x, vertices[edge[0]].y);
+        ctx.lineTo(vertices[edge[1]].x, vertices[edge[1]].y);
+        ctx.stroke();
+    }
+
+    // call the next frame
+    requestAnimationFrame(loop);
+}</script>
+<script>function calculate_radius(e) {
+    // let x, y = e.clientX, e.clientY;
+    let x = e.pageX;
+    let y = e.pageY;
+
+    // TODO: Definite code smell surrounding repetition here...
+    // Abstract this into a function or class.
+
+    if (x > 1500 && y < 200) {
+        let val = 30;
+        subscribe_button.style['box-shadow'] = "0px 0px 5px #000, 0px 0px " + val.toString() + "px #858585";
+    } else {
+        let val = 0;
+        subscribe_button.style['box-shadow'] = "0px 0px 5px #000, 0px 0px " + val.toString() + "px #858585";
+    }
+
+    if (x > hero_box[0] && y > hero_box[1] && x < hero_box[2] && y < hero_box[3]) {
+        let val = 30;
+        hero_contact_form.style['box-shadow'] = "0px 0px 5px #000, 0px 0px " + val.toString() + "px #858585";
+    } else {
+        let val = 0;
+        hero_contact_form.style['box-shadow'] = "0px 0px 5px #000, 0px 0px " + val.toString() + "px #858585";
+    }
+
+    if (x > footer_box[0] && y > footer_box[1] && x < footer_box[2] && y < footer_box[3]) {
+        let val = 30;
+        footer_contact_form.style['box-shadow'] = "0px 0px 5px #000, 0px 0px " + val.toString() + "px #858585";
+    } else {
+        let val = 0;
+        footer_contact_form.style['box-shadow'] = "0px 0px 5px #000, 0px 0px " + val.toString() + "px #858585";
+    }
+};
+
+
+document.addEventListener('mousemove', calculate_radius, {
+    passive: true
+});</script>
+<script></script></body></html>
