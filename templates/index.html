@@ -31,23 +31,23 @@
  GitHub</a></p></div>
 </div></section>
 <section>
-    <div class="service services" id="services">
-        <div class="title"><h2>Services</h2></div>
-        <div class="cards">
-            {% for service in services %}
-            <div class="card">
-                <div class='icons'>{% for icon in service.icons %}<a href='/icons/{{icon}}'><i class='{{icon}}'></i></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div>
-                <div class='tags'>{% for tag in service.tags %}<a href='/tags/{{tag}}'><span class='tag'>{{tag}}</span></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div>
-                <div class="pra title-and-description">
-                    <h5>{{ service.title }}</h5>
-                    <img src="{{ service.thumbnail }}"></img>
-                    <p style="text-align: center;">{{ service.description }}</p>
-                </div>
-                <div class="pra"><a class="button" href="{{ service.url }}">Read More</a></div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
+  <div class="service blogarticles" id="blogarticles">
+      <div class="title"><h2>Blog</h2></div>
+      <div class="cards">
+          {% for article in articles %}
+          <div class="card">
+              <div class='icons'>{% for icon in article.icons %}<a href='/icons/{{icon}}'><i class='{{icon}}'></i></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div>
+              <div class='tags'>{% for tag in article.tags %}<a href='/tags/{{tag}}'><span class='tag'>{{tag}}</span></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div>
+              <div class="pra title-and-description">
+                  <h5>{{ article.title }}</h5>
+                  <img src="{{ article.thumbnail }}"></img>
+                  <p style="text-align: center;">{{ article.description }}</p>
+              </div>
+              <div class="pra"><a class="button" href="{{ article.url }}">Read More</a></div>
+          </div>
+          {% endfor %}
+      </div>
+  </div>
 </section>
 <section>
     <div class="service work" id="work">
@@ -69,23 +69,23 @@
     </div>
 </section>
 <section>
-    <div class="service blogarticles" id="blogarticles">
-        <div class="title"><h2>Blog</h2></div>
-        <div class="cards">
-            {% for article in articles %}
-            <div class="card">
-                <div class='icons'>{% for icon in article.icons %}<a href='/icons/{{icon}}'><i class='{{icon}}'></i></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div>
-                <div class='tags'>{% for tag in article.tags %}<a href='/tags/{{tag}}'><span class='tag'>{{tag}}</span></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div>
-                <div class="pra title-and-description">
-                    <h5>{{ article.title }}</h5>
-                    <img src="{{ article.thumbnail }}"></img>
-                    <p style="text-align: center;">{{ article.description }}</p>
-                </div>
-                <div class="pra"><a class="button" href="{{ article.url }}">Read More</a></div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
+  <div class="service services" id="services">
+      <div class="title"><h2>Services</h2></div>
+      <div class="cards">
+          {% for service in services %}
+          <div class="card">
+              <div class='icons'>{% for icon in service.icons %}<a href='/icons/{{icon}}'><i class='{{icon}}'></i></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div>
+              <div class='tags'>{% for tag in service.tags %}<a href='/tags/{{tag}}'><span class='tag'>{{tag}}</span></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div>
+              <div class="pra title-and-description">
+                  <h5>{{ service.title }}</h5>
+                  <img src="{{ service.thumbnail }}"></img>
+                  <p style="text-align: center;">{{ service.description }}</p>
+              </div>
+              <div class="pra"><a class="button" href="{{ service.url }}">Read More</a></div>
+          </div>
+          {% endfor %}
+      </div>
+  </div>
 </section>
 <section><div id="contact_section"><div id="contact"><div><div class="contact" id="footercontactformParent"><h5>Get in touch</h5>
 <form class="ui form" method="POST" action="/contact" id="footercontactform"><input type="email" name="email" placeholder="Email" id="email">
