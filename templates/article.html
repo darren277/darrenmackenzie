@@ -94,11 +94,19 @@
 <form class="ui form" method="POST" action="/contact" id="herocontactform"><input type="email" name="email" placeholder="Email" id="email">
 <textarea name="message" id="message" placeholder="Enter a brief message"></textarea>
 <input type="submit" name="submit" placeholder="None" id="submit"></form></div></div></div></div></div>
-<section class="article"><div class="article-card"><h1>{{ article.title }}</h1>
-<div><h4>Date published: {{ article.date_published }}.</h4>
-<h5><div class='tags'>{% for tag in article.tags %}<a href='/tags/{{tag}}'><span class='tag'>{{tag}}</span></a>{{ ' | ' if not loop.last else '' }}{% endfor %}</div></h5>
-<h5><div class='icons'>{% for icon in article.icons %}<a href='/icons/{{icon}}'><i class='{{icon}}'></i></a>{{ ' | ' if not loop.last else '' }}{% endfor %}</div></h5></div>
-<article>{{ article.body | safe }}</article></div></section>
+<section class="article">
+	<div class="article-card">
+		<div class="article-header">
+			<h1>{{ article.title }}</h1>
+			<div>
+				<h4>Date published: {{ article.date_published }}.</h4>
+				<h5><div class='tags'>{% for tag in article.tags %}<a href='/tags/{{tag}}'><span class='tag'>{{tag}}</span></a>{{ ' | ' if not loop.last else '' }}{% endfor %}</div></h5>
+				<h5><div class='icons'>{% for icon in article.icons %}<a href='/icons/{{icon}}'><i class='{{icon}}'></i></a>{{ ' | ' if not loop.last else '' }}{% endfor %}</div></h5>
+			</div>
+		</div>
+		<article>{{ article.body | safe }}</article>
+	</div>
+</section>
 <section><div id="contact_section"><div id="contact"><div><div class="contact" id="footercontactformParent"><h5>Get in touch</h5>
 <form class="ui form" method="POST" action="/contact" id="footercontactform"><input type="email" name="email" placeholder="Email" id="email">
 <textarea name="message" id="message" placeholder="Enter a brief message"></textarea>
