@@ -1,121 +1,148 @@
-<html><head><link crossorigin="anonymous" referrerpolicy="no-referrer" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"></link>
-<title>dm creations - Home</title>
-<meta name="datasrc" content="data"></meta>
-<script type="importmap" contents="{"imports": {"three": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/examples/jsm/", "three/fonts/": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/examples/fonts/" } }"></script>
-<link rel="stylesheet" href="/style.css"></link>
-<link crossorigin="anonymous" referrerpolicy="no-referrer" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"></link></head>
-<body><div style="	position: relative;"><canvas></canvas>
-<div class="hero"><nav><h2 class="logo">dm creations</h2>
-<ul>{% for entry in menu %}
-<li>
- <a href="{{ entry.url }}">
-  {{ entry.title }}
- </a>
-</li>
-{% endfor %}
+<html>
+<head>
+    <link crossorigin="anonymous" referrerpolicy="no-referrer" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"></link>
+    <title>dm creations - Home</title>
+    <meta name="datasrc" content="data"></meta>
+    <script type="importmap" contents="{"imports": {"three": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/examples/jsm/", "three/fonts/": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/examples/fonts/" } }"></script>
+    <link rel="stylesheet" href="/style.css"></link>
+    <link crossorigin="anonymous" referrerpolicy="no-referrer" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"></link>
+</head>
+<body>
+    <div style="	position: relative;">
+        <canvas></canvas>
+        <div class="hero">
+            <nav>
+                <h2 class="logo">dm creations</h2>
+                <ul>
+                    {% for entry in menu %}<li><a href="{{ entry.url }}">{{ entry.title }}</a></li>{% endfor %}
+                    <li><a href="https://github.com/darren277"><i class="fa-brands fa-github"></i> GitHub</a></li>
+                    <li><a href="#contact" id="contactbutton" class="btn">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="content">
+                <div>
+                    <h1><span>Darren MacKenzie</span></h1>
+                    <h3>Software developer and solution architect.</h3>
+                    <h1>This site is largely unmaintained at the moment. Check out <a href="https://tech.jfdmconsulting.com">JFDM Tech</a> for now!</h1>
+                </div>
+                <div>
+                    <div class="contact" id="herocontactformParent">
+                        <h5>Get in touch</h5>
+                        <form class="ui form" method="POST" action="/contact" id="herocontactform"><input type="email" name="email" placeholder="Email" id="email">
+                            <textarea name="message" id="message" placeholder="Enter a brief message"></textarea>
+                            <input type="submit" name="submit" placeholder="None" id="submit">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <section class="about" id="about">
+        <div class="main">
+            <!-- <img src='img/main-img.png' /> -->
+            <div class="about-text">
+                <h2>About</h2>
+                <h5>Full stack. Solutions architect. DevOps.</h5>
+                <p><a href="https://github.com/darren277"><i class="fa-brands fa-github"></i> GitHub</a></p>
+            </div>
+        </div>
+    </section>
 
-<li><a href="https://github.com/darren277"><i class="fa-brands fa-github"></i>
- GitHub</a></li>
-<li><a href="#contact" id="contactbutton" class="btn">Contact</a></li></ul></nav>
-<div class="content"><div><h1><span>Darren MacKenzie</span></h1>
-<h3>Software developer and solution architect.</h3>
-<h1>This site is largely unmaintained at the moment. Check out <a href="https://tech.jfdmconsulting.com">JFDM Tech</a> for now!</h1></div>
-<div><div class="contact" id="herocontactformParent"><h5>Get in touch</h5>
-<form class="ui form" method="POST" action="/contact" id="herocontactform"><input type="email" name="email" placeholder="Email" id="email">
-<textarea name="message" id="message" placeholder="Enter a brief message"></textarea>
-<input type="submit" name="submit" placeholder="None" id="submit"></form></div></div></div></div></div>
-<section class="about" id="about"><div class="main"><!-- <img src='img/main-img.png' /> -->
-<div class="about-text"><h2>About</h2>
-<h5>Full stack. Solutions architect. DevOps.</h5>
-<p><a href="https://github.com/darren277"><i class="fa-brands fa-github"></i>
- GitHub</a></p></div>
-</div></section>
-<section><div class="service services" id="services"><div class="title"><h2>Services</h2></div>
-<div class="cards">{% for service in services %}
-<div class="card">
- <div class='icons'>{% for icon in service.icons %}<a href='/icons/{{icon}}'><i class='{{icon}}'></i></a>{{ ' | ' if not loop.last else '' }}{% endfor %}</div><div class='tags'>{% for tag in service.tags %}<a href='/tags/{{tag}}'><span class='tag'>{{tag}}</span></a>{{ ' | ' if not loop.last else '' }}{% endfor %}</div>
- <h5>
-  {{ service.title }}
- </h5>
- <img src="{{ service.thumbnail }}">
- </img>
- <div class="pra">
-  <p style="text-align: center;">
-   {{ service.description }}
-  </p>
-  <a class="button" href="{{ service.url }}">
-   Read More
-  </a>
- </div>
-</div>
-{% endfor %}
-</div></div></section>
-<section><div class="service work" id="work"><div class="title"><h2>Work</h2></div>
-<div class="cards">{% for project in projects %}
-<div class="card">
- <div class='icons'>{% for icon in project.icons %}<a href='/icons/{{icon}}'><i class='{{icon}}'></i></a>{{ ' | ' if not loop.last else '' }}{% endfor %}</div><div class='tags'>{% for tag in project.tags %}<a href='/tags/{{tag}}'><span class='tag'>{{tag}}</span></a>{{ ' | ' if not loop.last else '' }}{% endfor %}</div>
- <h5>
-  {{ project.title }}
- </h5>
- <img src="{{ project.thumbnail }}">
- </img>
- <div class="pra">
-  <p style="text-align: center;">
-   {{ project.description }}
-  </p>
-  <a class="button" href="{{ project.url }}">
-   Read More
-  </a>
- </div>
-</div>
-{% endfor %}
-</div></div></section>
-<section><div class="service blogarticles" id="blogarticles"><div class="title"><h2>Blog</h2></div>
-<div class="cards">{% for article in articles %}
-<div class="card">
- <div class='icons'>{% for icon in article.icons %}<a href='/icons/{{icon}}'><i class='{{icon}}'></i></a>{{ ' | ' if not loop.last else '' }}{% endfor %}</div><div class='tags'>{% for tag in article.tags %}<a href='/tags/{{tag}}'><span class='tag'>{{tag}}</span></a>{{ ' | ' if not loop.last else '' }}{% endfor %}</div>
- <h5>
-  {{ article.title }}
- </h5>
- <img src="{{ article.thumbnail }}">
- </img>
- <div class="pra">
-  <p style="text-align: center;">
-   {{ article.description }}
-  </p>
-  <a class="button" href="{{ article.url }}">
-   Read More
-  </a>
- </div>
-</div>
-{% endfor %}
-</div></div></section>
-<section><div id="contact_section"><div id="contact"><div><div class="contact" id="footercontactformParent"><h5>Get in touch</h5>
-<form class="ui form" method="POST" action="/contact" id="footercontactform"><input type="email" name="email" placeholder="Email" id="email">
-<textarea name="message" id="message" placeholder="Enter a brief message"></textarea>
-<input type="submit" name="submit" placeholder="None" id="submit"></form></div></div></div></div></section>
-<footer><p>Darren MacKenzie</p>
-<p></p>
-<div class="social">{% for entry in social %}
-<a href="{{ entry.url }}">
- <i class="{{ entry.icon }}">
- </i>
-</a>
-{% endfor %}
-</div>
-<p></p></footer>
-<script></script>
-<script></script>
-<script></script>
-<script src="https://darrenmackenzie-chalice-bucket.s3.us-east-1.amazonaws.com/scripts/main.js" type="module"></script>
+    <section>
+        <div class="service blogarticles" id="blogarticles">
+            <div class="title"><h2>Blog</h2></div>
+            <div class="cards">
+                {% for article in articles %}
+                <div class="card">
+                    <div class='icons'>{% for icon in article.icons %}<a href='/icons/{{icon}}'><i class='{{icon}}'></i></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div>
+                    <div class='tags'>{% for tag in article.tags %}<a href='/tags/{{tag}}'><span class='tag'>{{tag}}</span></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div>
+                    <div class="pra title-and-description">
+                        <h5>{{ article.title }}</h5>
+                        <img src="{{ article.thumbnail }}"></img>
+                        <p style="text-align: center;">{{ article.description }}</p>
+                    </div>
+                    <div class="pra"><a class="button" href="{{ article.url }}">Read More</a></div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="service work" id="work">
+            <div class="title"><h2>Work</h2></div>
+            <div class="cards">
+                {% for project in projects %}
+                <div class="card">
+                    <div class='icons'>{% for icon in project.icons %}<a href='/icons/{{icon}}'><i class='{{icon}}'></i></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div>
+                    <div class='tags'>{% for tag in project.tags %}<a href='/tags/{{tag}}'><span class='tag'>{{tag}}</span></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div>
+                    <div class="pra title-and-description">
+                        <h5>{{ project.title }}</h5>
+                        <img src="{{ project.thumbnail }}"></img>
+                        <p style="text-align: center;">{{ project.description }}</p>
+                    </div>
+                    <div class="pra"><a class="button" href="{{ project.url }}">Read More</a></div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    <section>
+      <div class="service services" id="services">
+          <div class="title"><h2>Services</h2></div>
+          <div class="cards">
+              {% for service in services %}
+              <div class="card">
+                  <div class='icons'>{% for icon in service.icons %}<a href='/icons/{{icon}}'><i class='{{icon}}'></i></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div>
+                  <div class='tags'>{% for tag in service.tags %}<a href='/tags/{{tag}}'><span class='tag'>{{tag}}</span></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div>
+                  <div class="pra title-and-description">
+                      <h5>{{ service.title }}</h5>
+                      <img src="{{ service.thumbnail }}"></img>
+                      <p style="text-align: center;">{{ service.description }}</p>
+                  </div>
+                  <div class="pra"><a class="button" href="{{ service.url }}">Read More</a></div>
+              </div>
+              {% endfor %}
+          </div>
+      </div>
+    </section>
+    
+    <section>
+        <div id="contact_section">
+            <div id="contact">
+                <div>
+                    <div class="contact" id="footercontactformParent">
+                        <h5>Get in touch</h5>
+                        <form class="ui form" method="POST" action="/contact" id="footercontactform">
+                            <input type="email" name="email" placeholder="Email" id="email">
+                            <textarea name="message" id="message" placeholder="Enter a brief message"></textarea>
+                            <input type="submit" name="submit" placeholder="None" id="submit">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <p>Darren MacKenzie</p>
+        <p></p>
+        <div class="social">{% for entry in social %}<a href="{{ entry.url }}"><i class="{{ entry.icon }}"></i></a>{% endfor %}</div>
+        <p></p>
+    </footer>
+    <script></script>
+    <script></script>
+    <script></script>
+    <script src="https://darrenmackenzie-chalice-bucket.s3.us-east-1.amazonaws.com/scripts/main.js" type="module"></script>
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WPKZ9BSM31"></script>
+    <script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-WPKZ9BSM31"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-WPKZ9BSM31');
-</script>
-</body></html>
+gtag('config', 'G-WPKZ9BSM31');
+    </script>
+</body>
+</html>

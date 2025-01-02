@@ -522,9 +522,11 @@ textarea {
 }
 
 
+/*
 span {
 	color: #d1347b;
 }
+*/
 
 
 html {
@@ -704,4 +706,42 @@ canvas {
 	left: 0;
 	z-index: -9999;
 	overflow: hidden;
+}
+
+.pra .button {
+	/* Push to bottom of containing element */
+	position: absolute;
+	bottom: 50;
+
+	/* Center horizontally */
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.title-and-description {
+	flex-direction: column;
+
+	/* Center vertically */
+	top: 90;
+	position: absolute;
+	width: 90%;
+}
+
+.tags a {
+	display: inline-block;       /* ensures each tag can have its own box */
+	padding: 3px 10px;           /* adjust to taste */
+	margin: 2px 5px 2px 0;       /* space between tags */
+	border-radius: 15px;         /* gives a pill-like shape */
+	/* background-color: #d1347b; */   /* pick colors that complement your design */
+	/* too bright, let's go with a more subtle color */
+	background-color: #601f2c;   /* a nice pink */
+	color: #fff;                 /* text color; white often works well */
+	font-size: 0.85rem;          /* slightly smaller than body text can look nice */
+	text-decoration: none;       /* remove underlines if you prefer a clean look */
+}
+
+.tags a:hover {
+	background-color: #ff8fa6;   /* a slightly lighter/darker shade on hover */
+	color: #fff;                 /* keep text white */
+	transition: background-color 0.2s ease; /* a subtle transition is nice */
 }

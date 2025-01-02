@@ -28,12 +28,55 @@
 	margin: 15px;
 	position: relative;
 	overflow: hidden;
-	text-align: center;
 	margin-top: 25px;
 	margin-bottom: 25px;
 	margin-left: 0px;
 	margin-right: 0px;
 }
+
+.article-header {
+	padding-top: 20px;
+	padding-bottom: 20px;
+	padding-left: 25px;
+	padding-right: 25px;
+
+	text-align: center;
+}
+
+.article ol {
+	/* INDENT */
+	padding-left: 20px;
+}
+
+.article p {
+	/* add space between paragraphs */
+	margin-bottom: 20px;
+}
+
+.article h1 {
+	margin-bottom: 20px;
+}
+
+.article h2 {
+	margin-bottom: 20px;
+}
+
+.article h3 {
+	margin-bottom: 20px;
+}
+
+.article h4 {
+	margin-bottom: 20px;
+}
+
+.article h5 {
+	margin-bottom: 20px;
+}
+
+.hero {
+	height: 150;
+}
+
 </style></head>
 <body><div style="	position: relative;"><canvas></canvas>
 <div class="hero"><nav><h2 class="logo">dm creations</h2>
@@ -48,18 +91,37 @@
 <li><a href="https://github.com/darren277"><i class="fa-brands fa-github"></i>
  GitHub</a></li>
 <li><a href="#contact" id="contactbutton" class="btn">Contact</a></li></ul></nav>
-<div class="content"><div><h1><span>Darren MacKenzie</span></h1>
-<h3>Software developer and solution architect.</h3>
-<h1>This site is largely unmaintained at the moment. Check out <a href="https://tech.jfdmconsulting.com">JFDM Tech</a> for now!</h1></div>
-<div><div class="contact" id="herocontactformParent"><h5>Get in touch</h5>
-<form class="ui form" method="POST" action="/contact" id="herocontactform"><input type="email" name="email" placeholder="Email" id="email">
-<textarea name="message" id="message" placeholder="Enter a brief message"></textarea>
-<input type="submit" name="submit" placeholder="None" id="submit"></form></div></div></div></div></div>
-<section class="article"><div class="article-card"><h1>{{ article.title }}</h1>
-<div><h4>Date published: {{ article.date_published }}.</h4>
-<h5><div class='tags'>{% for tag in article.tags %}<a href='/tags/{{tag}}'><span class='tag'>{{tag}}</span></a>{{ ' | ' if not loop.last else '' }}{% endfor %}</div></h5>
-<h5><div class='icons'>{% for icon in article.icons %}<a href='/icons/{{icon}}'><i class='{{icon}}'></i></a>{{ ' | ' if not loop.last else '' }}{% endfor %}</div></h5></div>
-<article>{{ article.body | safe }}</article></div></section>
+<!-- <div class="content">
+	<div>
+		<h1><span>Darren MacKenzie</span></h1>
+		<h3>Software developer and solution architect.</h3>
+		<h1>This site is largely unmaintained at the moment. Check out <a href="https://tech.jfdmconsulting.com">JFDM Tech</a> for now!</h1>
+	</div>
+	<div>
+		<div class="contact" id="herocontactformParent">
+			<h5>Get in touch</h5>
+			<form class="ui form" method="POST" action="/contact" id="herocontactform"><input type="email" name="email" placeholder="Email" id="email">
+				<textarea name="message" id="message" placeholder="Enter a brief message"></textarea>
+				<input type="submit" name="submit" placeholder="None" id="submit">
+			</form>
+		</div>
+	</div>
+</div> -->
+</div>
+</div>
+<section class="article">
+	<div class="article-card">
+		<div class="article-header">
+			<h1>{{ article.title }}</h1>
+			<div>
+				<h4>Date published: {{ article.date_published }}.</h4>
+				<h5><div class='tags'>{% for tag in article.tags %}<a href='/tags/{{tag}}'><span class='tag'>{{tag}}</span></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div></h5>
+				<h5><div class='icons'>{% for icon in article.icons %}<a href='/icons/{{icon}}'><i class='{{icon}}'></i></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div></h5>
+			</div>
+		</div>
+		<article>{{ article.body | safe }}</article>
+	</div>
+</section>
 <section><div id="contact_section"><div id="contact"><div><div class="contact" id="footercontactformParent"><h5>Get in touch</h5>
 <form class="ui form" method="POST" action="/contact" id="footercontactform"><input type="email" name="email" placeholder="Email" id="email">
 <textarea name="message" id="message" placeholder="Enter a brief message"></textarea>
