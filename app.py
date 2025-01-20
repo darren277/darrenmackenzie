@@ -8,6 +8,11 @@ import boto3 as boto3
 from jinja2 import Environment, FileSystemLoader, BaseLoader
 import stripe
 
+from chalicelib.paginator import Paginator
+
+print('paginator', Paginator)
+
+
 app = Chalice(app_name="darrenmackenzie")
 
 # import from AWS Secrets Manager
@@ -65,20 +70,13 @@ def test_filter():
 #test_filter()
 
 
-class Paginator:
-    def __init__(self, current_page: int = 1, prev_page_lower_bound: int = 0, next_page_upper_bound: int = 0):
-        self.current_page = current_page
-        self.prev_pg_lb = prev_page_lower_bound
-        self.next_pg_ub = next_page_upper_bound
-        ...
-    
-    def serialize(self):
-        return {
-            'current_page': self.current_page,
-            'prev_pg_lb': self.prev_pg_lb,
-            'next_pg_ub': self.next_pg_ub,
-            # ...
-        }
+def build_url(base, query_params: dict) -> str:
+    """
+    Utility to build something like:
+    base?key1=val1&key2=val2...
+    """
+    from urllib.parse import urlencode
+    return base + "?" + urlencode(query_params)
 
 
 @app.route('/')
@@ -100,45 +98,55 @@ def script_template():
     ## data = app.current_request.json_body
     website_data = table.get_item(Key={'section': 'website_data'})['Item']
 
-    ts = datetime.datetime.now().timestamp()
-
     query_params = app.current_request.query_params or {}
+    tags_param = query_params.get('tags')
 
-    newer_than = query_params.get('newerThan')
-    older_than = query_params.get('olderThan')
+    # Build paginator from query params
+    paginator = Paginator.from_query_params(query_params)
+    paginator.page_size = int(query_params.get('limit', DEFAULT_PAGE_LIMIT))
 
-    limit = int(query_params.get('limit', DEFAULT_PAGE_LIMIT))
-    # Use an integer fallback for cursor; e.g. now in millis as int
-    cursor = int(query_params.get('cursor', ts * 1_000))
-    tags_param = query_params.get('tags', None)
+    # We'll only handle 1 tag for now:
+    tags = tags_param.split(',') if tags_param else None
 
-    if 'cursor' in query_params:
-        # user is paginating
-        page_of_articles = get_articles_list(limit, cursor, tags_param, newer_than=newer_than, older_than=older_than)
-    elif tags_param:
-        # user provided tags but no cursor
-        page_of_articles = get_articles_list(limit, cursor, tags_param, newer_than=newer_than, older_than=older_than)
+    # Build the query arguments using the paginator
+    article_table_name = os.environ['ARTICLE_LIST_TABLE']
+    table, kwargs = paginator.build_query_kwargs(article_table_name, tags=tags)
+
+    # Execute the query
+    response = table.query(**kwargs)
+    page_of_articles = response["Items"]
+
+    # Update paginator bounds from these items
+    paginator.update_bounds_from_items(page_of_articles)
+
+    # Decide if there's a "next page"
+    # If we got 'Limit' items, assume there's possibly more. 
+    # In practice you might check if 'LastEvaluatedKey' is present.
+    if len(page_of_articles) == paginator.page_size:
+        # There's a next page
+        next_p = paginator.next_page()
+        next_query_params = next_p.to_query_params()
+        # If we have tags, we can add them back
+        if tags_param:
+            next_query_params["tags"] = tags_param
+        # Construct next page URL
+        next_page_url = build_url("https://www.darrenmackenzie.com/", next_query_params)
     else:
-        # no cursor, no tags
-        page_of_articles = get_articles_list(limit, cursor, None, newer_than=newer_than, older_than=older_than)
+        next_page_url = None
 
-    nextCursor = (page_of_articles[-1]['created']
-                if page_of_articles and len(page_of_articles) == limit
-                else None)
-    
-    if len(page_of_articles) < limit:
-        nextCursor = None
-    
-    if len(page_of_articles) == 0:
-        # no articles found...
-        maxCreated = None
-        minCreated = None
+    # Decide if there's a "previous page"
+    # We might say if paginator.current_page > 1, we do a previous
+    if paginator.current_page > 1:
+        prev_p = paginator.prev_page()
+        prev_query_params = prev_p.to_query_params()
+        if tags_param:
+            prev_query_params["tags"] = tags_param
+        prev_page_url = build_url("https://www.darrenmackenzie.com/", prev_query_params)
     else:
-        # The newest item is items[0] (largest created), 
-        # the oldest item is items[-1] (smallest created).
-        maxCreated = page_of_articles[0]['created'] 
-        minCreated = page_of_articles[-1]['created']
+        prev_page_url = None
     
+    maxCreated = max([article['created'] for article in page_of_articles])
+
     if not query_params:
         # this is page 1...
         first_page = True
@@ -158,9 +166,8 @@ def script_template():
             projects=website_data['projects'],
             articles=page_of_articles,
             menu=menu,
-            nextCursor=nextCursor,
-            minCreated=minCreated,
-            maxCreated=maxCreated,
+            nextPageUrl=next_page_url,
+            prevPageUrl=prev_page_url,
             firstPage=first_page or does_current_page_include_newest_timestamp,
             newestTimestamp=newest_timestamp,
         ),
