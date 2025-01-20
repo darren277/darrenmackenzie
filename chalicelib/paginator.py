@@ -131,6 +131,8 @@ class Paginator:
         In descending order, "previous page" means 'lower_bound' becomes (current page's max_created + 1).
         So we exclude any items <= the largest item on the current page.
         """
+        if self.page_max_created is None:
+            raise ValueError("Cannot get previous page without first querying items")
         p = Paginator(
             current_page=self.current_page - 1,
             page_size=self.page_size,

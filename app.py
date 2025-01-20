@@ -160,7 +160,11 @@ def script_template():
     # We might say if paginator.current_page > 1, we do a previous
     try:
         if paginator.current_page > 1:
-            prev_p = paginator.prev_page()
+            try:
+                prev_p = paginator.prev_page()
+            except Exception as e:
+                print("Error getting prev page:", e)
+                return Response(str(e), status_code=500)
             prev_query_params = prev_p.to_query_params()
             if tags_param:
                 prev_query_params["tags"] = tags_param
