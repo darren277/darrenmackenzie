@@ -102,63 +102,92 @@ def script_template():
     tags_param = query_params.get('tags')
 
     # Build paginator from query params
-    paginator = Paginator.from_query_params(query_params)
-    paginator.page_size = int(query_params.get('limit', DEFAULT_PAGE_LIMIT))
+    try:
+        paginator = Paginator.from_query_params(query_params)
+        paginator.page_size = int(query_params.get('limit', DEFAULT_PAGE_LIMIT))
+    except Exception as e:
+        print("Error building paginator:", e)
+        return Response(str(e), status_code=400)
+
 
     # We'll only handle 1 tag for now:
     tags = tags_param.split(',') if tags_param else None
 
     # Build the query arguments using the paginator
-    article_table_name = os.environ['ARTICLE_LIST_TABLE']
-    article_list_table = db.Table(article_table_name)
-    kwargs = paginator.build_query_kwargs(article_table_name, tags=tags)
+    try:
+        article_table_name = os.environ['ARTICLE_LIST_TABLE']
+        article_list_table = db.Table(article_table_name)
+        kwargs = paginator.build_query_kwargs(article_table_name, tags=tags)
+    except Exception as e:
+        print("Error building query arguments:", e)
+        return Response(str(e), status_code=400)
 
     # Execute the query
-    response = article_list_table.query(**kwargs)
-    page_of_articles = response["Items"]
+    try:
+        response = article_list_table.query(**kwargs)
+        page_of_articles = response["Items"]
+    except Exception as e:
+        print("Error querying DynamoDB:", e)
+        return Response(str(e), status_code=500)
 
     # Update paginator bounds from these items
-    paginator.update_bounds_from_items(page_of_articles)
+    try:
+        paginator.update_bounds_from_items(page_of_articles)
+    except Exception as e:
+        print("Error updating paginator bounds:", e)
+        return Response(str(e), status_code=500)
 
     # Decide if there's a "next page"
     # If we got 'Limit' items, assume there's possibly more. 
     # In practice you might check if 'LastEvaluatedKey' is present.
-    if len(page_of_articles) == paginator.page_size:
-        # There's a next page
-        next_p = paginator.next_page()
-        next_query_params = next_p.to_query_params()
-        # If we have tags, we can add them back
-        if tags_param:
-            next_query_params["tags"] = tags_param
-        # Construct next page URL
-        next_page_url = build_url("https://www.darrenmackenzie.com/", next_query_params)
-    else:
-        next_page_url = None
+    try:
+        if len(page_of_articles) == paginator.page_size:
+            # There's a next page
+            next_p = paginator.next_page()
+            next_query_params = next_p.to_query_params()
+            # If we have tags, we can add them back
+            if tags_param:
+                next_query_params["tags"] = tags_param
+            # Construct next page URL
+            next_page_url = build_url("https://www.darrenmackenzie.com/", next_query_params)
+        else:
+            next_page_url = None
+    except Exception as e:
+        print("Error building next page URL:", e)
+        return Response(str(e), status_code=500)
 
     # Decide if there's a "previous page"
     # We might say if paginator.current_page > 1, we do a previous
-    if paginator.current_page > 1:
-        prev_p = paginator.prev_page()
-        prev_query_params = prev_p.to_query_params()
-        if tags_param:
-            prev_query_params["tags"] = tags_param
-        prev_page_url = build_url("https://www.darrenmackenzie.com/", prev_query_params)
-    else:
-        prev_page_url = None
+    try:
+        if paginator.current_page > 1:
+            prev_p = paginator.prev_page()
+            prev_query_params = prev_p.to_query_params()
+            if tags_param:
+                prev_query_params["tags"] = tags_param
+            prev_page_url = build_url("https://www.darrenmackenzie.com/", prev_query_params)
+        else:
+            prev_page_url = None
+    except Exception as e:
+        print("Error building prev page URL:", e)
+        return Response(str(e), status_code=500)
     
-    maxCreated = max([article['created'] for article in page_of_articles])
+    try:
+        maxCreated = max([article['created'] for article in page_of_articles])
 
-    if not query_params:
-        # this is page 1...
-        first_page = True
-        newest_timestamp = maxCreated
-    else:
-        first_page = False
-        newest_timestamp = query_params.get('newestTimestamp', maxCreated)
-    
-    vals = [(str(article['created']), str(Decimal(newest_timestamp))) for article in page_of_articles]
-    print('vals:', vals)
-    does_current_page_include_newest_timestamp = any([v[0] == v[1] for v in vals])
+        if not query_params:
+            # this is page 1...
+            first_page = True
+            newest_timestamp = maxCreated
+        else:
+            first_page = False
+            newest_timestamp = query_params.get('newestTimestamp', maxCreated)
+        
+        vals = [(str(article['created']), str(Decimal(newest_timestamp))) for article in page_of_articles]
+        print('vals:', vals)
+        does_current_page_include_newest_timestamp = any([v[0] == v[1] for v in vals])
+    except Exception as e:
+        print("Error getting newest timestamp:", e)
+        return Response(str(e), status_code=500)
     
     return Response(
         template.render(
