@@ -42,6 +42,12 @@
             z-index: 9999 !important;
             position: relative !important;
         }
+
+
+
+        .centered-text {
+            text-align: center;
+        }
     </style>
     <link crossorigin="anonymous" referrerpolicy="no-referrer" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"></link>
 </head>
@@ -98,12 +104,17 @@
                     <div class='tags'>{% for tag in article.tags %}<a href='/tags/{{tag}}'><span class='tag'>{{tag}}</span></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div>
                     <div class="pra title-and-description">
                         <h5>{{ article.title }}</h5>
+                        <!-- Human readable date (YYYY-MM-DD) from epoch -->
+                        <h6>{{ article.created | datetime }}</h6>
                         <img src="{{ article.thumbnail }}"></img>
                         <p style="text-align: center;">{{ article.description }}</p>
                     </div>
                     <div class="pra"><a class="button" href="{{ article.url }}">Read More</a></div>
                 </div>
                 {% endfor %}
+            </div>
+            <div class="centered-text">
+                <h3>{% if prevCursor %}<a href="https://www.darrenmackenzie.com/?cursor={{ prevCursor }}">🡸 Previous Page</a>{% endif %} / {% if nextCursor %}<a href="https://www.darrenmackenzie.com/?cursor={{ nextCursor }}">Next Page 🡺</a>{% endif %}</h3>
             </div>
         </div>
     </section>

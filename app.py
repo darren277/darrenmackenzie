@@ -1,3 +1,6 @@
+import datetime
+from decimal import Decimal
+from typing import List
 from chalice import Chalice, Response
 import json
 from os import path
@@ -28,6 +31,9 @@ def get_secret(secret_name: str):
 stripe.api_key = os.environ.get('STRIPE_RESTRICTED_KEY', get_secret('STRIPE_RESTRICTED_KEY')['STRIPE_RESTRICTED_KEY'])
 STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET', get_secret('STRIPE_WEBHOOK_SECRET')['STRIPE_WEBHOOK_SECRET'])
 
+#DEFAULT_PAGE_LIMIT = 10
+DEFAULT_PAGE_LIMIT = 3
+
 import os
 cwd = os.path.dirname(__file__)
 from os.path import join
@@ -35,6 +41,29 @@ from os.path import join
 env = Environment(loader=FileSystemLoader(join(cwd, 'chalicelib', 'frontend'), encoding='utf8'))
 
 s3_env = Environment(loader=BaseLoader())
+
+
+def datetime_filter(value, format='%Y-%m-%d %H:%M:%S'):
+    v = int(value) / 1_000.0
+    ts = datetime.datetime.fromtimestamp(v)
+    return ts.strftime(format)
+
+
+env.filters['datetime'] = datetime_filter
+s3_env.filters['datetime'] = datetime_filter
+
+
+def test_filter():
+    print(datetime_filter(1704330000000))
+    # as Decimal...
+    print(datetime_filter(Decimal('1704330000000')))
+    # as string...
+    print(datetime_filter('1704330000000'))
+    # as float...
+    print(datetime_filter(1704330000000.0))
+
+#test_filter()
+
 
 @app.route('/')
 def script_template():
@@ -49,11 +78,71 @@ def script_template():
     s3 = boto3.resource('s3')
     myString = s3.Object(os.environ['BUCKET_NAME'], 'frontend/index.html').get()["Body"].read().decode('utf-8').replace('__THREEJS_VERSION__', '0.172.0')
     template = s3_env.from_string(myString)
+
     db = boto3.resource('dynamodb')
     table = db.Table(os.environ['HOME_TABLE'])
     ## data = app.current_request.json_body
     website_data = table.get_item(Key={'section': 'website_data'})['Item']
-    return Response(template.render(services=website_data['services'], social=website_data['social'], projects=website_data['projects'], articles=website_data['articles'], menu=menu), headers={'Content-Type': 'text/html; charset=UTF-8'}, status_code=200)
+
+    ts = datetime.datetime.now().timestamp()
+
+    prevCursor = None
+
+    try:
+        query_params = app.current_request.query_params
+
+        print('query_params:', query_params)
+
+        if query_params.get('cursor'):
+            cursor = int(query_params.get('cursor'))
+            limit = int(query_params.get('limit', DEFAULT_PAGE_LIMIT))
+            tags = query_params.get('tags', None)
+            page_of_articles = get_articles_list(limit, cursor, tags)
+            prevCursor = page_of_articles[0]['created'] if page_of_articles else None
+        elif tags == query_params.get('tags', None):
+            page_of_articles = get_articles_list(DEFAULT_PAGE_LIMIT, ts * 1_000, tags)
+        else:
+            page_of_articles = get_articles_list(DEFAULT_PAGE_LIMIT, ts * 1_000, None)
+    except Exception as e:
+        print(e)
+        page_of_articles = get_articles_list(DEFAULT_PAGE_LIMIT, ts * 1_000, None)
+    
+    nextCursor = page_of_articles[-1]['created'] if page_of_articles and len(page_of_articles) == DEFAULT_PAGE_LIMIT else None
+    
+    return Response(
+        template.render(
+            services=website_data['services'],
+            social=website_data['social'],
+            projects=website_data['projects'],
+            articles=page_of_articles,
+            menu=menu,
+            prevCursor=prevCursor,
+            nextCursor=nextCursor
+        ),
+        headers={'Content-Type': 'text/html; charset=UTF-8'},
+        status_code=200
+    )
+
+def get_articles_list(limit: int, cursor: int, tags: List[str]):
+    db = boto3.resource('dynamodb')
+    article_table = db.Table(os.environ['ARTICLE_LIST_TABLE'])
+
+    if tags:
+        tags = tags.split(',')
+        # Only handles one tag for now...
+        response = article_table.query(KeyConditionExpression='type_of_article = :type_of_article AND created < :date', FilterExpression='contains(tags, :tag)', ExpressionAttributeValues={':type_of_article': 'blog', ':tag': tags[0], ':date': Decimal(cursor)}, Limit=limit)
+    else:
+        response = article_table.query(KeyConditionExpression='type_of_article = :type_of_article AND created < :date', ExpressionAttributeValues={':type_of_article': 'blog', ':date': Decimal(cursor)}, Limit=limit)
+    return sorted(response['Items'], key=lambda x: x['created'])
+
+
+# paginated article fetching...
+@app.route('/articles_list', methods=['GET'])
+def articles_list():
+    limit = int(app.current_request.query_params.get('limit', 10))
+    cursor = int(app.current_request.query_params.get('cursor', datetime.datetime.now().timestamp() * 1_000))
+    tags = app.current_request.query_params.get('tags', None)
+    return get_articles_list(limit, cursor, tags)
 
 # Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://darrenmackenzie-chalice-bucket.s3.us-east-1.amazonaws.com/scripts/main.js. (Reason: CORS header ‘Access-Control-Allow-Origin’ missing). Status code: 200.
 @app.route('/scripts/main.js')
