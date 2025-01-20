@@ -97,6 +97,12 @@
     <section>
         <div class="service blogarticles" id="blogarticles">
             <div class="title"><h2>Blog</h2></div>
+            {% if not articles %}
+            <div class="centered-text">
+                <h3>You've reached the end.</h3>
+                <h4><a href="javascript:history.back()">Go Back</a></h4>
+            </div>
+            {% endif %}
             <div class="cards">
                 {% for article in articles %}
                 <div class="card">
@@ -114,7 +120,7 @@
                 {% endfor %}
             </div>
             <div class="centered-text">
-                <h3>{% if prevCursor %}<a href="https://www.darrenmackenzie.com/?cursor={{ prevCursor }}">🡸 Previous Page</a>{% endif %} / {% if nextCursor %}<a href="https://www.darrenmackenzie.com/?cursor={{ nextCursor }}">Next Page 🡺</a>{% endif %}</h3>
+                <h3>{% if minCreated and maxCreated %}<a href="https://www.darrenmackenzie.com/?maxCreated={{ maxCreated }}&minCreated={{ minCreated }}">{% endif %}🡸 Previous Page{% if minCreated and maxCreated %}</a>{% endif %} / {% if nextCursor %}<a href="https://www.darrenmackenzie.com/?cursor={{ nextCursor }}">{% endif %}Next Page 🡺{% if nextCursor %}</a>{% endif %}</h3>
             </div>
         </div>
     </section>
