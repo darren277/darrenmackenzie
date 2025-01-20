@@ -8,17 +8,46 @@
             "imports":
                 {
                     "three": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/build/three.module.js",
-                    "three/addons/": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/examples/jsm/",
-                    "three/fonts/": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/examples/fonts/"
+                    "textgeometry": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/examples/jsm/geometries/TextGeometry.js",
+                    "fontloader": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/examples/jsm/loaders/FontLoader.js",
+                    "orbitcontrols": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/examples/jsm/controls/OrbitControls.js"
                 }
         }
     </script>
     <link rel="stylesheet" href="/style.css"></link>
+    <style>
+        .threejs-container {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            background: #000;
+            z-index: 9999;
+        }
+
+        #c {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .threejs h1 {
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            margin: 0;
+        }
+
+        #c canvas {
+            background-color: rgba(255,0,0,0.2) !important;
+            z-index: 9999 !important;
+            position: relative !important;
+        }
+    </style>
     <link crossorigin="anonymous" referrerpolicy="no-referrer" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"></link>
 </head>
 <body>
     <div style="	position: relative;">
-        <canvas></canvas>
+        <!-- <canvas></canvas> -->
         <div class="hero">
             <nav>
                 <h2 class="logo">dm creations</h2>
@@ -133,6 +162,15 @@
             </div>
         </div>
     </section>
+
+    <!-- SIMPLE THREE JS SEGMENT -->
+    <section class="threejs">
+        <h1>Three JS</h1>
+        <div class="threejs-container">
+            <div id="c"></div>
+            <button id="orbit-toggle-btn" style="position: absolute; top: 1em; right: 1em; z-index: 9999; padding: 0.5em 1em; cursor: pointer;">Orbit: ON</button>
+        </div>
+    </section>
     
     <footer>
         <p>Darren MacKenzie</p>
@@ -143,7 +181,7 @@
     <script></script>
     <script></script>
     <script></script>
-    <script src="https://darrenmackenzie-chalice-bucket.s3.us-east-1.amazonaws.com/scripts/main.js" type="module"></script>
+    <script src="/scripts/main.js" type="module"></script>
     
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WPKZ9BSM31"></script>

@@ -25,7 +25,7 @@ def script_template():
         # dict(title='Contact', url='#contact')
     ]
     s3 = boto3.resource('s3')
-    myString = s3.Object(os.environ['BUCKET_NAME'], 'frontend/index.html').get()["Body"].read().decode('utf-8')
+    myString = s3.Object(os.environ['BUCKET_NAME'], 'frontend/index.html').get()["Body"].read().decode('utf-8').replace('__THREEJS_VERSION__', '0.172.0')
     template = s3_env.from_string(myString)
     db = boto3.resource('dynamodb')
     table = db.Table(os.environ['HOME_TABLE'])
@@ -33,6 +33,24 @@ def script_template():
     website_data = table.get_item(Key={'section': 'website_data'})['Item']
     return Response(template.render(services=website_data['services'], social=website_data['social'], projects=website_data['projects'], articles=website_data['articles'], menu=menu), headers={'Content-Type': 'text/html; charset=UTF-8'}, status_code=200)
 
+# Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://darrenmackenzie-chalice-bucket.s3.us-east-1.amazonaws.com/scripts/main.js. (Reason: CORS header ‘Access-Control-Allow-Origin’ missing). Status code: 200.
+@app.route('/scripts/main.js')
+def serve_js():
+    s3 = boto3.resource('s3')
+    myString = s3.Object(os.environ['BUCKET_NAME'], 'scripts/main.js').get()["Body"].read().decode('utf-8')
+    return Response(myString, headers={'Content-Type': 'text/javascript'}, status_code=200)
+
+@app.route('/scripts/helvetiker_regular.typeface.json')
+def serve_font():
+    s3 = boto3.resource('s3')
+    myString = s3.Object(os.environ['BUCKET_NAME'], 'scripts/helvetiker_regular.typeface.json').get()["Body"].read().decode('utf-8')
+    return Response(myString, headers={'Content-Type': 'application/json'}, status_code=200)
+
+@app.route('/data/data.json')
+def serve_data():
+    s3 = boto3.resource('s3')
+    myString = s3.Object(os.environ['BUCKET_NAME'], 'data/data.json').get()["Body"].read().decode('utf-8')
+    return Response(myString, headers={'Content-Type': 'application/json'}, status_code=200)
 
 @app.route('/style.css')
 def serve_css():
