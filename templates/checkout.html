@@ -3,6 +3,7 @@
 <meta name="datasrc" content="data"></meta>
 <script type="importmap" contents="{"imports": {"three": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/examples/jsm/", "three/fonts/": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/examples/fonts/" } }"></script>
 <link rel="stylesheet" href="/style.css"></link>
+<script src="https://js.stripe.com/v3/"></script>
 <link crossorigin="anonymous" referrerpolicy="no-referrer" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"></link></head>
 <body><div style="	position: relative;"><canvas></canvas>
 <div class="hero"><nav><h2 class="logo">dm creations</h2>
@@ -30,66 +31,7 @@
 <p><a href="https://github.com/darren277"><i class="fa-brands fa-github"></i>
     GitHub</a></p></div>
 </div></section>
-<section><div class="service services" id="services"><div class="title"><h2>Services</h2></div>
-<div class="cards">{% for service in services %}
-<div class="card">
-    <div class='icons'>{% for icon in service.icons %}<a href='/icons/{{icon}}'><i class='{{icon}}'></i></a>{{ ' | ' if not loop.last else '' }}{% endfor %}</div><div class='tags'>{% for tag in service.tags %}<a href='/tags/{{tag}}'><span class='tag'>{{tag}}</span></a>{{ ' | ' if not loop.last else '' }}{% endfor %}</div>
-    <h5>
-    {{ service.title }}
-    </h5>
-    <img src="{{ service.thumbnail }}">
-    </img>
-    <div class="pra">
-    <p style="text-align: center;">
-    {{ service.description }}
-    </p>
-    <a class="button" href="{{ service.url }}">
-    Read More
-    </a>
-    </div>
-</div>
-{% endfor %}
-</div></div></section>
-<section><div class="service work" id="work"><div class="title"><h2>Work</h2></div>
-<div class="cards">{% for project in projects %}
-<div class="card">
-    <div class='icons'>{% for icon in project.icons %}<a href='/icons/{{icon}}'><i class='{{icon}}'></i></a>{{ ' | ' if not loop.last else '' }}{% endfor %}</div><div class='tags'>{% for tag in project.tags %}<a href='/tags/{{tag}}'><span class='tag'>{{tag}}</span></a>{{ ' | ' if not loop.last else '' }}{% endfor %}</div>
-    <h5>
-    {{ project.title }}
-    </h5>
-    <img src="{{ project.thumbnail }}">
-    </img>
-    <div class="pra">
-    <p style="text-align: center;">
-    {{ project.description }}
-    </p>
-    <a class="button" href="{{ project.url }}">
-    Read More
-    </a>
-    </div>
-</div>
-{% endfor %}
-</div></div></section>
-<section><div class="service blogarticles" id="blogarticles"><div class="title"><h2>Blog</h2></div>
-<div class="cards">{% for article in articles %}
-<div class="card">
-    <div class='icons'>{% for icon in article.icons %}<a href='/icons/{{icon}}'><i class='{{icon}}'></i></a>{{ ' | ' if not loop.last else '' }}{% endfor %}</div><div class='tags'>{% for tag in article.tags %}<a href='/tags/{{tag}}'><span class='tag'>{{tag}}</span></a>{{ ' | ' if not loop.last else '' }}{% endfor %}</div>
-    <h5>
-    {{ article.title }}
-    </h5>
-    <img src="{{ article.thumbnail }}">
-    </img>
-    <div class="pra">
-    <p style="text-align: center;">
-    {{ article.description }}
-    </p>
-    <a class="button" href="{{ article.url }}">
-    Read More
-    </a>
-    </div>
-</div>
-{% endfor %}
-</div></div></section>
+<section><div id="checkout_section"><div id="checkout"><div><div class="contact" id="footercontactformParent"><h5>Checkout</h5><button id="checkout-button">Checkout $10</button></div></div></div></section>
 <section><div id="contact_section"><div id="contact"><div><div class="contact" id="footercontactformParent"><h5>Get in touch</h5>
 <form class="ui form" method="POST" action="/contact" id="footercontactform"><input type="email" name="email" placeholder="Email" id="email">
 <textarea name="message" id="message" placeholder="Enter a brief message"></textarea>
@@ -108,6 +50,34 @@
 <script></script>
 <script></script>
 <script src="https://darrenmackenzie-chalice-bucket.s3.us-east-1.amazonaws.com/scripts/main.js" type="module"></script>
+
+<script>
+    // 1. Initialize Stripe using your PUBLISHABLE key
+    const stripe = Stripe("pk_live_51MP5cTCAdwrWIhktw13uxd0aoKNg83iTsoHvqgSIEvLJaoIbEz2DwJpiqhJUcjRq2lSbQcUObCHW8RK0s28ZUH5E008gyj9tAX");
+
+    document
+      .getElementById('checkout-button')
+      .addEventListener('click', async () => {
+        // 2. Make a POST request to your /create-checkout-session route
+        const response = await fetch('/create-checkout-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({}) // send product info if needed
+        });
+
+        const data = await response.json();
+
+        // 3. Redirect to Stripe Checkout
+        const result = await stripe.redirectToCheckout({
+          sessionId: data.sessionId
+        });
+
+        if (result.error) {
+          // Handle errors (e.g. display them)
+          console.error(result.error.message);
+        }
+      });
+</script>
 
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-WPKZ9BSM31"></script>
