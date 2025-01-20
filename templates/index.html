@@ -120,7 +120,15 @@
                 {% endfor %}
             </div>
             <div class="centered-text">
-                <h3>{% if minCreated and maxCreated %}<a href="https://www.darrenmackenzie.com/?maxCreated={{ maxCreated }}&minCreated={{ minCreated }}">{% endif %}🡸 Previous Page{% if minCreated and maxCreated %}</a>{% endif %} / {% if nextCursor %}<a href="https://www.darrenmackenzie.com/?cursor={{ nextCursor }}">{% endif %}Next Page 🡺{% if nextCursor %}</a>{% endif %}</h3>
+                <h3>
+                    {% if maxCreated %}
+                      <a href="?newerThan={{ maxCreated }}">🡸 Previous Page</a>
+                    {% endif %}
+                    /
+                    {% if minCreated %}
+                      <a href="?olderThan={{ minCreated }}">Next Page 🡺</a>
+                    {% endif %}
+                </h3>
             </div>
         </div>
     </section>

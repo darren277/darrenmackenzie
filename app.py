@@ -88,23 +88,23 @@ def script_template():
 
     query_params = app.current_request.query_params or {}
 
-    minCreated = None
-    maxCreated = None
+    newer_than = query_params.get('newerThan')
+    older_than = query_params.get('olderThan')
 
     limit = int(query_params.get('limit', DEFAULT_PAGE_LIMIT))
     # Use an integer fallback for cursor; e.g. now in millis as int
     cursor = int(query_params.get('cursor', ts * 1_000))
     tags_param = query_params.get('tags', None)
 
-    if 'cursor' in query_params or 'minCreated' in query_params:
+    if 'cursor' in query_params:
         # user is paginating
-        page_of_articles = get_articles_list(limit, cursor, tags_param, query_params.get('minCreated'), query_params.get('maxCreated'))
+        page_of_articles = get_articles_list(limit, cursor, tags_param, newer_than, older_than)
     elif tags_param:
         # user provided tags but no cursor
-        page_of_articles = get_articles_list(limit, cursor, tags_param)
+        page_of_articles = get_articles_list(limit, cursor, tags_param, newer_than, older_than)
     else:
         # no cursor, no tags
-        page_of_articles = get_articles_list(limit, cursor, None)
+        page_of_articles = get_articles_list(limit, cursor, None, newer_than, older_than)
 
     nextCursor = (page_of_articles[-1]['created']
                 if page_of_articles and len(page_of_articles) == limit
@@ -115,10 +115,13 @@ def script_template():
     
     if len(page_of_articles) == 0:
         # no articles found...
-        ...
+        maxCreated = None
+        minCreated = None
     else:
-        minCreated = page_of_articles[-1]['created'] if page_of_articles else None
-        maxCreated = page_of_articles[0]['created'] if page_of_articles else None
+        # The newest item is items[0] (largest created), 
+        # the oldest item is items[-1] (smallest created).
+        maxCreated = page_of_articles[0]['created'] 
+        minCreated = page_of_articles[-1]['created']
     
     return Response(
         template.render(
@@ -135,19 +138,21 @@ def script_template():
         status_code=200
     )
 
-def get_articles_list(limit: int, cursor: int, tags: List[str], minCreated = None, maxCreated = None):
+def get_articles_list(limit: int, cursor: int, tags: List[str], newer_than=None, older_than=None):
     ## Backward pagination (like “previous page”) is inherently awkward in DynamoDB. Often you do an additional query with reversed ordering or you simply remember the entire “previous” set of items in the client.
     db = boto3.resource('dynamodb')
     article_table = db.Table(os.environ['ARTICLE_LIST_TABLE'])
 
-    if minCreated and maxCreated:
-        print('MIN CREATED', minCreated)
-        print('MAX CREATED', maxCreated)
-        # Only handles one tag for now...
+    if newer_than:
         if tags:
-            response = article_table.query(KeyConditionExpression='type_of_article = :type_of_article AND created BETWEEN :minCreated AND :maxCreated', FilterExpression='contains(tags, :tag)', ExpressionAttributeValues={':type_of_article': 'blog', ':tag': tags[0], ':minCreated': Decimal(minCreated), ':maxCreated': Decimal(maxCreated)}, Limit=limit, ScanIndexForward=False)
+            response = article_table.query(KeyConditionExpression='type_of_article = :type_of_article AND created > :val', FilterExpression='contains(tags, :tag)', ExpressionAttributeValues={':type_of_article': 'blog', ':tag': tags[0], ':val': Decimal(newer_than)}, Limit=limit, ScanIndexForward=False)
         else:
-            response = article_table.query(KeyConditionExpression='type_of_article = :type_of_article AND created BETWEEN :minCreated AND :maxCreated', ExpressionAttributeValues={':type_of_article': 'blog', ':minCreated': Decimal(minCreated), ':maxCreated': Decimal(maxCreated)}, Limit=limit, ScanIndexForward=False)
+            response = article_table.query(KeyConditionExpression='type_of_article = :type_of_article AND created > :val', ExpressionAttributeValues={':type_of_article': 'blog', ':val': Decimal(newer_than)}, Limit=limit, ScanIndexForward=False)
+    elif older_than:
+        if tags:
+            response = article_table.query(KeyConditionExpression='type_of_article = :type_of_article AND created < :val', FilterExpression='contains(tags, :tag)', ExpressionAttributeValues={':type_of_article': 'blog', ':tag': tags[0], ':val': Decimal(older_than)}, Limit=limit, ScanIndexForward=False)
+        else:
+            response = article_table.query(KeyConditionExpression='type_of_article = :type_of_article AND created < :val', ExpressionAttributeValues={':type_of_article': 'blog', ':val': Decimal(older_than)}, Limit=limit, ScanIndexForward=False)
     else:
         if tags:
             tags = tags.split(',')
