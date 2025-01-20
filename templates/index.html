@@ -121,12 +121,12 @@
             </div>
             <div class="centered-text">
                 <h3>
-                    {% if maxCreated %}
-                      <a href="?newerThan={{ maxCreated }}">🡸 Previous Page</a>
+                    {% if maxCreated and not firstPage %}
+                      <a href="?newerThan={{ maxCreated }}&newestTimestamp={{ newestTimestamp }}">🡸 Previous Page</a>
                     {% endif %}
                     /
                     {% if minCreated %}
-                      <a href="?olderThan={{ minCreated }}">Next Page 🡺</a>
+                      <a href="?olderThan={{ minCreated }}&newestTimestamp={{ newestTimestamp }}">Next Page 🡺</a>
                     {% endif %}
                 </h3>
             </div>

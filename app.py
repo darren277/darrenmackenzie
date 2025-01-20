@@ -65,6 +65,22 @@ def test_filter():
 #test_filter()
 
 
+class Paginator:
+    def __init__(self, current_page: int = 1, prev_page_lower_bound: int = 0, next_page_upper_bound: int = 0):
+        self.current_page = current_page
+        self.prev_pg_lb = prev_page_lower_bound
+        self.next_pg_ub = next_page_upper_bound
+        ...
+    
+    def serialize(self):
+        return {
+            'current_page': self.current_page,
+            'prev_pg_lb': self.prev_pg_lb,
+            'next_pg_ub': self.next_pg_ub,
+            # ...
+        }
+
+
 @app.route('/')
 def script_template():
     menu = [
@@ -98,13 +114,13 @@ def script_template():
 
     if 'cursor' in query_params:
         # user is paginating
-        page_of_articles = get_articles_list(limit, cursor, tags_param, newer_than, older_than)
+        page_of_articles = get_articles_list(limit, cursor, tags_param, newer_than=newer_than, older_than=older_than)
     elif tags_param:
         # user provided tags but no cursor
-        page_of_articles = get_articles_list(limit, cursor, tags_param, newer_than, older_than)
+        page_of_articles = get_articles_list(limit, cursor, tags_param, newer_than=newer_than, older_than=older_than)
     else:
         # no cursor, no tags
-        page_of_articles = get_articles_list(limit, cursor, None, newer_than, older_than)
+        page_of_articles = get_articles_list(limit, cursor, None, newer_than=newer_than, older_than=older_than)
 
     nextCursor = (page_of_articles[-1]['created']
                 if page_of_articles and len(page_of_articles) == limit
@@ -123,16 +139,30 @@ def script_template():
         maxCreated = page_of_articles[0]['created'] 
         minCreated = page_of_articles[-1]['created']
     
+    if not query_params:
+        # this is page 1...
+        first_page = True
+        newest_timestamp = maxCreated
+    else:
+        first_page = False
+        newest_timestamp = query_params.get('newestTimestamp', maxCreated)
+    
+    vals = [(str(article['created']), str(Decimal(newest_timestamp))) for article in page_of_articles]
+    print('vals:', vals)
+    does_current_page_include_newest_timestamp = any([v[0] == v[1] for v in vals])
+    
     return Response(
         template.render(
             services=website_data['services'],
             social=website_data['social'],
             projects=website_data['projects'],
             articles=page_of_articles,
-            menu=menu,            
+            menu=menu,
             nextCursor=nextCursor,
             minCreated=minCreated,
-            maxCreated=maxCreated
+            maxCreated=maxCreated,
+            firstPage=first_page or does_current_page_include_newest_timestamp,
+            newestTimestamp=newest_timestamp,
         ),
         headers={'Content-Type': 'text/html; charset=UTF-8'},
         status_code=200
