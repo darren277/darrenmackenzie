@@ -25,6 +25,8 @@ class Paginator:
         self.lower_bound = lower_bound
         self.upper_bound = upper_bound
 
+        self.initial_upper_bound = upper_bound  # store the "original" upper bound
+
         # Once we query, we will fill these in:
         self.page_min_created = None  # the smallest 'created' in the current result
         self.page_max_created = None  # the largest 'created' in the current result
@@ -71,7 +73,7 @@ class Paginator:
         }
         return d
 
-    def build_query_kwargs(self, table, tags=None):
+    def build_query_kwargs(self, tags=None):
         """
         Create the arguments for a DynamoDB Query in descending order with a 'BETWEEN' condition:
           created BETWEEN :lb AND :ub
@@ -137,6 +139,7 @@ class Paginator:
             current_page=self.current_page - 1,
             page_size=self.page_size,
             lower_bound=self.page_max_created + 1,
-            upper_bound=self.upper_bound
+            #upper_bound=self.upper_bound
+            upper_bound=self.initial_upper_bound  # reset to original upper bound
         )
         return p

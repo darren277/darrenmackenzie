@@ -117,7 +117,7 @@ def script_template():
     try:
         article_table_name = os.environ['ARTICLE_LIST_TABLE']
         article_list_table = db.Table(article_table_name)
-        kwargs = paginator.build_query_kwargs(article_table_name, tags=tags)
+        kwargs = paginator.build_query_kwargs(tags=tags)
     except Exception as e:
         print("Error building query arguments:", e)
         return Response(str(e), status_code=400)
@@ -159,7 +159,7 @@ def script_template():
     # Decide if there's a "previous page"
     # We might say if paginator.current_page > 1, we do a previous
     try:
-        if paginator.current_page > 1:
+        if paginator.current_page > 1 and page_of_articles:
             try:
                 prev_p = paginator.prev_page()
             except Exception as e:
@@ -176,7 +176,10 @@ def script_template():
         return Response(str(e), status_code=500)
     
     try:
-        maxCreated = max([article['created'] for article in page_of_articles])
+        if page_of_articles:
+            maxCreated = max([article['created'] for article in page_of_articles])
+        else:
+            maxCreated = 0
 
         if not query_params:
             # this is page 1...
