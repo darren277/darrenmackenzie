@@ -3,13 +3,57 @@
     <link crossorigin="anonymous" referrerpolicy="no-referrer" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"></link>
     <title>dm creations - Home</title>
     <meta name="datasrc" content="data"></meta>
-    <script type="importmap" contents="{"imports": {"three": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/examples/jsm/", "three/fonts/": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/examples/fonts/" } }"></script>
+    <script type="importmap">
+        {
+            "imports":
+                {
+                    "three": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/build/three.module.js",
+                    "textgeometry": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/examples/jsm/geometries/TextGeometry.js",
+                    "fontloader": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/examples/jsm/loaders/FontLoader.js",
+                    "orbitcontrols": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/examples/jsm/controls/OrbitControls.js"
+                }
+        }
+    </script>
     <link rel="stylesheet" href="/style.css"></link>
+    <style>
+        .threejs-container {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            background: #000;
+            z-index: 9999;
+        }
+
+        #c {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .threejs h1 {
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            margin: 0;
+        }
+
+        #c canvas {
+            background-color: rgba(255,0,0,0.2) !important;
+            z-index: 9999 !important;
+            position: relative !important;
+        }
+
+
+
+        .centered-text {
+            text-align: center;
+        }
+    </style>
     <link crossorigin="anonymous" referrerpolicy="no-referrer" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"></link>
 </head>
 <body>
     <div style="	position: relative;">
-        <canvas></canvas>
+        <!-- <canvas></canvas> -->
         <div class="hero">
             <nav>
                 <h2 class="logo">dm creations</h2>
@@ -23,7 +67,8 @@
                 <div>
                     <h1><span>Darren MacKenzie</span></h1>
                     <h3>Software developer and solution architect.</h3>
-                    <h1>This site is largely unmaintained at the moment. Check out <a href="https://tech.jfdmconsulting.com">JFDM Tech</a> for now!</h1>
+                    <!-- <h1>This site is largely unmaintained at the moment. Check out <a href="https://tech.jfdmconsulting.com">JFDM Tech</a> for now!</h1> -->
+                    <a href="https://tech.jfdmconsulting.com"><img src="https://tech.jfdmconsulting.com/wp-content/uploads/sites/2/2022/10/JFDM-Tech-Front-Page-2048x391.png" style="height: 39px; width: 205px" /></a>
                 </div>
                 <div>
                     <div class="contact" id="herocontactformParent">
@@ -38,20 +83,26 @@
         </div>
     </div>
     
-    <section class="about" id="about">
-        <div class="main">
+    <!-- <section class="about" id="about">
+        <div class="main"> -->
             <!-- <img src='img/main-img.png' /> -->
-            <div class="about-text">
+            <!-- <div class="about-text">
                 <h2>About</h2>
                 <h5>Full stack. Solutions architect. DevOps.</h5>
                 <p><a href="https://github.com/darren277"><i class="fa-brands fa-github"></i> GitHub</a></p>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <section>
         <div class="service blogarticles" id="blogarticles">
             <div class="title"><h2>Blog</h2></div>
+            {% if not articles %}
+            <div class="centered-text">
+                <h3>You've reached the end.</h3>
+                <h4><a href="javascript:history.back()">Go Back</a></h4>
+            </div>
+            {% endif %}
             <div class="cards">
                 {% for article in articles %}
                 <div class="card">
@@ -59,12 +110,24 @@
                     <div class='tags'>{% for tag in article.tags %}<a href='/tags/{{tag}}'><span class='tag'>{{tag}}</span></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div>
                     <div class="pra title-and-description">
                         <h5>{{ article.title }}</h5>
+                        <!-- Human readable date (YYYY-MM-DD) from epoch -->
+                        <h6>{{ article.created | datetime }}</h6>
                         <img src="{{ article.thumbnail }}"></img>
                         <p style="text-align: center;">{{ article.description }}</p>
                     </div>
                     <div class="pra"><a class="button" href="{{ article.url }}">Read More</a></div>
                 </div>
                 {% endfor %}
+            </div>
+            <div class="centered-text">
+                <h3>
+                    <!-- {% if prevPageUrl and not firstPage %}<a href="{{ prevPageUrl }}&newestTimestamp={{ newestTimestamp }}">🡸 Previous Page</a>{% endif %} -->
+                    {% if not firstPage %}<a href="javascript:history.back()">🡸 Back</a>{% endif %}
+                    /
+                    {% if nextPageUrl %}
+                      <a href="{{ nextPageUrl }}&newestTimestamp={{ newestTimestamp }}#blogarticles">Next Page 🡺</a>
+                    {% endif %}
+                </h3>
             </div>
         </div>
     </section>
@@ -123,6 +186,15 @@
             </div>
         </div>
     </section>
+
+    <!-- SIMPLE THREE JS SEGMENT -->
+    <section class="threejs">
+        <h1>Three JS</h1>
+        <div class="threejs-container">
+            <div id="c"></div>
+            <button id="orbit-toggle-btn" style="position: absolute; top: 1em; right: 1em; z-index: 9999; padding: 0.5em 1em; cursor: pointer;">Orbit: ON</button>
+        </div>
+    </section>
     
     <footer>
         <p>Darren MacKenzie</p>
@@ -133,7 +205,7 @@
     <script></script>
     <script></script>
     <script></script>
-    <script src="https://darrenmackenzie-chalice-bucket.s3.us-east-1.amazonaws.com/scripts/main.js" type="module"></script>
+    <script src="/scripts/main.js" type="module"></script>
     
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WPKZ9BSM31"></script>
