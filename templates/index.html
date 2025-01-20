@@ -121,12 +121,11 @@
             </div>
             <div class="centered-text">
                 <h3>
-                    {% if prevPageUrl and not firstPage %}
-                      <a href="{{ prevPageUrl }}&newestTimestamp={{ newestTimestamp }}">🡸 Previous Page</a>
-                    {% endif %}
+                    <!-- {% if prevPageUrl and not firstPage %}<a href="{{ prevPageUrl }}&newestTimestamp={{ newestTimestamp }}">🡸 Previous Page</a>{% endif %} -->
+                    {% if not firstPage %}<a href="javascript:history.back()">🡸 Back</a>{% endif %}
                     /
                     {% if nextPageUrl %}
-                      <a href="{{ nextPageUrl }}&newestTimestamp={{ newestTimestamp }}">Next Page 🡺</a>
+                      <a href="{{ nextPageUrl }}&newestTimestamp={{ newestTimestamp }}#blogarticles">Next Page 🡺</a>
                     {% endif %}
                 </h3>
             </div>
