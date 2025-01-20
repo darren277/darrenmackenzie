@@ -1,114 +1,93 @@
 from decimal import Decimal
-import json
+import time
 
 class Paginator:
     def __init__(
         self,
-        current_page: int = 1,
-        min_created: int = None,
-        max_created: int = None,
-        page_size: int = 10,
-        order: str = "desc"
+        current_page=1,
+        page_size=5,
+        lower_bound=0,       # the smallest 'created' we allow (for descending, oldest possible)
+        upper_bound=None,    # the largest 'created' we allow (for descending, newest possible)
     ):
         """
-        :param current_page: 1-based page number (for display)
-        :param min_created: the smallest 'created' on this page (descending)
-        :param max_created: the largest 'created' on this page (descending)
-        :param page_size: how many items per page
-        :param order: "asc" or "desc"
+        :param current_page: which page number (1-based)
+        :param page_size: items per page
+        :param lower_bound: items cannot be smaller than this in 'created'
+        :param upper_bound: items cannot be larger than this in 'created'
         """
         self.current_page = current_page
-        self.min_created = min_created
-        self.max_created = max_created
         self.page_size = page_size
-        self.order = order.lower()
+
+        # If upper_bound not given, set it to "now" in milliseconds
+        if upper_bound is None:
+            upper_bound = int(time.time() * 1000)
+
+        self.lower_bound = lower_bound
+        self.upper_bound = upper_bound
+
+        # Once we query, we will fill these in:
+        self.page_min_created = None  # the smallest 'created' in the current result
+        self.page_max_created = None  # the largest 'created' in the current result
 
     @classmethod
     def from_query_params(cls, qp: dict) -> "Paginator":
         """
-        Factory that reads query params (strings) and returns a Paginator object.
+        Construct a Paginator from query params. 
+        We expect e.g. ?page=2&limit=5&lb=1000&ub=2000
+        If not provided, we use defaults.
         """
-        # Try to parse out the paginationState param if you want to store it all in JSON,
-        # or parse individual params: current_page, min_created, max_created, etc.
-        
-        # Example: parse each param individually
-        current_page = int(qp.get("page", "1"))
-        page_size = int(qp.get("limit", "10"))
-        min_created = qp.get("minCreated")
-        max_created = qp.get("maxCreated")
-        order = qp.get("order", "desc")
+        page = int(qp.get('page', '1'))
+        limit = int(qp.get('limit', '5'))
 
-        # Convert to int if present
-        if min_created is not None:
-            min_created = int(min_created)
-        if max_created is not None:
-            max_created = int(max_created)
+        lb = qp.get('lb', '0')
+        ub = qp.get('ub')  # if not present, we do 'None'
+
+        if lb.isdigit():
+            lb = int(lb)
+        else:
+            lb = 0
+
+        if ub is not None and ub.isdigit():
+            ub = int(ub)
+        else:
+            ub = None  # will default to now
 
         return cls(
-            current_page=current_page,
-            min_created=min_created,
-            max_created=max_created,
-            page_size=page_size,
-            order=order
+            current_page=page,
+            page_size=limit,
+            lower_bound=lb,
+            upper_bound=ub
         )
 
     def to_query_params(self) -> dict:
         """
-        Serialize the paginator fields back into a dict for query params.
+        Convert this Paginator's state back to a dict for building a query string.
         """
         d = {
             "page": str(self.current_page),
             "limit": str(self.page_size),
-            "order": self.order
+            "lb": str(self.lower_bound),
+            "ub": str(self.upper_bound)
         }
-        if self.min_created is not None:
-            d["minCreated"] = str(self.min_created)
-        if self.max_created is not None:
-            d["maxCreated"] = str(self.max_created)
         return d
 
-    def build_query_kwargs(self, table_name: str, tags=None):
+    def build_query_kwargs(self, table, tags=None):
         """
-        Build the DynamoDB query arguments for the *current* page
-        based on min_created, max_created, order, etc.
-        
-        For descending order ("desc"):
-          - If we have no min/max, default to "created < now".
-          - If we do have minCreated and maxCreated, we might do a BETWEEN or < or > logic, etc.
-
-        This is just an example. You can get more advanced with "BETWEEN" or multiple bounds.
+        Create the arguments for a DynamoDB Query in descending order with a 'BETWEEN' condition:
+          created BETWEEN :lb AND :ub
+        We'll do 'ScanIndexForward=False' to get items from largest to smallest.
         """
-
-        # We'll do a simple descending example:
-        #  - If no max_created: treat as first page => created < current time
-        #  - If max_created is present: created < max_created
-        #  - We'll set ScanIndexForward=False for descending
-        #  - We'll optionally handle tags
-
-        import boto3
-        from boto3.dynamodb.conditions import Key, Attr
-        dynamodb = boto3.resource("dynamodb")
-        table = dynamodb.Table(table_name)
-
-        expression_values = {":type_of_article": "blog"}
-        key_condition = "type_of_article = :type_of_article"
-        
-        # Example: If we have max_created, we do "AND created < :maxVal"
-        # for the next chunk in descending order
-        if self.max_created:
-            key_condition += " AND created < :maxVal"
-            expression_values[":maxVal"] = Decimal(self.max_created)
-        else:
-            # If no max_created, let's assume "created < now"
-            import time
-            now_millis = int(time.time() * 1000)
-            key_condition += " AND created < :maxVal"
-            expression_values[":maxVal"] = Decimal(now_millis)
+        key_condition = "type_of_article = :t AND created BETWEEN :lb AND :ub"
+        expr_vals = {
+            ":t": "blog",
+            ":lb": Decimal(self.lower_bound),
+            ":ub": Decimal(self.upper_bound),
+        }
 
         kwargs = {
             "KeyConditionExpression": key_condition,
-            "ExpressionAttributeValues": expression_values,
-            "ScanIndexForward": False,  # descending
+            "ExpressionAttributeValues": expr_vals,
+            "ScanIndexForward": False,
             "Limit": self.page_size
         }
 
@@ -118,67 +97,44 @@ class Paginator:
             kwargs["FilterExpression"] = "contains(tags, :tagVal)"
             kwargs["ExpressionAttributeValues"][":tagVal"] = tags[0]
 
-        return table, kwargs
+        return kwargs
 
     def update_bounds_from_items(self, items: list):
         """
-        After retrieving items from DynamoDB in descending order, 
-        update self.min_created and self.max_created so we can 
-        build 'next page' or 'previous page' links.
-        
-        Typically the item with the largest 'created' is items[0] in descending order.
-        The item with the smallest 'created' is items[-1].
+        After we retrieve items (descending), the item at index 0 has the largest 'created',
+        and the item at index -1 has the smallest 'created'. We'll store those in
+        self.page_max_created and self.page_min_created for easy reference.
         """
         if not items:
             return
 
-        # largest is first if descending
-        self.max_created = items[0]["created"]
-        # smallest is last
-        self.min_created = items[-1]["created"]
+        self.page_max_created = items[0]["created"]
+        self.page_min_created = items[-1]["created"]
 
     def next_page(self):
         """
-        Return a *new* Paginator object representing the next page 
-        (i.e., older items in descending order).
-        
-        For descending order, "next page" usually means "created < minCreated" if you do single-bound queries.
-        But if you're storing the bounding in max_created, you might shift it, etc.
-        
-        Here, we assume the next page’s max_created = self.min_created 
-        (i.e. "pull anything older than the current page's oldest item").
+        Return a new Paginator for the "next page" (older items).
+        In descending order, "next page" means 'upper_bound' becomes (current page's min_created - 1).
+        So we exclude any items >= the smallest item on the current page.
         """
         p = Paginator(
             current_page=self.current_page + 1,
             page_size=self.page_size,
-            order=self.order
+            lower_bound=self.lower_bound,
+            upper_bound=self.page_min_created - 1
         )
-        # If we want "older than min_created," store that as "max_created" in the next Paginator
-        p.max_created = self.min_created
         return p
 
     def prev_page(self):
         """
-        Return a *new* Paginator object representing the previous page 
-        (i.e., newer items in descending order).
-        
-        For single-bound queries, "previous page" means "created > max_created" or a bounded approach.
-        But let's keep it simple and say we just store the previous bound in a stack or you pass it in from memory.
+        Return a new Paginator for the "previous page" (newer items).
+        In descending order, "previous page" means 'lower_bound' becomes (current page's max_created + 1).
+        So we exclude any items <= the largest item on the current page.
         """
         p = Paginator(
             current_page=self.current_page - 1,
             page_size=self.page_size,
-            order=self.order
+            lower_bound=self.page_max_created + 1,
+            upper_bound=self.upper_bound
         )
-        # If we want "newer than max_created," we might store that as some field. 
-        # But for single-bound, we only have "max_created" as a 'ceiling'.
-        # 
-        # We *could* do a separate field in the Paginator for "minVal" vs. "maxVal", etc.
-        # For demonstration, let's just say we do "created > self.max_created."
-        # That might need a different KeyCondition or a second boundary in build_query_kwargs.
-        # 
-        # In a real scenario, you might store more state or do a more advanced approach.
-        # 
-        # This is just to illustrate the idea:
-        p.newer_than = self.max_created  # you'd have to handle this in build_query_kwargs
         return p

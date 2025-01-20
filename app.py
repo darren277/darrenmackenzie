@@ -110,10 +110,11 @@ def script_template():
 
     # Build the query arguments using the paginator
     article_table_name = os.environ['ARTICLE_LIST_TABLE']
-    table, kwargs = paginator.build_query_kwargs(article_table_name, tags=tags)
+    article_list_table = db.Table(article_table_name)
+    kwargs = paginator.build_query_kwargs(article_table_name, tags=tags)
 
     # Execute the query
-    response = table.query(**kwargs)
+    response = article_list_table.query(**kwargs)
     page_of_articles = response["Items"]
 
     # Update paginator bounds from these items
