@@ -123,7 +123,7 @@
                 <h3>
                     <!-- {% if prevPageUrl and not firstPage %}<a href="{{ prevPageUrl }}&newestTimestamp={{ newestTimestamp }}">🡸 Previous Page</a>{% endif %} -->
                     {% if not firstPage %}<a href="javascript:history.back()">🡸 Back</a>{% endif %}
-                    /
+                    {% if not firstPage and nextPageUrl %}/{% endif %}
                     {% if nextPageUrl %}
                       <a href="{{ nextPageUrl }}&newestTimestamp={{ newestTimestamp }}#blogarticles">Next Page 🡺</a>
                     {% endif %}
