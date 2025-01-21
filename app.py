@@ -49,7 +49,7 @@ env = Environment(loader=FileSystemLoader(join(cwd, 'chalicelib', 'frontend'), e
 s3_env = Environment(loader=BaseLoader())
 
 
-def datetime_filter(value, format='%Y-%m-%d %H:%M:%S'):
+def datetime_filter(value, format='%b %d, %Y'):
     v = int(value) / 1_000.0
     ts = datetime.datetime.fromtimestamp(v)
     return ts.strftime(format)
