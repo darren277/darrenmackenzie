@@ -1,5 +1,4 @@
 .hero {
-	height: 100vh;
 	width: 100%;
 	overflow: hidden;
 	background-size: cover;
@@ -61,10 +60,7 @@ nav ul li a:hover {
 .contact form #email {
 	display: inline-block;
 	width: 100%;
-	padding-top: 14px;
-	padding-right: 130px;
-	padding-bottom: 14px;
-	padding-left: 15px;
+	padding: 14px 130px 14px 15px;
 	border-width: 2px;
 	border-style: solid;
 	border-color: #d1347b;
@@ -77,10 +73,7 @@ nav ul li a:hover {
 .contact form #message {
 	display: inline-block;
 	width: 100%;
-	padding-top: 14px;
-	padding-right: 130px;
-	padding-bottom: 14px;
-	padding-left: 15px;
+	padding: 14px 130px 14px 15px;
 	border-width: 2px;
 	border-style: solid;
 	border-color: #d1347b;
@@ -93,10 +86,7 @@ nav ul li a:hover {
 .contact form #submit {
 	position: absolute;
 	display: inline-block;
-	padding-top: 10px;
-	padding-bottom: 10px;
-	padding-left: 30px;
-	padding-right: 30px;
+	padding: 10px 30px;
 	border: none;
 	outline: none;
 	border-radius: 10px;
@@ -111,10 +101,7 @@ nav ul li a:hover {
 
 .about {
 	width: 100%;
-	padding-top: 100px;
-	padding-bottom: 100px;
-	padding-left: 0px;
-	padding-right: 0px;
+	padding: 100px 0;
 	background-color: #191919;
 }
 
@@ -181,20 +168,14 @@ nav ul li a:hover {
 .card {
 	height: 365px;
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-	padding-top: 20px;
-	padding-bottom: 20px;
-	padding-left: 25px;
-	padding-right: 25px;
+	padding: 20px 25px;
 	background: #191919;
 	border-radius: 20px;
 	margin: 15px;
 	position: relative;
 	overflow: hidden;
 	text-align: center;
-	margin-top: 25px;
-	margin-bottom: 25px;
-	margin-left: 0px;
-	margin-right: 0px;
+	margin: 25px 0px;
 }
 
 
@@ -202,10 +183,7 @@ nav ul li a:hover {
 	font-size: 50px;
 	display: block;
 	text-align: center;
-	margin-top: 25px;
-	margin-bottom: 25px;
-	margin-left: 0px;
-	margin-right: 0px;
+	margin: 25px 0px;
 	color: #d1347b;
 }
 
@@ -231,10 +209,7 @@ nav ul li a:hover {
 	border-style: solid;
 	border-color: transparent;
 	font-weight: bold;
-	padding-top: 9px;
-	padding-bottom: 9px;
-	padding-left: 22px;
-	padding-right: 22px;
+	padding: 9px 22px;
 	border-radius: 10px;
 	transition: 0.4s;
 }
@@ -275,10 +250,7 @@ nav ul li a:hover {
 	border-style: solid;
 	border-color: transparent;
 	font-weight: bold;
-	padding-top: 13px;
-	padding-bottom: 13px;
-	padding-left: 30px;
-	padding-right: 30px;
+	padding: 13px 30px;
 	border-radius: 10px;
 	transition: 0.4s;
 }
@@ -350,10 +322,7 @@ footer p:nth-child(2) {
 	justify-content: center;
 	background: #d1347b;
 	border-radius: 50%;
-	margin-top: 22px;
-	margin-bottom: 22px;
-	margin-left: 10px;
-	margin-right: 10px;
+	margin: 22px 10px;
 	color: white;
 	text-decoration: none;
 	font-size: 20px;
@@ -396,119 +365,6 @@ html, body {
 }
 
 
-:root {
-	--header-height: 3rem;
-	--font-medium: 500;
-	--first-color: #5361FF;
-	--white-color: ;
-	--dark-color: ;
-	--text-color: ;
-	--body-font: Montserrat,sans-serif;
-	--big-font-size: 6.25rem;
-	--normal-font-size: 0.938rem;
-	--small-font-size: 0.813rem;
-	--h1-font-size: 75px;
-	--h2-font-size: 50px;
-	--h3-font-size: 25px;
-	--h4-font-size: 20px;
-	--cards-section-vertical-padding: 10%;
-}
-
-
-@media (min-width: 0px) {
-	:root {
-	--big-font-size: 1rem;
-	--h2-font-size: 1rem;
-	--normal-font-size: 0.5rem;
-	--small-font-size: 0.4rem;
-	--title-width: 200px;
-	--contact-form-width: 100px;
-}
-
-}
-
-@media (max-width: 768px) {
-	:root {
-	--big-font-size: 2rem;
-	--h2-font-size: 1.5rem;
-	--normal-font-size: 0.75rem;
-	--small-font-size: 0.625rem;
-	--title-width: 550px;
-	--contact-form-width: 300px;
-}
-
-	.column {
-	width: 100%;
-	display: block;
-	margin-bottom: 20px;
-}
-
-}
-
-@media (min-width: 768px) {
-	:root {
-	--big-font-size: 3rem;
-	--h2-font-size: 2rem;
-	--normal-font-size: 1rem;
-	--small-font-size: 0.875rem;
-	--title-width: 1130px;
-	--contact-form-width: 380px;
-}
-
-}
-
-@media (max-width: 300px) {
-	:root {
-	--paragraph-font-size: 6.0px;
-	--h6-font-size: 7.5px;
-	--h5-font-size: 9.0px;
-	--h4-font-size: 10.5px;
-	--h3-font-size: 12.0px;
-	--h2-font-size: 13.5px;
-	--h1-font-size: 15.0px;
-}
-
-}
-
-@media (max-width: 768px) {
-	:root {
-	--paragraph-font-size: 8px;
-	--h6-font-size: 10px;
-	--h5-font-size: 12px;
-	--h4-font-size: 14px;
-	--h3-font-size: 16px;
-	--h2-font-size: 18px;
-	--h1-font-size: 20px;
-}
-
-}
-
-@media (max-width: 1024px) {
-	:root {
-	--paragraph-font-size: 10.0px;
-	--h6-font-size: 12.5px;
-	--h5-font-size: 15.0px;
-	--h4-font-size: 17.5px;
-	--h3-font-size: 20.0px;
-	--h2-font-size: 22.5px;
-	--h1-font-size: 25.0px;
-}
-
-}
-
-@media (max-width: 9999px) {
-	:root {
-	--paragraph-font-size: 12.0px;
-	--h6-font-size: 15.0px;
-	--h5-font-size: 18.0px;
-	--h4-font-size: 21.0px;
-	--h3-font-size: 24.0px;
-	--h2-font-size: 27.0px;
-	--h1-font-size: 30.0px;
-}
-
-}
-
 textarea {
 	resize: vertical;
 }
@@ -542,10 +398,7 @@ html {
 	border-color: transparent;
 	border-size: 2px;
 	font-weight: bold;
-	padding-top: 10px;
-	padding-bottom: 10px;
-	padding-left: 25px;
-	padding-right: 25px;
+	padding: 10px 25px;
 	border-radius: 10px;
 	transition: transform .4s;
 }
@@ -565,40 +418,6 @@ html {
 }
 
 
-h1 {
-	color: white;
-	margin-top: 20px;
-	margin-bottom: 20px;
-	margin-left: 0px;
-	margin-right: 0px;
-	font-size: var(--h1-font-size);
-}
-
-
-h3 {
-	color: white;
-	margin-bottom: 50px;
-	font-size: var(--h3-font-size);
-}
-
-
-h4 {
-	color: #fcfc;
-	letter-spacing: 2px;
-	font-size: var(--h4-font-size);
-}
-
-
-h5 {
-	color: white;
-	font-size: 23px;
-	margin-bottom: 10px;
-}
-
-h6 {
-	color: #bfbff2;
-}
-
 button {
 	background-color: #d1347b;
 	color: white;
@@ -607,10 +426,7 @@ button {
 	border-style: solid;
 	border-color: transparent;
 	font-weight: bold;
-	padding-top: 13px;
-	padding-bottom: 13px;
-	padding-left: 30px;
-	padding-right: 30px;
+	padding: 13px 30px;
 	border-radius: 10px;
 	transition: 0.4s;
 }
@@ -622,15 +438,6 @@ button:hover {
 	border-style: solid;
 	border-color: #d1347b;
 	cursor: pointer;
-}
-
-
-.title h2 {
-	color: white;
-	font-size: var(--big-font-size);
-	width: var(--title-width);
-	margin: 30px auto;
-	text-align: center;
 }
 
 
@@ -656,49 +463,6 @@ button:hover {
 
 }
 
-
-@media (min-width: 0px) {
-	nav ul li {
-	list-style-type: none;
-	display: inline-block;
-	padding-top: 10px;
-	padding-bottom: 10px;
-	padding-left: 5px;
-}
-
-}
-
-@media (min-width: 600px) {
-	nav ul li {
-	list-style-type: none;
-	display: inline-block;
-	padding-top: 10px;
-	padding-bottom: 10px;
-	padding-left: 10px;
-}
-
-}
-
-@media (min-width: 0px) {
-	.cards {
-	grid-template-columns: repeat(1, 1fr);
-}
-
-}
-
-@media (min-width: 800px) {
-	.cards {
-	grid-template-columns: repeat(2, 1fr);
-}
-
-}
-
-@media (min-width: 1200px) {
-	.cards {
-	grid-template-columns: repeat(3, 1fr);
-}
-
-}
 
 canvas {
 	position: absolute;
@@ -748,3 +512,203 @@ canvas {
 	color: #fff;                 /* keep text white */
 	transition: background-color 0.2s ease; /* a subtle transition is nice */
 }
+
+
+/* ===============================
+   1) Root-Level Custom Properties
+   =============================== */
+   :root {
+	/* Primary Colors */
+	--color-primary: #5361FF;
+	--color-white: #FFFFFF;
+	--color-alt-white: #fcfcfc; /* for h4 if you like that distinct color */
+	--color-h6: #bfbff2;
+  
+	/* Typography */
+	--font-body: 'Montserrat', sans-serif;
+	/* Fluid sizes for headings (min, viewport-based, max). Adjust as you like. */
+	/* --fs-h1: clamp(1.75rem, 5vw, 4rem); */
+	/* a bit smaller */
+	--fs-h1: clamp(1rem, 3vw, 2.5rem);
+	--fs-h2: clamp(1.5rem, 4vw, 3rem);
+	--fs-h3: clamp(0.8rem, 2.5vw, 1.5rem);
+	--fs-h4: clamp(1.125rem, 3vw, 2rem);
+	--fs-h5: clamp(1rem, 2.5vw, 1.75rem);
+	--fs-h6: clamp(0.875rem, 2vw, 1.25rem);
+  }
+  
+  /* =====================
+	 2) Base Global Styles
+	 ===================== */
+  * {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+  }
+  
+  body {
+	font-family: var(--font-body);
+	background-color: #000; /* or whichever background you use */
+	color: var(--color-white);
+  }
+  
+  /* ===================
+	 3) Headings & Text
+	 =================== */
+  h1, h2, h3, h4, h5, h6 {
+	margin: 1rem 0;
+	font-weight: 500; /* or whatever suits your headings */
+	color: var(--color-white);
+  }
+  
+  h1 {
+	font-size: var(--fs-h1);
+  }
+  h2 {
+	font-size: var(--fs-h2);
+  }
+  h3 {
+	font-size: var(--fs-h3);
+	/* If you really want more bottom spacing for h3 only: */
+	margin-bottom: 3rem; /* Instead of 50px */
+  }
+  h4 {
+	font-size: var(--fs-h4);
+	color: var(--color-alt-white); /* #fcfcfc */
+	letter-spacing: 0.125rem; /* old "2px" in rem units */
+  }
+  h5 {
+	font-size: var(--fs-h5);
+  }
+  h6 {
+	font-size: var(--fs-h6);
+	color: var(--color-h6); /* #bfbff2 */
+  }
+  
+  .title h2 {
+	color: white;
+	/* font-size: var(--big-font-size); */
+	font-size: 2.5rem;
+	/* width: var(--title-width); */
+	/* width: 100%; */
+	margin: 30px auto;
+	text-align: center;
+	padding-top: 10rem;
+  }
+
+  section {
+	padding-top: 5rem;
+  }
+
+  /* select nth section (1st) */
+  section:nth-of-type(1) {
+	padding-top: 0;
+  }
+
+  .contact div:nth-of-type(1) {
+	padding-top: 30%;
+  }
+
+  .content {
+	padding-top: 10rem;
+  }
+
+  /* ================
+	 4) Navigation
+	 ================ */
+  nav ul {
+	list-style: none;
+  }
+  
+  nav ul li {
+	display: inline-block;
+	padding: 10px 5px; /* a simpler shorthand */
+  }
+  
+  /* Slightly increase horizontal padding on larger screens: */
+  @media (min-width: 600px) {
+	nav ul li {
+	  padding: 10px 10px;
+	}
+  }
+  
+  /* =====================
+	 5) Hero & Cards Grid
+	 ===================== */
+  
+  /* Hero section heights: mobile-first approach */
+  .hero {
+	width: 100%;
+	min-height: 20vh;
+	max-height: 30vh;
+	background-size: cover;
+	background-position: center;
+	position: relative;
+  }
+  
+  @media (min-width: 600px) {
+	.hero {
+	  min-height: 20vh;
+	  max-height: 30vh;
+	}
+  }
+  @media (min-width: 800px) {
+	.hero {
+	  min-height: 40vh;
+	  max-height: 50vh;
+	}
+  }
+  @media (min-width: 1200px) {
+	.hero {
+	  min-height: 50vh;
+	  max-height: 70vh;
+	}
+  }
+  
+  /* Cards container: base = single column */
+  .cards {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 1rem;
+  }
+  
+  /* Two columns at 800px+ */
+  @media (min-width: 800px) {
+	.cards {
+	  grid-template-columns: repeat(2, 1fr);
+	}
+  }
+  
+  /* Three columns at 1200px+ */
+  @media (min-width: 1200px) {
+	.cards {
+	  grid-template-columns: repeat(3, 1fr);
+	}
+  }
+  
+  /* Card sizing: mobile-first approach */
+  .card {
+	width: 200px;
+	height: 200px;
+	/* The rest of your card styles go here (box-shadow, border-radius, etc.) */
+  }
+  
+  @media (min-width: 600px) {
+	.card {
+	  width: 300px;
+	  height: 300px;
+	}
+  }
+  @media (min-width: 800px) {
+	.card {
+	  width: 500px;
+	  height: 500px;
+	}
+  }
+  @media (min-width: 1200px) {
+	.card {
+	  width: 600px;
+	  height: 600px;
+	}
+  }
+  
