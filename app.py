@@ -2,6 +2,9 @@ import datetime
 from decimal import Decimal
 from typing import List
 from chalice import Chalice, Response
+import brotli
+import base64
+import hashlib
 import json
 from os import path
 import boto3 as boto3
@@ -10,10 +13,54 @@ import stripe
 
 from chalicelib.paginator import Paginator
 
+
+# Cache for 24 hours
+CACHE_CONTROL_ONE_DAY = 'public, s-maxage=86400, max-age=86400'
+
+# Cache for 1 week
+CACHE_CONTROL_ONE_WEEK = 'public, s-maxage=604800, max-age=604800'
+
+# Cache for 1 hour
+CACHE_CONTROL_ONE_HOUR = 'public, s-maxage=3600, max-age=3600'
+
+
 print('paginator', Paginator)
+
+def brotli_compress(data):
+    return brotli.compress(data)
+
+def create_response_headers(content_type: str, content: str):
+    etag_value = hashlib.md5(content).hexdigest()
+
+    last_modified = datetime.datetime.now().strftime('%a, %d %b %Y %H:%M:%S GMT')
+
+    if content_type == 'text/html' or content_type == 'text/html; charset=UTF-8':
+        cache_control = CACHE_CONTROL_ONE_DAY
+    elif content_type == 'application/json':
+        cache_control = CACHE_CONTROL_ONE_HOUR
+    elif content_type in ['text/css', 'application/javascript']:
+        cache_control = CACHE_CONTROL_ONE_WEEK
+    else:
+        cache_control = CACHE_CONTROL_ONE_DAY
+    
+    return {
+        'Content-Type': content_type,
+        'Content-Encoding': 'br',
+        'Cache-Control': cache_control,
+        'ETag': etag_value,
+        'Last-Modified': last_modified
+    }
 
 
 app = Chalice(app_name="darrenmackenzie")
+
+app.api.binary_types.extend([
+    'application/javascript',
+    'application/json',
+    'text/css',
+    'text/html',
+    'application/xml'
+])
 
 # import from AWS Secrets Manager
 import os
@@ -197,19 +244,23 @@ def script_template():
         print("Error getting newest timestamp:", e)
         return Response(str(e), status_code=500)
     
+    html_content = template.render(
+        services=website_data['services'],
+        social=website_data['social'],
+        projects=website_data['projects'],
+        articles=page_of_articles,
+        menu=menu,
+        nextPageUrl=next_page_url,
+        prevPageUrl=prev_page_url,
+        firstPage=first_page or does_current_page_include_newest_timestamp,
+        newestTimestamp=newest_timestamp,
+    )
+
+    compressed_html = brotli_compress(html_content.encode('utf-8'))
+    
     return Response(
-        template.render(
-            services=website_data['services'],
-            social=website_data['social'],
-            projects=website_data['projects'],
-            articles=page_of_articles,
-            menu=menu,
-            nextPageUrl=next_page_url,
-            prevPageUrl=prev_page_url,
-            firstPage=first_page or does_current_page_include_newest_timestamp,
-            newestTimestamp=newest_timestamp,
-        ),
-        headers={'Content-Type': 'text/html; charset=UTF-8'},
+        body=compressed_html,
+        headers=create_response_headers('text/html; charset=UTF-8', html_content),
         status_code=200
     )
 
@@ -245,33 +296,69 @@ def articles_list():
     limit = int(app.current_request.query_params.get('limit', 10))
     cursor = int(app.current_request.query_params.get('cursor', datetime.datetime.now().timestamp() * 1_000))
     tags = app.current_request.query_params.get('tags', None)
-    return get_articles_list(limit, cursor, tags)
+
+    response_data = get_articles_list(limit, cursor, tags)
+    json_data = json.dumps(response_data)
+    compressed_json = brotli.compress(json_data.encode('utf-8'))
+
+    return Response(
+        body=compressed_json,
+        headers=create_response_headers('application/json', compressed_json),
+        status_code=200
+    )
 
 # Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://darrenmackenzie-chalice-bucket.s3.us-east-1.amazonaws.com/scripts/main.js. (Reason: CORS header ‘Access-Control-Allow-Origin’ missing). Status code: 200.
 @app.route('/scripts/main.js')
 def serve_js():
     s3 = boto3.resource('s3')
-    myString = s3.Object(os.environ['BUCKET_NAME'], 'scripts/main.js').get()["Body"].read().decode('utf-8')
-    return Response(myString, headers={'Content-Type': 'text/javascript'}, status_code=200)
+    js_content = s3.Object(os.environ['BUCKET_NAME'], 'scripts/main.js').get()["Body"].read().decode('utf-8')
+
+    compressed_js = brotli_compress(js_content.encode('utf-8'))
+    
+    return Response(
+        body=compressed_js,
+        headers=create_response_headers('application/javascript', compressed_js),
+        status_code=200
+    )
 
 @app.route('/scripts/helvetiker_regular.typeface.json')
 def serve_font():
     s3 = boto3.resource('s3')
-    myString = s3.Object(os.environ['BUCKET_NAME'], 'scripts/helvetiker_regular.typeface.json').get()["Body"].read().decode('utf-8')
-    return Response(myString, headers={'Content-Type': 'application/json'}, status_code=200)
+    json_content = s3.Object(os.environ['BUCKET_NAME'], 'scripts/helvetiker_regular.typeface.json').get()["Body"].read().decode('utf-8')
+
+    compressed_json = brotli_compress(json_content.encode('utf-8'))
+
+    return Response(
+        body=compressed_json,
+        headers=create_response_headers('application/json', compressed_json),
+        status_code=200
+    )
 
 @app.route('/data/data.json')
 def serve_data():
     s3 = boto3.resource('s3')
-    myString = s3.Object(os.environ['BUCKET_NAME'], 'data/data.json').get()["Body"].read().decode('utf-8')
-    return Response(myString, headers={'Content-Type': 'application/json'}, status_code=200)
+    json_content = s3.Object(os.environ['BUCKET_NAME'], 'data/data.json').get()["Body"].read().decode('utf-8')
+
+    compressed_json = brotli_compress(json_content.encode('utf-8'))
+
+    return Response(
+        body=compressed_json,
+        headers=create_response_headers('application/json', compressed_json),
+        status_code=200
+    )
 
 @app.route('/style.css')
 def serve_css():
     s3 = boto3.resource('s3')
-    myString = s3.Object(os.environ['BUCKET_NAME'], 'frontend/style.css').get()["Body"].read().decode('utf-8')
-    return Response(myString, headers={'Content-Type': 'text/css'}, status_code=200)
+    css_content = s3.Object(os.environ['BUCKET_NAME'], 'frontend/style.css').get()["Body"].read().decode('utf-8')
 
+    compressed_css = brotli_compress(css_content.encode('utf-8'))
+
+    return Response(
+        body=compressed_css,
+        headers=create_response_headers('text/css', compressed_css),
+        status_code=200
+    )
 
 @app.route('/contact', methods=['POST'], content_types=['application/x-www-form-urlencoded'])
 def contact_form():
@@ -300,11 +387,41 @@ def articles(section, article):
         # dict(title='Contact', url='#contact')
     ]
     non_index_menu = [dict(title=item['title'], url=f"/index.html{item['url']}") for item in website_menu]
-    if section not in ['services', 'work', 'blog']: return Response(s3_env.from_string(s3.Object(os.environ['BUCKET_NAME'], 'frontend/404.html').get()["Body"].read().decode('utf-8')).render(menu=non_index_menu), headers={'Content-Type': 'text/html; charset=UTF-8'}, status_code=404)
+    if section not in ['services', 'work', 'blog']:
+        html_content = s3_env.from_string(s3.Object(os.environ['BUCKET_NAME'], 'frontend/404.html').get()["Body"].read().decode('utf-8')).render(menu=non_index_menu)
+
+        compressed_html = brotli_compress(html_content.encode('utf-8'))
+
+        return Response(
+            body=compressed_html,
+            headers=create_response_headers('text/html; charset=UTF-8', compressed_html),
+            status_code=404
+        )
+    
     db = boto3.resource('dynamodb')
     article_table = db.Table(os.environ['ARTICLE_TABLE'])
     article = article_table.get_item(Key={'type_of_article': section, "slug": article}).get('Item')
-    return Response(s3_env.from_string(s3.Object(os.environ['BUCKET_NAME'], 'frontend/article.html').get()["Body"].read().decode('utf-8')).render(section=section, article=article, menu=non_index_menu), headers={'Content-Type': 'text/html; charset=UTF-8'}, status_code=200) if article else Response(s3_env.from_string(s3.Object(os.environ['BUCKET_NAME'], 'frontend/404.html').get()["Body"].read().decode('utf-8')).render(menu=non_index_menu), headers={'Content-Type': 'text/html; charset=UTF-8'}, status_code=404)
+
+    if article:
+        html_content = s3_env.from_string(s3.Object(os.environ['BUCKET_NAME'], 'frontend/article.html').get()["Body"].read().decode('utf-8')).render(section=section, article=article, menu=non_index_menu)
+
+        compressed_html = brotli_compress(html_content.encode('utf-8'))
+
+        return Response(
+            body=compressed_html,
+            headers=create_response_headers('text/html; charset=UTF-8', compressed_html),
+            status_code=200
+        )
+    else:
+        html_content = s3_env.from_string(s3.Object(os.environ['BUCKET_NAME'], 'frontend/404.html').get()["Body"].read().decode('utf-8')).render(menu=non_index_menu)
+
+        compressed_html = brotli_compress(html_content.encode('utf-8'))
+
+        return Response(
+            body=compressed_html,
+            headers=create_response_headers('text/html; charset=UTF-8', compressed_html),
+            status_code=404
+        )
 
 @app.route('/create-checkout-session', methods=['POST'])
 def create_checkout_session():
@@ -367,3 +484,19 @@ def stripe_webhook():
 
     # Return a 200 response to acknowledge receipt of the event
     return {}
+
+@app.route('/sitemap.xml')
+def sitemap():
+    s3 = boto3.resource('s3')
+    myString = s3.Object(os.environ['BUCKET_NAME'], 'sitemap.xml').get()["Body"].read().decode('utf-8')
+    return Response(myString, headers={'Content-Type': 'application/xml'}, status_code=200)
+
+'''
+sitemap.xml:
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <sitemap>
+        <loc>https://www.darrenmackenzie.com/blog/lambda-layers</loc>
+        <lastmod>2024-01-02T00:00:00+00:00</lastmod>
+    </sitemap>
+</sitemapindex>
+'''
