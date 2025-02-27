@@ -15,7 +15,7 @@ from chalicelib.paginator import Paginator
 print('paginator', Paginator)
 
 def brotli_compress(data):
-    return base64.b64encode(brotli.compress(data.encode())).decode()
+    return brotli.compress(data)
 
 
 app = Chalice(app_name="darrenmackenzie")
