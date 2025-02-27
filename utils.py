@@ -8,6 +8,21 @@ import requests
 import json
 import datetime
 
+
+url = 'https://www.darrenmackenzie.com'
+
+def cache_check(url):
+    response = requests.get(url)
+    response_headers = response.headers
+    print(response_headers)
+    x_cache = response_headers.get('x-cache')
+    return x_cache
+
+result = cache_check(url)
+print(result)
+quit(34)
+
+
 url = 'https://www.darrenmackenzie.com/articles_list?limit=10'
 
 
