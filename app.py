@@ -20,6 +20,14 @@ def brotli_compress(data):
 
 app = Chalice(app_name="darrenmackenzie")
 
+app.api.binary_types.extend([
+    'application/javascript',
+    'application/json',
+    'text/css',
+    'text/html',
+    'application/xml'
+])
+
 # import from AWS Secrets Manager
 import os
 import json
