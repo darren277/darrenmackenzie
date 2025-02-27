@@ -12,6 +12,17 @@ import stripe
 
 from chalicelib.paginator import Paginator
 
+
+# Cache for 24 hours
+CACHE_CONTROL = 'public, max-age=86400'
+
+# Cache for 1 week
+# 'public, max-age=604800'
+
+# Cache for 1 hour
+# 'public, max-age=3600'
+
+
 print('paginator', Paginator)
 
 def brotli_compress(data):
@@ -226,7 +237,7 @@ def script_template():
     
     return Response(
         body=compressed_html,
-        headers={'Content-Type': 'text/html; charset=UTF-8', 'Content-Encoding': 'br'},
+        headers={'Content-Type': 'text/html; charset=UTF-8', 'Content-Encoding': 'br', 'Cache-Control': CACHE_CONTROL},
         status_code=200
     )
 
@@ -271,7 +282,8 @@ def articles_list():
         body=compressed_json,
         headers={
             'Content-Type': 'application/json',
-            'Content-Encoding': 'br'
+            'Content-Encoding': 'br',
+            'Cache-Control': CACHE_CONTROL
         },
         status_code=200
     )
@@ -286,7 +298,7 @@ def serve_js():
     
     return Response(
         body=compressed_js,
-        headers={'Content-Type': 'application/javascript', 'Content-Encoding': 'br'},
+        headers={'Content-Type': 'application/javascript', 'Content-Encoding': 'br', 'Cache-Control': CACHE_CONTROL},
         status_code=200
     )
 
@@ -299,7 +311,7 @@ def serve_font():
 
     return Response(
         body=compressed_json,
-        headers={'Content-Type': 'application/json', 'Content-Encoding': 'br'},
+        headers={'Content-Type': 'application/json', 'Content-Encoding': 'br', 'Cache-Control': CACHE_CONTROL},
         status_code=200
     )
 
@@ -312,7 +324,7 @@ def serve_data():
 
     return Response(
         body=compressed_json,
-        headers={'Content-Type': 'application/json', 'Content-Encoding': 'br'},
+        headers={'Content-Type': 'application/json', 'Content-Encoding': 'br', 'Cache-Control': CACHE_CONTROL},
         status_code=200
     )
 
@@ -325,7 +337,7 @@ def serve_css():
 
     return Response(
         body=compressed_css,
-        headers={'Content-Type': 'text/css', 'Content-Encoding': 'br'},
+        headers={'Content-Type': 'text/css', 'Content-Encoding': 'br', 'Cache-Control': CACHE_CONTROL},
         status_code=200
     )
 
@@ -363,7 +375,7 @@ def articles(section, article):
 
         return Response(
             body=compressed_html,
-            headers={'Content-Type': 'text/html; charset=UTF-8', 'Content-Encoding': 'br'},
+            headers={'Content-Type': 'text/html; charset=UTF-8', 'Content-Encoding': 'br', 'Cache-Control': CACHE_CONTROL},
             status_code=404
         )
     
@@ -378,7 +390,7 @@ def articles(section, article):
 
         return Response(
             body=compressed_html,
-            headers={'Content-Type': 'text/html; charset=UTF-8', 'Content-Encoding': 'br'},
+            headers={'Content-Type': 'text/html; charset=UTF-8', 'Content-Encoding': 'br', 'Cache-Control': CACHE_CONTROL},
             status_code=200
         )
     else:
@@ -388,7 +400,7 @@ def articles(section, article):
 
         return Response(
             body=compressed_html,
-            headers={'Content-Type': 'text/html; charset=UTF-8', 'Content-Encoding': 'br'},
+            headers={'Content-Type': 'text/html; charset=UTF-8', 'Content-Encoding': 'br', 'Cache-Control': CACHE_CONTROL},
             status_code=404
         )
 
