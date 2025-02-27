@@ -445,3 +445,19 @@ def stripe_webhook():
 
     # Return a 200 response to acknowledge receipt of the event
     return {}
+
+@app.route('/sitemap.xml')
+def sitemap():
+    s3 = boto3.resource('s3')
+    myString = s3.Object(os.environ['BUCKET_NAME'], 'sitemap.xml').get()["Body"].read().decode('utf-8')
+    return Response(myString, headers={'Content-Type': 'application/xml'}, status_code=200)
+
+'''
+sitemap.xml:
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <sitemap>
+        <loc>https://www.darrenmackenzie.com/blog/lambda-layers</loc>
+        <lastmod>2024-01-02T00:00:00+00:00</lastmod>
+    </sitemap>
+</sitemapindex>
+'''
