@@ -4,6 +4,7 @@ from typing import List
 from chalice import Chalice, Response
 import brotli
 import base64
+import hashlib
 import json
 from os import path
 import boto3 as boto3
@@ -14,19 +15,41 @@ from chalicelib.paginator import Paginator
 
 
 # Cache for 24 hours
-CACHE_CONTROL = 'public, max-age=86400'
+CACHE_CONTROL_ONE_DAY = 'public, s-maxage=86400, max-age=86400'
 
 # Cache for 1 week
-# 'public, max-age=604800'
+CACHE_CONTROL_ONE_WEEK = 'public, s-maxage=604800, max-age=604800'
 
 # Cache for 1 hour
-# 'public, max-age=3600'
+CACHE_CONTROL_ONE_HOUR = 'public, s-maxage=3600, max-age=3600'
 
 
 print('paginator', Paginator)
 
 def brotli_compress(data):
     return brotli.compress(data)
+
+def create_response_headers(content_type: str, content: str):
+    etag_value = hashlib.md5(content).hexdigest()
+
+    last_modified = datetime.datetime.now().strftime('%a, %d %b %Y %H:%M:%S GMT')
+
+    if content_type == 'text/html' or content_type == 'text/html; charset=UTF-8':
+        cache_control = CACHE_CONTROL_ONE_DAY
+    elif content_type == 'application/json':
+        cache_control = CACHE_CONTROL_ONE_HOUR
+    elif content_type in ['text/css', 'application/javascript']:
+        cache_control = CACHE_CONTROL_ONE_WEEK
+    else:
+        cache_control = CACHE_CONTROL_ONE_DAY
+    
+    return {
+        'Content-Type': content_type,
+        'Content-Encoding': 'br',
+        'Cache-Control': cache_control,
+        'ETag': etag_value,
+        'Last-Modified': last_modified
+    }
 
 
 app = Chalice(app_name="darrenmackenzie")
@@ -237,7 +260,7 @@ def script_template():
     
     return Response(
         body=compressed_html,
-        headers={'Content-Type': 'text/html; charset=UTF-8', 'Content-Encoding': 'br', 'Cache-Control': CACHE_CONTROL},
+        headers=create_response_headers('text/html; charset=UTF-8', html_content),
         status_code=200
     )
 
@@ -280,11 +303,7 @@ def articles_list():
 
     return Response(
         body=compressed_json,
-        headers={
-            'Content-Type': 'application/json',
-            'Content-Encoding': 'br',
-            'Cache-Control': CACHE_CONTROL
-        },
+        headers=create_response_headers('application/json', compressed_json),
         status_code=200
     )
 
@@ -298,7 +317,7 @@ def serve_js():
     
     return Response(
         body=compressed_js,
-        headers={'Content-Type': 'application/javascript', 'Content-Encoding': 'br', 'Cache-Control': CACHE_CONTROL},
+        headers=create_response_headers('application/javascript', compressed_js),
         status_code=200
     )
 
@@ -311,7 +330,7 @@ def serve_font():
 
     return Response(
         body=compressed_json,
-        headers={'Content-Type': 'application/json', 'Content-Encoding': 'br', 'Cache-Control': CACHE_CONTROL},
+        headers=create_response_headers('application/json', compressed_json),
         status_code=200
     )
 
@@ -324,7 +343,7 @@ def serve_data():
 
     return Response(
         body=compressed_json,
-        headers={'Content-Type': 'application/json', 'Content-Encoding': 'br', 'Cache-Control': CACHE_CONTROL},
+        headers=create_response_headers('application/json', compressed_json),
         status_code=200
     )
 
@@ -337,7 +356,7 @@ def serve_css():
 
     return Response(
         body=compressed_css,
-        headers={'Content-Type': 'text/css', 'Content-Encoding': 'br', 'Cache-Control': CACHE_CONTROL},
+        headers=create_response_headers('text/css', compressed_css),
         status_code=200
     )
 
@@ -375,7 +394,7 @@ def articles(section, article):
 
         return Response(
             body=compressed_html,
-            headers={'Content-Type': 'text/html; charset=UTF-8', 'Content-Encoding': 'br', 'Cache-Control': CACHE_CONTROL},
+            headers=create_response_headers('text/html; charset=UTF-8', compressed_html),
             status_code=404
         )
     
@@ -390,7 +409,7 @@ def articles(section, article):
 
         return Response(
             body=compressed_html,
-            headers={'Content-Type': 'text/html; charset=UTF-8', 'Content-Encoding': 'br', 'Cache-Control': CACHE_CONTROL},
+            headers=create_response_headers('text/html; charset=UTF-8', compressed_html),
             status_code=200
         )
     else:
@@ -400,7 +419,7 @@ def articles(section, article):
 
         return Response(
             body=compressed_html,
-            headers={'Content-Type': 'text/html; charset=UTF-8', 'Content-Encoding': 'br', 'Cache-Control': CACHE_CONTROL},
+            headers=create_response_headers('text/html; charset=UTF-8', compressed_html),
             status_code=404
         )
 
