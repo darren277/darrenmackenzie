@@ -300,11 +300,24 @@ def articles(section, article):
         # dict(title='Contact', url='#contact')
     ]
     non_index_menu = [dict(title=item['title'], url=f"/index.html{item['url']}") for item in website_menu]
-    if section not in ['services', 'work', 'blog']: return Response(s3_env.from_string(s3.Object(os.environ['BUCKET_NAME'], 'frontend/404.html').get()["Body"].read().decode('utf-8')).render(menu=non_index_menu), headers={'Content-Type': 'text/html; charset=UTF-8'}, status_code=404)
+    if section not in ['services', 'work', 'blog']:
+        return Response(
+            s3_env.from_string(s3.Object(os.environ['BUCKET_NAME'], 'frontend/404.html').get()["Body"].read().decode('utf-8')).render(menu=non_index_menu),
+            headers={'Content-Type': 'text/html; charset=UTF-8'},
+            status_code=404
+        )
     db = boto3.resource('dynamodb')
     article_table = db.Table(os.environ['ARTICLE_TABLE'])
     article = article_table.get_item(Key={'type_of_article': section, "slug": article}).get('Item')
-    return Response(s3_env.from_string(s3.Object(os.environ['BUCKET_NAME'], 'frontend/article.html').get()["Body"].read().decode('utf-8')).render(section=section, article=article, menu=non_index_menu), headers={'Content-Type': 'text/html; charset=UTF-8'}, status_code=200) if article else Response(s3_env.from_string(s3.Object(os.environ['BUCKET_NAME'], 'frontend/404.html').get()["Body"].read().decode('utf-8')).render(menu=non_index_menu), headers={'Content-Type': 'text/html; charset=UTF-8'}, status_code=404)
+    return Response(
+        s3_env.from_string(s3.Object(os.environ['BUCKET_NAME'], 'frontend/article.html').get()["Body"].read().decode('utf-8')).render(section=section, article=article, menu=non_index_menu),
+        headers={'Content-Type': 'text/html; charset=UTF-8'},
+        status_code=200
+    ) if article else Response(
+        s3_env.from_string(s3.Object(os.environ['BUCKET_NAME'], 'frontend/404.html').get()["Body"].read().decode('utf-8')).render(menu=non_index_menu),
+        headers={'Content-Type': 'text/html; charset=UTF-8'},
+        status_code=404
+    )
 
 @app.route('/create-checkout-session', methods=['POST'])
 def create_checkout_session():
