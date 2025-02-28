@@ -79,7 +79,7 @@
         "Quantity": 1,
         "Items": [
             {
-                "PathPattern": "/articles_list*",
+                "PathPattern": "/",
                 "TargetOriginId": "darrenmackenzie.com",
                 "ViewerProtocolPolicy": "allow-all",
                 "AllowedMethods": {
