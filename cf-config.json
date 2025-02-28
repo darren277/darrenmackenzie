@@ -72,7 +72,7 @@
             "Quantity": 0
         },
         "FieldLevelEncryptionId": "",
-        "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
+        "CachePolicyId": "ca6f5300-f9d7-42c2-adf2-9a215dbcfb88",
         "OriginRequestPolicyId": "216adef6-5c7f-47e4-b989-5492eafa07d3"
     },
     "CacheBehaviors": {
