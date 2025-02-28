@@ -78,7 +78,34 @@
             "OriginRequestPolicyId": "216adef6-5c7f-47e4-b989-5492eafa07d3"
         },
         "CacheBehaviors": {
-            "Quantity": 0
+            "Quantity": 1,
+            "Items": [
+                {
+                    "PathPattern": "/articles_list*",
+                    "TargetOriginId": "darrenmackenzie.com",
+                    "ViewerProtocolPolicy": "allow-all",
+                    "AllowedMethods": {
+                        "Quantity": 2,
+                        "Items": ["GET", "HEAD"],
+                        "CachedMethods": {
+                        "Quantity": 2,
+                        "Items": ["GET", "HEAD"]
+                        }
+                    },
+                    "SmoothStreaming": false,
+                    "Compress": true,
+                    "LambdaFunctionAssociations": {
+                        "Quantity": 0
+                    },
+                    "FunctionAssociations": {
+                        "Quantity": 0
+                    },
+                    "FieldLevelEncryptionId": "",
+                    "CachePolicyId": "ca6f5300-f9d7-42c2-adf2-9a215dbcfb88",
+                    "OriginRequestPolicyId": "7b46a558-7334-45d1-9c8c-4c5567288e08",
+                    "Priority": 0
+                }
+            ]
         },
         "CustomErrorResponses": {
             "Quantity": 0
