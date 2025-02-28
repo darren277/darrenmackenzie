@@ -10,6 +10,7 @@ import datetime
 
 
 url = 'https://www.darrenmackenzie.com'
+url2 = "https://www.darrenmackenzie.com/?page=2&limit=9&lb=0&ub=1704589199999&newestTimestamp=1704937800000"
 
 def cache_check(url):
     response = requests.get(url)
@@ -20,6 +21,10 @@ def cache_check(url):
 
 result = cache_check(url)
 print(result)
+
+result = cache_check(url2)
+print(result)
+
 quit(34)
 
 

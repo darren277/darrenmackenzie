@@ -30,7 +30,10 @@ def brotli_compress(data):
     return brotli.compress(data)
 
 def create_response_headers(content_type: str, content: str):
-    etag_value = hashlib.md5(content).hexdigest()
+    try:
+        etag_value = hashlib.md5(content).hexdigest()
+    except TypeError:
+        etag_value = hashlib.md5(content.encode('utf-8')).hexdigest()
 
     last_modified = datetime.datetime.now().strftime('%a, %d %b %Y %H:%M:%S GMT')
 

@@ -1,0 +1,6 @@
+{
+    "RoleARN": "arn:aws:iam::160751179089:role/FirehoseS3Role",
+    "BucketARN": "arn:aws:s3:::darrenmackenzie-cloudfront-logs",
+    "Prefix": "cloudfront-logs/",
+    "CompressionFormat": "GZIP"
+}
