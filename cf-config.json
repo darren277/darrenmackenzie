@@ -100,8 +100,7 @@
                 },
                 "FieldLevelEncryptionId": "",
                 "CachePolicyId": "ca6f5300-f9d7-42c2-adf2-9a215dbcfb88",
-                "OriginRequestPolicyId": "7b46a558-7334-45d1-9c8c-4c5567288e08",
-                "Priority": 0
+                "OriginRequestPolicyId": "7b46a558-7334-45d1-9c8c-4c5567288e08"
             }
         ]
     },
