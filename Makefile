@@ -48,3 +48,7 @@ KINESIS_STREAM_CONFIG={"RoleARN": "arn:aws:iam::$(AWS_ACCOUNT_ID):role/$(FIREHOS
 create-log:
 	aws cloudfront create-realtime-log-config --name "CloudFrontRealTimeLog" --sampling-rate 100 --fields "timestamp" "c-ip" "cs-uri-stem" "sc-status" "x-edge-detailed-result-type" --end-points '[{"StreamType": "Kinesis", "KinesisStreamConfig": $(KINESIS_STREAM_CONFIG)}]'
 
+
+
+test:
+	pytest -v tests/ --cov=.app
