@@ -395,6 +395,7 @@ def test_script_template_success():
     mock_create_response.assert_called_once_with("<html>Rendered</html>")
     assert result == mock_response
 
+@patch('app.app.current_request')
 def test_script_template_paginator_error(mock_current_request):
     """Test handling of paginator errors."""
     # Setup request mock
@@ -402,7 +403,7 @@ def test_script_template_paginator_error(mock_current_request):
     
     # Setup mock to raise an exception
     with patch('app.build_paginator_from_query_params', side_effect=Exception("Paginator error")) as mock_build:
-        with patch('chalice.Response') as mock_response_class:
+        with patch('app.Response') as mock_response_class:
             mock_response = MagicMock()
             mock_response_class.return_value = mock_response
             
