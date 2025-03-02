@@ -51,4 +51,4 @@ create-log:
 
 
 test:
-	pytest -v tests/ --cov=.app
+	pytest -v tests/ --cov=app
