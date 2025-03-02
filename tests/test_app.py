@@ -110,7 +110,7 @@ def test_build_paginator_from_query_params():
     
     query_params = {'limit': '5', 'cursor': 'abc123'}
     
-    with patch('Paginator.from_query_params', mock_paginator_class):
+    with patch('chalicelib.paginator.Paginator.from_query_params', mock_paginator_class):
         result = build_paginator_from_query_params(query_params)
     
     # Verify Paginator was created correctly
@@ -126,7 +126,7 @@ def test_build_paginator_from_query_params_default_limit():
     
     query_params = {'cursor': 'abc123'}  # No limit specified
     
-    with patch('Paginator.from_query_params', mock_paginator_class):
+    with patch('chalicelib.paginator.Paginator.from_query_params', mock_paginator_class):
         result = build_paginator_from_query_params(query_params)
     
     # Verify default limit was used
@@ -187,7 +187,7 @@ def test_build_pagination_urls_with_next_and_prev():
     base_url = "https://example.com/"
     tags_param = "tag1,tag2"
     
-    with patch('build_url') as mock_build_url:
+    with patch('app.build_url') as mock_build_url:
         mock_build_url.side_effect = [
             "https://example.com/?cursor=next123&limit=10&tags=tag1,tag2",
             "https://example.com/?cursor=prev123&limit=10&tags=tag1,tag2"
@@ -216,7 +216,7 @@ def test_build_pagination_urls_no_next_page():
     page_of_articles = [{'id': i} for i in range(5)]  # 5 items < page size, so no next page
     base_url = "https://example.com/"
     
-    with patch('build_url') as mock_build_url:
+    with patch('app.build_url') as mock_build_url:
         mock_build_url.return_value = "https://example.com/?cursor=prev123&limit=10"
         
         next_url, prev_url = build_pagination_urls(mock_paginator, page_of_articles, base_url)
@@ -242,7 +242,7 @@ def test_build_pagination_urls_no_prev_page():
     page_of_articles = [{'id': i} for i in range(10)]  # Full page
     base_url = "https://example.com/"
     
-    with patch('build_url') as mock_build_url:
+    with patch('app.build_url') as mock_build_url:
         mock_build_url.return_value = "https://example.com/?cursor=next123&limit=10"
         
         next_url, prev_url = build_pagination_urls(mock_paginator, page_of_articles, base_url)
@@ -266,7 +266,7 @@ def test_determine_page_status_first_page():
     ]
     query_params = {}  # Empty for first page
     
-    with patch('Decimal', lambda x: x):  # Mock Decimal to return input unchanged
+    with patch('decimal.Decimal', lambda x: x):  # Mock Decimal to return input unchanged
         is_first_page, newest_timestamp = determine_page_status(page_of_articles, query_params)
     
     assert is_first_page is True
@@ -281,7 +281,7 @@ def test_determine_page_status_with_newest_timestamp():
     ]
     query_params = {'newestTimestamp': 400}
     
-    with patch('Decimal', lambda x: x):  # Mock Decimal to return input unchanged
+    with patch('decimal.Decimal', lambda x: x):  # Mock Decimal to return input unchanged
         is_first_page, newest_timestamp = determine_page_status(page_of_articles, query_params)
     
     assert is_first_page is False  # Not first page
@@ -296,7 +296,7 @@ def test_determine_page_status_includes_newest():
     ]
     query_params = {'newestTimestamp': 400}
     
-    with patch('Decimal', lambda x: x):  # Mock Decimal to return input unchanged
+    with patch('decimal.Decimal', lambda x: x):  # Mock Decimal to return input unchanged
         is_first_page, newest_timestamp = determine_page_status(page_of_articles, query_params)
     
     assert is_first_page is True  # Should be true because newest article is on this page
@@ -321,8 +321,8 @@ def test_create_compressed_response():
     compressed_data = b"compressed-data"
     expected_headers = {"Content-Type": "text/html; charset=UTF-8", "Content-Encoding": "br"}
     
-    with patch('brotli_compress', return_value=compressed_data) as mock_compress:
-        with patch('create_response_headers', return_value=expected_headers) as mock_headers:
+    with patch('app.brotli_compress', return_value=compressed_data) as mock_compress:
+        with patch('app.create_response_headers', return_value=expected_headers) as mock_headers:
             response = create_compressed_response(html_content)
     
     # Verify compression
@@ -356,14 +356,14 @@ def test_script_template_success(mock_current_request):
     mock_articles = [{'id': '1', 'title': 'Article 1', 'created': 100}]
     mock_response = MagicMock()
     
-    with patch('get_menu_items', return_value=mock_menu) as mock_get_menu, \
-         patch('build_paginator_from_query_params') as mock_build_paginator, \
-         patch('get_s3_template', return_value=mock_template) as mock_get_template, \
-         patch('get_website_data', return_value=mock_website_data) as mock_get_data, \
-         patch('query_articles', return_value=mock_articles) as mock_query, \
-         patch('build_pagination_urls', return_value=('next', 'prev')) as mock_build_urls, \
-         patch('determine_page_status', return_value=(False, 100)) as mock_determine, \
-         patch('create_compressed_response', return_value=mock_response) as mock_create_response:
+    with patch('app.get_menu_items', return_value=mock_menu) as mock_get_menu, \
+         patch('app.build_paginator_from_query_params') as mock_build_paginator, \
+         patch('app.get_s3_template', return_value=mock_template) as mock_get_template, \
+         patch('app.get_website_data', return_value=mock_website_data) as mock_get_data, \
+         patch('app.query_articles', return_value=mock_articles) as mock_query, \
+         patch('app.build_pagination_urls', return_value=('next', 'prev')) as mock_build_urls, \
+         patch('app.determine_page_status', return_value=(False, 100)) as mock_determine, \
+         patch('app.create_compressed_response', return_value=mock_response) as mock_create_response:
         
         result = script_template()
     
@@ -397,8 +397,8 @@ def test_script_template_paginator_error(mock_current_request):
     mock_current_request.query_params = {'invalid': 'value'}
     
     # Setup mock to raise an exception
-    with patch('build_paginator_from_query_params', side_effect=Exception("Paginator error")) as mock_build:
-        with patch('Response') as mock_response_class:
+    with patch('app.build_paginator_from_query_params', side_effect=Exception("Paginator error")) as mock_build:
+        with patch('chalice.Response') as mock_response_class:
             mock_response = MagicMock()
             mock_response_class.return_value = mock_response
             
