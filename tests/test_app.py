@@ -340,16 +340,17 @@ def test_create_compressed_response():
 #########################################
 # Test script_template (main function)
 #########################################
-@patch('app.current_request')
-def test_script_template_success(mock_current_request):
+def test_script_template_success():
     """Test the main endpoint function's happy path."""
     # Setup environment variables
     os.environ['BUCKET_NAME'] = 'test-bucket'
     os.environ['HOME_TABLE'] = 'test-home-table'
     os.environ['ARTICLE_LIST_TABLE'] = 'test-article-table'
-    
-    # Setup request mock
-    mock_current_request.query_params = {'limit': '5', 'tags': 'tag1,tag2'}
+
+    from app import app
+    mock_request = MagicMock()
+    mock_request.query_params = {'limit': '5', 'tags': 'tag1,tag2'}
+    app.current_request = mock_request
     
     # Setup all the helper function mocks
     mock_menu = [{'title': 'Home', 'url': '#'}]
