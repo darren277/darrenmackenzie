@@ -129,10 +129,13 @@ def build_url(base, query_params: dict) -> str:
     from urllib.parse import urlencode
     return base + "?" + urlencode(query_params)
 
+"""
+    MAIN ENDPOINT
+"""
 
-@app.route('/')
-def script_template():
-    menu = [
+def get_menu_items():
+    """Return a list of menu items for the website."""
+    return [
         dict(title='Home', url='#'),
         dict(title='About', url='#about'),
         dict(title='Services', url='#services'),
@@ -140,125 +143,87 @@ def script_template():
         dict(title='Blog', url='#blogarticles'),
         # dict(title='Contact', url='#contact')
     ]
+
+def get_s3_template(bucket_name):
+    """Retrieve and process the HTML template from S3."""
     s3 = boto3.resource('s3')
-    myString = s3.Object(os.environ['BUCKET_NAME'], 'frontend/index.html').get()["Body"].read().decode('utf-8').replace('__THREEJS_VERSION__', '0.172.0')
-    template = s3_env.from_string(myString)
+    myString = s3.Object(bucket_name, 'frontend/index.html').get()["Body"].read().decode('utf-8').replace('__THREEJS_VERSION__', '0.172.0')
+    return s3_env.from_string(myString)
 
+def get_website_data(table_name):
+    """Retrieve website data from DynamoDB."""
     db = boto3.resource('dynamodb')
-    table = db.Table(os.environ['HOME_TABLE'])
-    ## data = app.current_request.json_body
-    website_data = table.get_item(Key={'section': 'website_data'})['Item']
+    table = db.Table(table_name)
+    return table.get_item(Key={'section': 'website_data'})['Item']
 
-    query_params = app.current_request.query_params or {}
-    tags_param = query_params.get('tags')
+def build_paginator_from_query_params(query_params, default_page_limit=DEFAULT_PAGE_LIMIT):
+    """Build a paginator from query parameters."""
+    paginator = Paginator.from_query_params(query_params)
+    paginator.page_size = int(query_params.get('limit', default_page_limit))
+    return paginator
 
-    # Build paginator from query params
-    try:
-        paginator = Paginator.from_query_params(query_params)
-        paginator.page_size = int(query_params.get('limit', DEFAULT_PAGE_LIMIT))
-    except Exception as e:
-        print("Error building paginator:", e)
-        return Response(str(e), status_code=400)
+def query_articles(table_name, paginator, tags=None):
+    """Query articles from DynamoDB with pagination."""
+    db = boto3.resource('dynamodb')
+    article_list_table = db.Table(table_name)
+    kwargs = paginator.build_query_kwargs(tags=tags)
+    
+    response = article_list_table.query(**kwargs)
+    page_of_articles = response["Items"]
+    
+    paginator.update_bounds_from_items(page_of_articles)
+    
+    return page_of_articles
 
-
-    # We'll only handle 1 tag for now:
-    tags = tags_param.split(',') if tags_param else None
-
-    # Build the query arguments using the paginator
-    try:
-        article_table_name = os.environ['ARTICLE_LIST_TABLE']
-        article_list_table = db.Table(article_table_name)
-        kwargs = paginator.build_query_kwargs(tags=tags)
-    except Exception as e:
-        print("Error building query arguments:", e)
-        return Response(str(e), status_code=400)
-
-    # Execute the query
-    try:
-        response = article_list_table.query(**kwargs)
-        page_of_articles = response["Items"]
-    except Exception as e:
-        print("Error querying DynamoDB:", e)
-        return Response(str(e), status_code=500)
-
-    # Update paginator bounds from these items
-    try:
-        paginator.update_bounds_from_items(page_of_articles)
-    except Exception as e:
-        print("Error updating paginator bounds:", e)
-        return Response(str(e), status_code=500)
-
+def build_pagination_urls(paginator, page_of_articles, base_url, tags_param=None):
+    """Build URLs for next and previous pages."""
+    next_page_url = None
+    prev_page_url = None
+    
     # Decide if there's a "next page"
-    # If we got 'Limit' items, assume there's possibly more. 
-    # In practice you might check if 'LastEvaluatedKey' is present.
-    try:
-        if len(page_of_articles) == paginator.page_size:
-            # There's a next page
-            next_p = paginator.next_page()
-            next_query_params = next_p.to_query_params()
-            # If we have tags, we can add them back
-            if tags_param:
-                next_query_params["tags"] = tags_param
-            # Construct next page URL
-            next_page_url = build_url("https://www.darrenmackenzie.com/", next_query_params)
-        else:
-            next_page_url = None
-    except Exception as e:
-        print("Error building next page URL:", e)
-        return Response(str(e), status_code=500)
-
+    if len(page_of_articles) == paginator.page_size:
+        # There's a next page
+        next_p = paginator.next_page()
+        next_query_params = next_p.to_query_params()
+        # If we have tags, we can add them back
+        if tags_param:
+            next_query_params["tags"] = tags_param
+        # Construct next page URL
+        next_page_url = build_url(base_url, next_query_params)
+    
     # Decide if there's a "previous page"
-    # We might say if paginator.current_page > 1, we do a previous
-    try:
-        if paginator.current_page > 1 and page_of_articles:
-            try:
-                prev_p = paginator.prev_page()
-            except Exception as e:
-                print("Error getting prev page:", e)
-                return Response(str(e), status_code=500)
-            prev_query_params = prev_p.to_query_params()
-            if tags_param:
-                prev_query_params["tags"] = tags_param
-            prev_page_url = build_url("https://www.darrenmackenzie.com/", prev_query_params)
-        else:
-            prev_page_url = None
-    except Exception as e:
-        print("Error building prev page URL:", e)
-        return Response(str(e), status_code=500)
+    if paginator.current_page > 1 and page_of_articles:
+        prev_p = paginator.prev_page()
+        prev_query_params = prev_p.to_query_params()
+        if tags_param:
+            prev_query_params["tags"] = tags_param
+        prev_page_url = build_url(base_url, prev_query_params)
     
-    try:
-        if page_of_articles:
-            maxCreated = max([article['created'] for article in page_of_articles])
-        else:
-            maxCreated = 0
+    return next_page_url, prev_page_url
 
-        if not query_params:
-            # this is page 1...
-            first_page = True
-            newest_timestamp = maxCreated
-        else:
-            first_page = False
-            newest_timestamp = query_params.get('newestTimestamp', maxCreated)
-        
-        vals = [(str(article['created']), str(Decimal(newest_timestamp))) for article in page_of_articles]
-        print('vals:', vals)
-        does_current_page_include_newest_timestamp = any([v[0] == v[1] for v in vals])
-    except Exception as e:
-        print("Error getting newest timestamp:", e)
-        return Response(str(e), status_code=500)
+def determine_page_status(page_of_articles, query_params):
+    """Determine if this is the first page and get the newest timestamp."""
+    if page_of_articles:
+        maxCreated = max([article['created'] for article in page_of_articles])
+    else:
+        maxCreated = 0
+
+    if not query_params:
+        # this is page 1...
+        first_page = True
+        newest_timestamp = maxCreated
+    else:
+        first_page = False
+        newest_timestamp = query_params.get('newestTimestamp', maxCreated)
     
-    html_content = template.render(
-        services=website_data['services'],
-        social=website_data['social'],
-        projects=website_data['projects'],
-        articles=page_of_articles,
-        menu=menu,
-        nextPageUrl=next_page_url,
-        prevPageUrl=prev_page_url,
-        firstPage=first_page or does_current_page_include_newest_timestamp,
-        newestTimestamp=newest_timestamp,
-    )
+    vals = [(str(article['created']), str(Decimal(newest_timestamp))) for article in page_of_articles]
+    print('vals:', vals)
+    does_current_page_include_newest_timestamp = any([v[0] == v[1] for v in vals])
+    
+    return first_page or does_current_page_include_newest_timestamp, newest_timestamp
 
+def create_compressed_response(html_content):
+    """Create a compressed HTTP response."""
     compressed_html = brotli_compress(html_content.encode('utf-8'))
     
     return Response(
@@ -267,6 +232,74 @@ def script_template():
         status_code=200
     )
 
+@app.route('/')
+def script_template():
+    """Handle the main website endpoint."""
+    try:
+        # Get menu items and parse query parameters
+        menu = get_menu_items()
+        query_params = app.current_request.query_params or {}
+        tags_param = query_params.get('tags')
+        tags = tags_param.split(',') if tags_param else None
+        
+        # Build paginator
+        try:
+            paginator = build_paginator_from_query_params(query_params)
+        except Exception as e:
+            print("Error building paginator:", e)
+            return Response(str(e), status_code=400)
+        
+        # Get template from S3 and website data from DynamoDB
+        template = get_s3_template(os.environ['BUCKET_NAME'])
+        website_data = get_website_data(os.environ['HOME_TABLE'])
+        
+        # Query articles
+        try:
+            page_of_articles = query_articles(os.environ['ARTICLE_LIST_TABLE'], paginator, tags)
+        except Exception as e:
+            print("Error querying DynamoDB:", e)
+            return Response(str(e), status_code=500)
+        
+        # Build pagination URLs
+        try:
+            next_page_url, prev_page_url = build_pagination_urls(
+                paginator, page_of_articles, "https://www.darrenmackenzie.com/", tags_param
+            )
+        except Exception as e:
+            print("Error building pagination URLs:", e)
+            return Response(str(e), status_code=500)
+        
+        # Determine page status
+        try:
+            is_first_page, newest_timestamp = determine_page_status(page_of_articles, query_params)
+        except Exception as e:
+            print("Error getting newest timestamp:", e)
+            return Response(str(e), status_code=500)
+        
+        # Render template
+        template_data = {
+            'services': website_data['services'],
+            'social': website_data['social'],
+            'projects': website_data['projects'],
+            'articles': page_of_articles,
+            'menu': menu,
+            'nextPageUrl': next_page_url,
+            'prevPageUrl': prev_page_url,
+            'firstPage': is_first_page,
+            'newestTimestamp': newest_timestamp,
+        }
+        html_content = template.render(**template_data)
+        
+        # Create and return response
+        return create_compressed_response(html_content)
+    
+    except Exception as e:
+        print(f"Unexpected error in script_template: {e}")
+        return Response(str(e), status_code=500)
+
+"""
+    ARTICLES LIST
+"""
 def get_articles_list(limit: int, cursor: int, tags: List[str], newer_than=None, older_than=None):
     ## Backward pagination (like “previous page”) is inherently awkward in DynamoDB. Often you do an additional query with reversed ordering or you simply remember the entire “previous” set of items in the client.
     db = boto3.resource('dynamodb')
@@ -310,6 +343,10 @@ def articles_list():
         status_code=200
     )
 
+
+"""
+    JAVASCRIPT, JSON, AND CSS ENDPOINTS
+"""
 # Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://darrenmackenzie-chalice-bucket.s3.us-east-1.amazonaws.com/scripts/main.js. (Reason: CORS header ‘Access-Control-Allow-Origin’ missing). Status code: 200.
 @app.route('/scripts/main.js')
 def serve_js():
@@ -363,6 +400,10 @@ def serve_css():
         status_code=200
     )
 
+
+"""
+    CONTACT FORM
+"""
 @app.route('/contact', methods=['POST'], content_types=['application/x-www-form-urlencoded'])
 def contact_form():
     import uuid
@@ -378,6 +419,9 @@ def contact_form():
     return Response(body='', headers={'Location': 'https://www.darrenmackenzie.com'}, status_code=301)
 
 
+"""
+    INDIVIDUAL PAGES
+"""
 @app.route('/{section}/{article}')
 def articles(section, article):
     s3 = boto3.resource('s3')
@@ -426,6 +470,10 @@ def articles(section, article):
             status_code=404
         )
 
+
+"""
+    STRIPE CHECKOUT
+"""
 @app.route('/create-checkout-session', methods=['POST'])
 def create_checkout_session():
     """
@@ -487,6 +535,7 @@ def stripe_webhook():
 
     # Return a 200 response to acknowledge receipt of the event
     return {}
+
 
 @app.route('/sitemap.xml')
 def sitemap():
