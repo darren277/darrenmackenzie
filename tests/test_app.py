@@ -33,32 +33,38 @@ def test_get_menu_items():
 #########################################
 # Test get_s3_template
 #########################################
-@patch('boto3.resource')
-def test_get_s3_template(mock_boto3_resource):
+@patch('app.boto3')
+@patch('app.s3_env')
+def test_get_s3_template(mock_s3_env, mock_boto3):
     """Test retrieving and processing the HTML template from S3."""
-    # Setup mocks
+    # Setup boto3 resource mock
     mock_s3 = MagicMock()
-    mock_boto3_resource.return_value = mock_s3
+    mock_boto3.resource.return_value = mock_s3
     
     mock_object = MagicMock()
     mock_s3.Object.return_value = mock_object
     
-    mock_get = MagicMock()
-    mock_object.get.return_value = {"Body": BytesIO(b"<html>__THREEJS_VERSION__</html>")}
+    mock_body = MagicMock()
+    mock_body.read.return_value = b"<html>__THREEJS_VERSION__</html>"
+    mock_object.get.return_value = {"Body": mock_body}
     
     # Setup s3_env mock
     mock_template = MagicMock()
-    mock_from_string = MagicMock(return_value=mock_template)
+    mock_s3_env.from_string.return_value = mock_template
     
-    with patch('s3_env.from_string', mock_from_string):
-        result = get_s3_template('test-bucket')
+    # Call the function
+    from app import get_s3_template
+    result = get_s3_template('test-bucket')
     
-    # Verify S3 was called correctly
+    # Verify boto3 was called correctly
+    mock_boto3.resource.assert_called_once_with('s3')
     mock_s3.Object.assert_called_once_with('test-bucket', 'frontend/index.html')
     mock_object.get.assert_called_once()
     
-    # Verify template processing
-    mock_from_string.assert_called_once_with("<html>0.172.0</html>")
+    # Verify s3_env was called correctly
+    mock_s3_env.from_string.assert_called_once_with("<html>0.172.0</html>")
+    
+    # Verify result
     assert result == mock_template
 
 #########################################
