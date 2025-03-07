@@ -136,7 +136,7 @@ def build_url(base, query_params: dict) -> str:
 def get_menu_items():
     """Return a list of menu items for the website."""
     return [
-        dict(title='Home', url='#'),
+        dict(title='Home', url='/'),
         dict(title='About', url='#about'),
         dict(title='Services', url='#services'),
         dict(title='Work', url='#work'),
@@ -296,6 +296,13 @@ def script_template():
     except Exception as e:
         print(f"Unexpected error in script_template: {e}")
         return Response(str(e), status_code=500)
+
+
+@app.route('/index.html')
+def index():
+    # redirect to `/`
+    return Response(body='', headers={'Location': 'https://www.darrenmackenzie.com'}, status_code=301)
+
 
 """
     ARTICLES LIST
