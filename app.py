@@ -23,6 +23,9 @@ CACHE_CONTROL_ONE_WEEK = 'public, s-maxage=604800, max-age=604800'
 # Cache for 1 hour
 CACHE_CONTROL_ONE_HOUR = 'public, s-maxage=3600, max-age=3600'
 
+# Cache for 1 minute
+CACHE_CONTROL_ONE_MINUTE = 'public, s-maxage=60, max-age=60'
+
 
 print('paginator', Paginator)
 
@@ -38,13 +41,16 @@ def create_response_headers(content_type: str, content: str):
     last_modified = datetime.datetime.now().strftime('%a, %d %b %Y %H:%M:%S GMT')
 
     if content_type == 'text/html' or content_type == 'text/html; charset=UTF-8':
-        cache_control = CACHE_CONTROL_ONE_DAY
+        #cache_control = CACHE_CONTROL_ONE_DAY
+        cache_control = CACHE_CONTROL_ONE_MINUTE
     elif content_type == 'application/json':
-        cache_control = CACHE_CONTROL_ONE_HOUR
+        #cache_control = CACHE_CONTROL_ONE_HOUR
+        cache_control = CACHE_CONTROL_ONE_MINUTE
     elif content_type in ['text/css', 'application/javascript']:
         cache_control = CACHE_CONTROL_ONE_WEEK
     else:
-        cache_control = CACHE_CONTROL_ONE_DAY
+        #cache_control = CACHE_CONTROL_ONE_DAY
+        cache_control = CACHE_CONTROL_ONE_MINUTE
     
     return {
         'Content-Type': content_type,
