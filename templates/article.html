@@ -4,6 +4,8 @@
 <link rel="stylesheet" href="/style.css"></link>
 <link crossorigin="anonymous" referrerpolicy="no-referrer" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"></link>
 <title>dm creations - Article - {{ article.title }}</title>
+<meta propery="og:title" content="{{ article.title }}" />
+
 <style>.article {
 	background: #302626;
 	width: 100%;
@@ -122,6 +124,39 @@
 		<article>{{ article.body | safe }}</article>
 	</div>
 </section>
+
+<!-- 
+data-mapping="og:title"
+data-strict="0"
+
+data-mapping="number"
+data-term="1"
+
+data-mapping="specific"
+data-term="Transpiling from Python to React"
+-->
+<section>
+	<div class="giscus" id="giscus"></div>
+</section>
+<script src="https://giscus.app/client.js"
+        data-repo="darren277/blog"
+        data-repo-id="R_kgDOOFZRCw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOOFZRC84CnuQr"
+
+        data-mapping="specific"
+		data-term="{{ article.title }}"
+
+		data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="noborder_dark"
+        data-lang="en"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+
 <section><div id="contact_section"><div id="contact"><div><div class="contact" id="footercontactformParent"><h5>Get in touch</h5>
 <form class="ui form" method="POST" action="/contact" id="footercontactform"><input type="email" name="email" placeholder="Email" id="email">
 <textarea name="message" id="message" placeholder="Enter a brief message"></textarea>
