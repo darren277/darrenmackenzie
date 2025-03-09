@@ -1,0 +1,477 @@
+{
+    "section": {
+        "S": "website_data"
+    },
+    "articles": {
+        "L": [
+            {
+                "M": {
+                    "description": {
+                        "S": "A history of the definition of happiness and well-being, starting with the ancient Greeks and finishing with recent developments from positive psychology"
+                    },
+                    "icons": {
+                        "L": []
+                    },
+                    "tags": {
+                        "L": [
+                            {
+                                "S": "happiness"
+                            },
+                            {
+                                "S": "wellbeing"
+                            },
+                            {
+                                "S": "eudamonia"
+                            },
+                            {
+                                "S": "aristotle"
+                            },
+                            {
+                                "S": "epicurus"
+                            },
+                            {
+                                "S": "philosophy"
+                            }
+                        ]
+                    },
+                    "thumbnail": {
+                        "S": ""
+                    },
+                    "title": {
+                        "S": "Eudamonia and the Philosophical Roots of Happiness"
+                    },
+                    "url": {
+                        "S": "/blog/eudamonia-and-the-philosophical-roots-of-happiness"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "description": {
+                        "S": ""
+                    },
+                    "icons": {
+                        "L": []
+                    },
+                    "tags": {
+                        "L": [
+                            {
+                                "S": "anthropology"
+                            },
+                            {
+                                "S": "sociology"
+                            },
+                            {
+                                "S": "psychology"
+                            }
+                        ]
+                    },
+                    "thumbnail": {
+                        "S": ""
+                    },
+                    "title": {
+                        "S": "The Entwined Legacy of Social and Behavioral Sciences"
+                    },
+                    "url": {
+                        "S": "/blog/the-entwined-legacy-of-social-and-behavioral-sciences"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "description": {
+                        "S": "Demonstrating the fundamentals of neural networks, combining both theory and application"
+                    },
+                    "icons": {
+                        "L": []
+                    },
+                    "tags": {
+                        "L": [
+                            {
+                                "S": "machinelearning"
+                            },
+                            {
+                                "S": "neuralnetworks"
+                            }
+                        ]
+                    },
+                    "thumbnail": {
+                        "S": ""
+                    },
+                    "title": {
+                        "S": "Neural Network Fundamentals"
+                    },
+                    "url": {
+                        "S": "/blog/neural-network-fundamentals"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "description": {
+                        "S": "Deploy Lambda functions with custom layers in no time at all by using Docker"
+                    },
+                    "icons": {
+                        "L": []
+                    },
+                    "tags": {
+                        "L": [
+                            {
+                                "S": "aws"
+                            },
+                            {
+                                "S": "lambda"
+                            },
+                            {
+                                "S": "layers"
+                            },
+                            {
+                                "S": "docker"
+                            }
+                        ]
+                    },
+                    "thumbnail": {
+                        "S": ""
+                    },
+                    "title": {
+                        "S": "Lambda Layers"
+                    },
+                    "url": {
+                        "S": "/blog/lambda-layers"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "description": {
+                        "S": "A year-long writing challenge where the I commit to daily articles across diverse themes, from business and software development to philosophy and personal reflections, to rekindle my writing habit and explore new ideas"
+                    },
+                    "icons": {
+                        "L": []
+                    },
+                    "tags": {
+                        "L": [
+                            {
+                                "S": "testing"
+                            },
+                            {
+                                "S": "publishing"
+                            }
+                        ]
+                    },
+                    "thumbnail": {
+                        "S": ""
+                    },
+                    "title": {
+                        "S": "Article Per Day Challenge"
+                    },
+                    "url": {
+                        "S": "/blog/article-per-day-challenge"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "description": {
+                        "S": ""
+                    },
+                    "icons": {
+                        "L": []
+                    },
+                    "tags": {
+                        "L": [
+                            {
+                                "S": "testing"
+                            },
+                            {
+                                "S": "publishing"
+                            }
+                        ]
+                    },
+                    "thumbnail": {
+                        "S": ""
+                    },
+                    "title": {
+                        "S": "Testing Publishing"
+                    },
+                    "url": {
+                        "S": "/blog/testing-publishing"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "description": {
+                        "S": "Read about the trials and tribulations involved in building a reliable transpilation pipeline from Python code to React."
+                    },
+                    "icons": {
+                        "L": []
+                    },
+                    "tags": {
+                        "L": [
+                            {
+                                "S": "transpiling"
+                            },
+                            {
+                                "S": "ast"
+                            },
+                            {
+                                "S": "python"
+                            },
+                            {
+                                "S": "javascript"
+                            },
+                            {
+                                "S": "react"
+                            }
+                        ]
+                    },
+                    "thumbnail": {
+                        "S": ""
+                    },
+                    "title": {
+                        "S": "Transpiling from Python to React"
+                    },
+                    "url": {
+                        "S": "/blog/transpiling-from-python-to-react"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "description": {
+                        "S": "Fill this in"
+                    },
+                    "icons": {
+                        "L": []
+                    },
+                    "tags": {
+                        "L": [
+                            {
+                                "S": "#python"
+                            },
+                            {
+                                "S": "#flask"
+                            },
+                            {
+                                "S": "#abstractfactory"
+                            },
+                            {
+                                "S": "#github"
+                            },
+                            {
+                                "S": "#slack"
+                            },
+                            {
+                                "S": "#apis"
+                            }
+                        ]
+                    },
+                    "thumbnail": {
+                        "S": ""
+                    },
+                    "title": {
+                        "S": "How I Almost Failed as Early as Day Six"
+                    },
+                    "url": {
+                        "S": "/blog/how-i-almost-failed-as-early-as-day-six"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "description": {
+                        "S": "Testing publishing by testing publishing by testing publishing by testing publishing by testing publishing"
+                    },
+                    "icons": {
+                        "L": []
+                    },
+                    "tags": {
+                        "L": [
+                            {
+                                "S": "testing"
+                            },
+                            {
+                                "S": "publishing"
+                            }
+                        ]
+                    },
+                    "thumbnail": {
+                        "S": ""
+                    },
+                    "title": {
+                        "S": "Testing Publishing 123"
+                    },
+                    "url": {
+                        "S": "/blog/testing-publishing-123"
+                    }
+                }
+            }
+        ]
+    },
+    "projects": {
+        "L": [
+            {
+                "M": {
+                    "description": {
+                        "S": "I put together a proof of concept demo for plant identification on a farm using scikitlearn."
+                    },
+                    "github": {
+                        "BOOL": false
+                    },
+                    "icons": {
+                        "L": []
+                    },
+                    "tags": {
+                        "L": [
+                            {
+                                "S": "scikitlearn"
+                            },
+                            {
+                                "S": "ai"
+                            },
+                            {
+                                "S": "machine learning"
+                            }
+                        ]
+                    },
+                    "thumbnail": {
+                        "S": ""
+                    },
+                    "title": {
+                        "S": "AI Plant Identification (Pilgrim Farms)"
+                    },
+                    "url": {
+                        "S": "/work/plantid"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "description": {
+                        "S": "I devised a strategic plan for an internal software application centered around market research analytics and ecommerce operations automation."
+                    },
+                    "github": {
+                        "BOOL": false
+                    },
+                    "icons": {
+                        "L": []
+                    },
+                    "tags": {
+                        "L": [
+                            {
+                                "S": "product management"
+                            },
+                            {
+                                "S": "solution architect"
+                            },
+                            {
+                                "S": "analytics"
+                            },
+                            {
+                                "S": "automation"
+                            }
+                        ]
+                    },
+                    "thumbnail": {
+                        "S": ""
+                    },
+                    "title": {
+                        "S": "Product Management and Solution Architect (Festie Survival)"
+                    },
+                    "url": {
+                        "S": "/work/festiesurvival"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "description": {
+                        "S": "I built a REST API that listens for Github webhooks and sends Slack notifications."
+                    },
+                    "github": {
+                        "BOOL": false
+                    },
+                    "icons": {
+                        "L": []
+                    },
+                    "tags": {
+                        "L": [
+                            {
+                                "S": "github api"
+                            },
+                            {
+                                "S": "slack api"
+                            },
+                            {
+                                "S": "python"
+                            },
+                            {
+                                "S": "flask"
+                            }
+                        ]
+                    },
+                    "thumbnail": {
+                        "S": ""
+                    },
+                    "title": {
+                        "S": "Github to Slack Notifications (General Use)"
+                    },
+                    "url": {
+                        "S": "/work/webhook-relay-station-github-and-slack"
+                    }
+                }
+            }
+        ]
+    },
+    "services": {
+        "L": [
+            {
+                "M": {
+                    "description": {
+                        "S": "Web apps comprise a pretty broad array of use cases. I have personally developed or worked on just about every type."
+                    },
+                    "icon": {
+                        "S": "fa-solid fa-bars"
+                    },
+                    "title": {
+                        "S": "Web Development"
+                    },
+                    "url": {
+                        "S": "/services/webdevelopment"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "description": {
+                        "S": "In addition to traditional web applications, I have planned and implemented many other software solutions ranging from headless REST microservices to blockchain DApps to mobile and desktop applications, and much, much more."
+                    },
+                    "icon": {
+                        "S": "fa-solid fa-bars"
+                    },
+                    "title": {
+                        "S": "Solution Architect"
+                    },
+                    "url": {
+                        "S": "/services/solutionarchitect"
+                    }
+                }
+            }
+        ]
+    },
+    "social": {
+        "L": [
+            {
+                "M": {
+                    "icon": {
+                        "S": "fa-brands fa-linkedin-in"
+                    },
+                    "url": {
+                        "S": "https://www.linkedin.com/in/darren-mackenzie-96654661/"
+                    }
+                }
+            }
+        ]
+    }
+}
