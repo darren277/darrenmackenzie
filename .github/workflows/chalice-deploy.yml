@@ -31,3 +31,25 @@ jobs:
         
     - name: Deploy with Chalice
       run: chalice deploy
+
+  upload-to-s3:
+    runs-on: ubuntu-latest
+    needs: deploy
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+    
+    - name: Upload HTML and CSS files to S3
+      run: |
+        aws s3 cp templates/404.html s3://darrenmackenzie-chalice-bucket/frontend/404.html
+        aws s3 cp templates/article.html s3://darrenmackenzie-chalice-bucket/frontend/article.html
+        aws s3 cp templates/checkout.html s3://darrenmackenzie-chalice-bucket/frontend/checkout.html
+        aws s3 cp templates/index.html s3://darrenmackenzie-chalice-bucket/frontend/index.html
+        aws s3 cp templates/style.css s3://darrenmackenzie-chalice-bucket/frontend/style.css
