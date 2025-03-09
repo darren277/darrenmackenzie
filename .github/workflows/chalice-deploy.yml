@@ -16,8 +16,15 @@ jobs:
       with:
         python-version: '3.9'
     
-    - name: Install dependencies
+    - name: Fix requirements.txt encoding and install dependencies
       run: |
+        # Check if requirements.txt has encoding issues and fix them
+        if [ -f requirements.txt ]; then
+          # Create a clean UTF-8 version of the file
+          cat requirements.txt | tr -d '\r' | iconv -f utf-8 -t utf-8 -c > requirements.clean.txt
+          mv requirements.clean.txt requirements.txt
+        fi
+        
         python -m pip install --upgrade pip
         pip install chalice
         pip install -r requirements.txt
