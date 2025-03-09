@@ -16,13 +16,23 @@ jobs:
       with:
         python-version: '3.9'
     
-    - name: Fix requirements.txt encoding and install dependencies
+    - name: Fix UTF-16 encoded requirements.txt file
       run: |
-        # Check if requirements.txt has encoding issues and fix them
+        # Handle UTF-16 encoded requirements.txt
         if [ -f requirements.txt ]; then
-          # Create a clean UTF-8 version of the file
-          cat requirements.txt | tr -d '\r' | iconv -f utf-8 -t utf-8 -c > requirements.clean.txt
-          mv requirements.clean.txt requirements.txt
+          # Check if it's likely UTF-16 encoded
+          if file requirements.txt | grep -q "UTF-16"; then
+            echo "Converting requirements.txt from UTF-16 to UTF-8..."
+            iconv -f UTF-16 -t UTF-8 requirements.txt > requirements.utf8.txt
+            mv requirements.utf8.txt requirements.txt
+          else
+            # Try alternative detection method
+            if hexdump -C requirements.txt | head -1 | grep -q "ff fe"; then
+              echo "Converting requirements.txt from UTF-16LE to UTF-8..."
+              iconv -f UTF-16LE -t UTF-8 requirements.txt > requirements.utf8.txt
+              mv requirements.utf8.txt requirements.txt
+            fi
+          fi
         fi
         
         python -m pip install --upgrade pip
