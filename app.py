@@ -94,7 +94,8 @@ STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET', get_secret('STRI
 
 #DEFAULT_PAGE_LIMIT = 10
 #DEFAULT_PAGE_LIMIT = 3
-DEFAULT_PAGE_LIMIT = 9
+#DEFAULT_PAGE_LIMIT = 9
+DEFAULT_PAGE_LIMIT = 30
 
 import os
 cwd = os.path.dirname(__file__)
