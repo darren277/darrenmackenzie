@@ -437,8 +437,6 @@ def articles(section, article):
     website_menu = [
         dict(title='Home', url='#'),
         dict(title='About', url='#about'),
-        dict(title='Services', url='#services'),
-        dict(title='Work', url='#work'),
         dict(title='Blog', url='#blogarticles'),
         # dict(title='Contact', url='#contact')
     ]
