@@ -1,0 +1,26 @@
+{
+    "app_name": "darrenmackenzie",
+    "automatic_layer": true,
+    "stages": {
+        "dev": {
+            "api_gateway_custom_domain": {
+                "certificate_arn": "arn:aws:acm:us-east-1:160751179089:certificate/e1d9476e-c67f-4b38-8a90-90cd08288d58",
+                "domain_name": "www.darrenmackenzie.com"
+            },
+            "api_gateway_stage": "dev",
+            "autogen_policy": false,
+            "environment_variables": {
+                "ARTICLE_TABLE": "darrenmackenzie-articles",
+                "BUCKET_NAME": "darrenmackenzie-chalice-bucket",
+                "CONTACT_TABLE": "darrenmackenzie-contact",
+                "HOME_TABLE": "darrenmackenzie-home",
+                "ARTICLE_LIST_TABLE": "darrenmackenzie-articles-list"
+            },
+            "iam_policy_file": "dev-policy.json",
+            "layers": [
+                "arn:aws:lambda:us-east-1:160751179089:layer:stripe:1"
+            ]
+        }
+    },
+    "version": "2.0"
+}

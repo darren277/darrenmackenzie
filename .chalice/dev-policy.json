@@ -1,0 +1,84 @@
+{
+    "Statement": [
+        {
+            "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+            ],
+            "Effect": "Allow",
+            "Resource": [
+                "arn:aws:logs:*:*:*"
+            ]
+        },
+        {
+            "Action": [
+                "s3:ListBucket",
+                "s3:PutObject",
+                "s3:GetObject",
+                "s3:DeleteObject"
+            ],
+            "Effect": "Allow",
+            "Resource": [
+                "arn:aws:s3:::darrenmackenzie-chalice-bucket",
+                "arn:aws:s3:::darrenmackenzie-chalice-bucket/*"
+            ]
+        },
+        {
+            "Action": [
+                "dynamodb:List*",
+                "dynamodb:DescribeReservedCapacity*",
+                "dynamodb:DescribeLimits",
+                "dynamodb:DescribeTimeToLive"
+            ],
+            "Effect": "Allow",
+            "Resource": "*"
+        },
+        {
+            "Action": [
+                "dynamodb:BatchGet*",
+                "dynamodb:DescribeStream",
+                "dynamodb:DescribeTable",
+                "dynamodb:Get*",
+                "dynamodb:Query",
+                "dynamodb:Scan",
+                "dynamodb:BatchWrite*",
+                "dynamodb:CreateTable",
+                "dynamodb:Delete*",
+                "dynamodb:Update*",
+                "dynamodb:PutItem"
+            ],
+            "Effect": "Allow",
+            "Resource": [
+                "arn:aws:dynamodb:*:*:table/darrenmackenzie-contact",
+                "arn:aws:dynamodb:*:*:table/darrenmackenzie-home",
+                "arn:aws:dynamodb:*:*:table/darrenmackenzie-articles",
+                "arn:aws:dynamodb:*:*:table/darrenmackenzie-articles-list"
+            ]
+        },
+        {
+            "Action": [
+                "s3:ListBucket",
+                "s3:PutObject",
+                "s3:GetObject",
+                "s3:DeleteObject"
+            ],
+            "Effect": "Allow",
+            "Resource": [
+                "arn:aws:s3:::darrenmackenzie-chalice-bucket",
+                "arn:aws:s3:::darrenmackenzie-chalice-bucket/*"
+            ]
+        },
+        {
+            "Action": [
+                "secretsmanager:GetSecretValue"
+            ],
+            "Effect": "Allow",
+            "Resource": [
+                "arn:aws:secretsmanager:us-east-1:160751179089:secret:STRIPE_RESTRICTED_KEY-ko4kLT",
+                "arn:aws:secretsmanager:us-east-1:160751179089:secret:STRIPE_WEBHOOK_SECRET-IZ39P3"
+            ]
+        }
+    ],
+    "Version": "2012-10-17"
+}

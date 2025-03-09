@@ -1,4 +1,6 @@
-.chalice/
+.chalice/deployed/
+.chalice/deployments/
+
 __pycache__/
 
 venv/
