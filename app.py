@@ -94,7 +94,8 @@ STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET', get_secret('STRI
 
 #DEFAULT_PAGE_LIMIT = 10
 #DEFAULT_PAGE_LIMIT = 3
-DEFAULT_PAGE_LIMIT = 9
+#DEFAULT_PAGE_LIMIT = 9
+DEFAULT_PAGE_LIMIT = 30
 
 import os
 cwd = os.path.dirname(__file__)
@@ -144,8 +145,6 @@ def get_menu_items():
     return [
         dict(title='Home', url='/'),
         dict(title='About', url='#about'),
-        dict(title='Services', url='#services'),
-        dict(title='Work', url='#work'),
         dict(title='Blog', url='#blogarticles'),
         # dict(title='Contact', url='#contact')
     ]
@@ -284,9 +283,7 @@ def script_template():
         
         # Render template
         template_data = {
-            'services': website_data['services'],
             'social': website_data['social'],
-            'projects': website_data['projects'],
             'articles': page_of_articles,
             'menu': menu,
             'nextPageUrl': next_page_url,
@@ -441,8 +438,6 @@ def articles(section, article):
     website_menu = [
         dict(title='Home', url='#'),
         dict(title='About', url='#about'),
-        dict(title='Services', url='#services'),
-        dict(title='Work', url='#work'),
         dict(title='Blog', url='#blogarticles'),
         # dict(title='Contact', url='#contact')
     ]

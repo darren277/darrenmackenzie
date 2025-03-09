@@ -5,6 +5,15 @@
 1. `. venv/Scripts/activate`.
 2. `chalice deploy`.
 
+### GitHub Actions
+
+This repository is set up to automatically deploy to AWS Lambda using GitHub Actions. The workflow is defined in `.github/workflows/chalice-deploy.yml`.
+
+Be sure to set the following secrets in your repository settings:
+1. `AWS_ACCESS_KEY_ID`.
+2. `AWS_SECRET_ACCESS_KEY`.
+3. `AWS_REGION`.
+
 ## Performance
 
 ### Brotli

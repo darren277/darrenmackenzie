@@ -1,0 +1,22 @@
+{
+    "section": {
+        "S": "website_data"
+    },
+    "articles": {
+        "L": []
+    },
+    "social": {
+        "L": [
+            {
+                "M": {
+                    "icon": {
+                        "S": "fa-brands fa-linkedin-in"
+                    },
+                    "url": {
+                        "S": "https://www.linkedin.com/in/darren-mackenzie-96654661/"
+                    }
+                }
+            }
+        ]
+    }
+}

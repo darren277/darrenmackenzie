@@ -705,10 +705,4 @@ canvas {
 	  height: 500px;
 	}
   }
-  @media (min-width: 1200px) {
-	.card {
-	  width: 600px;
-	  height: 600px;
-	}
-  }
   
