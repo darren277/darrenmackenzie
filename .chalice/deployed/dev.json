@@ -1,0 +1,42 @@
+{
+  "resources": [
+    {
+      "name": "managed-layer",
+      "resource_type": "lambda_layer",
+      "layer_version_arn": "arn:aws:lambda:us-east-1:160751179089:layer:darrenmackenzie-dev-managed-layer:96"
+    },
+    {
+      "name": "api_handler_role",
+      "resource_type": "iam_role",
+      "role_arn": "arn:aws:iam::160751179089:role/darrenmackenzie-dev-api_handler",
+      "role_name": "darrenmackenzie-dev-api_handler"
+    },
+    {
+      "name": "api_handler",
+      "resource_type": "lambda_function",
+      "lambda_arn": "arn:aws:lambda:us-east-1:160751179089:function:darrenmackenzie-dev"
+    },
+    {
+      "name": "rest_api",
+      "resource_type": "rest_api",
+      "rest_api_id": "iuiexm3by8",
+      "rest_api_url": "https://iuiexm3by8.execute-api.us-east-1.amazonaws.com/dev/"
+    },
+    {
+      "name": "api_gateway_custom_domain",
+      "resource_type": "domain_name",
+      "hosted_zone_id": "Z2FDTNDATAQYW2",
+      "alias_domain_name": "d3o8xy8cpdvri4.cloudfront.net",
+      "certificate_arn": "arn:aws:acm:us-east-1:160751179089:certificate/e1d9476e-c67f-4b38-8a90-90cd08288d58",
+      "security_policy": "TLS_1_2",
+      "domain_name": "www.darrenmackenzie.com",
+      "api_mapping": [
+        {
+          "key": "/"
+        }
+      ]
+    }
+  ],
+  "schema_version": "2.0",
+  "backend": "api"
+}
