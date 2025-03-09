@@ -144,8 +144,6 @@ def get_menu_items():
     return [
         dict(title='Home', url='/'),
         dict(title='About', url='#about'),
-        dict(title='Services', url='#services'),
-        dict(title='Work', url='#work'),
         dict(title='Blog', url='#blogarticles'),
         # dict(title='Contact', url='#contact')
     ]
