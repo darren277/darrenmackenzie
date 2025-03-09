@@ -6,7 +6,8 @@
 <title>dm creations - Article - {{ article.title }}</title>
 <meta propery="og:title" content="{{ article.title }}" />
 
-<style>.article {
+<style>
+.article {
 	background: #302626;
 	width: 100%;
 	padding-top: 100px;
@@ -75,13 +76,13 @@
 	margin-bottom: 20px;
 }
 
-.hero {
-	height: 150;
+.article-hero {
+	height: auto;
 }
 
 </style></head>
 <body><div style="	position: relative;"><canvas></canvas>
-<div class="hero"><nav><h2 class="logo">dm creations</h2>
+<div class="article-hero"><nav><h2 class="logo">dm creations</h2>
 <ul>{% for entry in menu %}
 <li>
  <a href="{{ entry.url }}">
