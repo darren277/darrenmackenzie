@@ -282,9 +282,7 @@ def script_template():
         
         # Render template
         template_data = {
-            'services': website_data['services'],
             'social': website_data['social'],
-            'projects': website_data['projects'],
             'articles': page_of_articles,
             'menu': menu,
             'nextPageUrl': next_page_url,
