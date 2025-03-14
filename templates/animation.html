@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SVG Path Animation with Steps</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f5f7fa;
+            margin: 0;
+        }
+
+        svg {
+            overflow: visible;
+        }
+
+        #workflowPath {
+            fill: none;
+            stroke: #bbb;
+            stroke-width: 3;
+        }
+
+        #movingNode {
+            fill: #007acc;
+        }
+
+        .controls {
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+
+<svg width="600" height="300">
+    <path id="workflowPath"
+          d="M 50,250 C 150,-100 450,400 550,50"
+          stroke="#ccc"
+          stroke-width="2"
+          fill="none"/>
+    <circle id="movingNode" r="10" />
+</svg>
+
+<div class="controls">
+    <button id="prevStep">Previous Step</button>
+    <button id="nextStep">Next Step</button>
+</div>
+
+<script>
+    const path = document.getElementById('workflowPath');
+    const node = document.getElementById('movingNode');
+    const pathLength = path.getTotalLength();
+
+    const steps = [0, 0.33, 0.66, 1];
+    let currentStep = 0;
+
+    function moveToStep(stepIndex) {
+        const progress = steps[stepIndex];
+        const point = path.getPointAtLength(progress * pathLength);
+
+        node.setAttribute('cx', point.x);
+        node.setAttribute('cy', point.y);
+    }
+
+    document.getElementById('nextStep').addEventListener('click', () => {
+        if (currentStep < steps.length - 1) {
+            currentStep++;
+            moveToStep(currentStep);
+        }
+    });
+
+    document.getElementById('prevStep').addEventListener('click', () => {
+        if (currentStep > 0) {
+            currentStep--;
+            moveToStep(currentStep);
+        }
+    });
+
+    window.onload = () => {
+        moveToStep(currentStep);
+    };
+</script>
+
+</body>
+</html>
