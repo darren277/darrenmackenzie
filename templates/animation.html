@@ -135,29 +135,42 @@ function convertPathToAnchorPoints(pathString) {
 
     const imageUrl = document.querySelector('meta[name="imgUrl"]').getAttribute('content');
 
+    // Move this code outside the window.onload function so it's available earlier
+    const pathString = path.getAttribute('d');
+    const anchorPoints = convertPathToAnchorPoints(pathString);
+    const pathBounds = calculatePathBounds(anchorPoints);
+
+    // Add some padding around the bounds
+    const padding = 100; // Increased padding
+    const viewBoxX = Math.max(0, pathBounds.minX - padding);
+    const viewBoxY = Math.max(0, pathBounds.minY - padding);
+    const viewBoxWidth = pathBounds.maxX - pathBounds.minX + (padding * 2);
+    const viewBoxHeight = pathBounds.maxY - pathBounds.minY + (padding * 2);
+
+    // Set the viewBox immediately
+    const svg = document.querySelector('svg');
+    svg.setAttribute('viewBox', `${viewBoxX} ${viewBoxY} ${viewBoxWidth} ${viewBoxHeight}`);
+
     if (imageUrl) {
         // prepend `image` with `href` to `svg` element
         const svg = document.querySelector('svg');
         const image = document.createElementNS('http://www.w3.org/2000/svg', 'image');
         
-        image.setAttribute('width', '100%');
-        image.setAttribute('height', '100%');
-        image.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+        // Set explicit coordinates matching the viewBox
+        image.setAttribute('x', viewBoxX);
+        image.setAttribute('y', viewBoxY);
+        image.setAttribute('width', viewBoxWidth);
+        image.setAttribute('height', viewBoxHeight);
 
-        // Add the image as the first child of SVG (so it's behind other elements)
+        // 'slice' to cover entire area
+        image.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+        
         svg.insertBefore(image, svg.firstChild);
 
         // Then set the href when the URL is available
         fetchSignedUrl(imageUrl).then((signedUrl) => {
             console.log('signedUrl', signedUrl);
             image.setAttribute('href', signedUrl);
-
-            // Now set dimensions based on the current viewBox
-            const viewBox = svg.viewBox.baseVal;
-            image.setAttribute('x', viewBox.x);
-            image.setAttribute('y', viewBox.y);
-            image.setAttribute('width', viewBox.width);
-            image.setAttribute('height', viewBox.height);
         }).catch(error => {
             console.error('Error fetching signed URL:', error);
         });
@@ -174,9 +187,6 @@ function convertPathToAnchorPoints(pathString) {
     const texts = document.querySelectorAll('text');
 
     const steps = Array.from({ length: texts.length }, (_, i) => i / (texts.length - 1));
-
-    const pathString = path.getAttribute('d');
-    const anchorPoints = convertPathToAnchorPoints(pathString);
 
     function easeInOut(t) {
         return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
@@ -310,21 +320,6 @@ function convertPathToAnchorPoints(pathString) {
     }
 
     window.onload = () => {
-        const svg = document.querySelector('svg');
-
-        // Calculate the bounds of your path to set a dynamic viewBox
-        const pathBounds = calculatePathBounds(anchorPoints);
-        
-        // Add some padding around the bounds
-        const padding = 50;
-        const viewBoxX = Math.max(0, pathBounds.minX - padding);
-        const viewBoxY = Math.max(0, pathBounds.minY - padding);
-        const viewBoxWidth = pathBounds.maxX - pathBounds.minX + (padding * 2);
-        const viewBoxHeight = pathBounds.maxY - pathBounds.minY + (padding * 2);
-        
-        // Set the viewBox dynamically based on path coordinates
-        svg.setAttribute('viewBox', `${viewBoxX} ${viewBoxY} ${viewBoxWidth} ${viewBoxHeight}`);
-
         if (animationType === 'anchor_points') {
             positionAnchorTexts();
         } else {
