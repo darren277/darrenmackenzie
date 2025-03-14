@@ -594,9 +594,34 @@ ANIMATIONS_DICT = {
     }
 }
 
+@app.route('/load_img', methods=['GET'])
+def load_img():
+    img_url = app.current_request.query_params.get('img_url', None)
+
+    if not img_url:
+        return Response(body='Image URL required.', status_code=400)
+    
+    if not img_url.startswith('static/'):
+        return Response(body='Image URL must start with `static/`.', status_code=400)
+    
+    s3 = boto3.resource('s3')
+
+    try:
+        img_content = s3.Object(os.environ['BUCKET_NAME'], img_url).get()["Body"].read()
+    except Exception as e:
+        return Response(body=str(e), status_code=404)
+    
+    return Response(
+        body=img_content,
+        headers={'Content-Type': 'image/png'},
+        status_code=200
+    )
+
+
 @app.route('/animation', methods=['GET'])
 def animation():
     animation_name = app.current_request.query_params.get('animation_name', None)
+    background_image_url = app.current_request.query_params.get('background_image_url', None)
 
     if not animation_name:
         return Response(body='Path (`animation_name`) required.', status_code=400)
@@ -612,7 +637,17 @@ def animation():
 
     template = get_s3_template(os.environ['BUCKET_NAME'], template_name='frontend/animation.html')
 
-    html_content = template.render(**{'workflow_path': path, 'steps': steps, 'title': animation_data.get('title', 'Animation'), 'animation_type': animation_data.get('animation_type', 'default')})
+    template_data = {
+        'workflow_path': path,
+        'steps': steps,
+        'title': animation_data.get('title', 'Animation'),
+        'animation_type': animation_data.get('animation_type', 'default')
+    }
+
+    if background_image_url:
+        template_data.update({'background_image_url': f"/load_img?img_url={background_image_url}"})
+
+    html_content = template.render(**template_data)
     
     return create_compressed_response(html_content)
 
