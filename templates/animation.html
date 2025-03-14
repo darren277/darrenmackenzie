@@ -69,20 +69,16 @@
     const path = document.getElementById('workflowPath');
     const node = document.getElementById('movingNode');
     const pathLength = path.getTotalLength();
-
-    // TODO: Make this dynamic...
-    const steps = [0, 0.33, 0.66, 1];
     
     let currentStep = 0;
     const animationDuration = 1000; // duration in ms
     let animating = false;
 
-    //const texts = [document.getElementById('{{ steps[0]._id }}'), document.getElementById('{{ steps[1]._id }}'), document.getElementById('{{ steps[2]._id }}'), document.getElementById('{{ steps[3]._id }}')];
-    // use element name selector and iterate over all `text` elements
     const texts = document.querySelectorAll('text');
+    
+    const steps = Array.from({ length: texts.length }, (_, i) => i / (texts.length - 1));
 
     function easeInOut(t) {
-        // TODO: Make this dynamic?
         return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
     }
 
