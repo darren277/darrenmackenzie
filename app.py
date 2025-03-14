@@ -645,7 +645,7 @@ def animation():
     }
 
     if background_image_url:
-        template_data.update({'background_image_url': f"/load_img?img_url={background_image_url}"})
+        template_data.update({'background_image_url': background_image_url})
 
     html_content = template.render(**template_data)
     
