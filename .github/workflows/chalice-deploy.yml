@@ -70,6 +70,7 @@ jobs:
         aws s3 cp templates/checkout.html s3://darrenmackenzie-chalice-bucket/frontend/checkout.html
         aws s3 cp templates/index.html s3://darrenmackenzie-chalice-bucket/frontend/index.html
         aws s3 cp templates/style.css s3://darrenmackenzie-chalice-bucket/frontend/style.css
+        aws s3 cp templates/animation.html s3://darrenmackenzie-chalice-bucket/frontend/animation.html
 
   invalidate-cloudfront:
     runs-on: ubuntu-latest
@@ -87,4 +88,4 @@ jobs:
       run: |
         aws cloudfront create-invalidation \
           --distribution-id E10Y9S0LDIJJ \
-          --paths "/frontend/404.html" "/frontend/article.html" "/frontend/checkout.html" "/frontend/index.html" "/frontend/style.css"
+          --paths "/frontend/404.html" "/frontend/article.html" "/frontend/checkout.html" "/frontend/index.html" "/frontend/style.css" "/frontend/animation.html"
