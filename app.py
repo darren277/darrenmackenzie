@@ -607,13 +607,13 @@ def load_img():
     s3 = boto3.resource('s3')
 
     try:
-        img_content = s3.Object(os.environ['BUCKET_NAME'], img_url).get()["Body"].read()
+        presigned_url = s3.meta.client.generate_presigned_url('get_object', Params={'Bucket': os.environ['BUCKET_NAME'], 'Key': img_url}, ExpiresIn=3600)
     except Exception as e:
         return Response(body=str(e), status_code=404)
     
     return Response(
-        body=img_content,
-        headers={'Content-Type': 'image/png'},
+        body=json.dumps({'img_url': presigned_url}),
+        headers={'Content-Type': 'application/json'},
         status_code=200
     )
 
