@@ -132,14 +132,14 @@ function convertPathToAnchorPoints(pathString) {
         // prepend `image` with `href` to `svg` element
         const svg = document.querySelector('svg');
         const image = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-
-        const signedUrl = await fetchSignedUrl(imageUrl);
-
-        console.log('signedUrl', signedUrl);
-
-        image.setAttribute('href', signedUrl);
+        
         image.setAttribute('width', '100%');
         image.setAttribute('height', '100%');
+
+        const signedUrl = fetchSignedUrl(imageUrl).then((signedUrl) => {
+            console.log('signedUrl', signedUrl);
+            image.setAttribute('href', signedUrl);
+        });
     }
 
     const path = document.getElementById('workflowPath');
