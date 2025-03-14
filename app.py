@@ -547,6 +547,7 @@ def stripe_webhook():
 
 ANIMATIONS_DICT = {
     'my_animation': {
+        'title': 'My Animation',
         'path': 'M 50,250 C 150,-100 450,400 550,50',
         'steps': [
             {'_id': 'text0', 'text': 'Start here.'},
@@ -575,7 +576,7 @@ def animation():
 
     template = get_s3_template(os.environ['BUCKET_NAME'], template_name='frontend/animation.html')
 
-    html_content = template.render(**{'workflow_path': path, 'steps': steps})
+    html_content = template.render(**{'workflow_path': path, 'steps': steps, 'title': animation_data.get('title', 'Animation')})
     
     return create_compressed_response(html_content)
 
