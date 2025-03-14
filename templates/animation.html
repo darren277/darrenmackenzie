@@ -133,8 +133,15 @@ function convertPathToAnchorPoints(pathString) {
 </script>
 
 <script>
-    const animationType = document.querySelector('meta[name="animationType"]').getAttribute('content');
+    let currentStep = 0;
+    const animationDuration = 1000; // duration in ms
+    let animating = false;
 
+    const path = document.getElementById('workflowPath');
+    const node = document.getElementById('movingNode');
+    const pathLength = path.getTotalLength();
+
+    const animationType = document.querySelector('meta[name="animationType"]').getAttribute('content');
     const imageUrl = document.querySelector('meta[name="imgUrl"]').getAttribute('content');
 
     // Move this code outside the window.onload function so it's available earlier
@@ -177,14 +184,6 @@ function convertPathToAnchorPoints(pathString) {
             console.error('Error fetching signed URL:', error);
         });
     }
-
-    const path = document.getElementById('workflowPath');
-    const node = document.getElementById('movingNode');
-    const pathLength = path.getTotalLength();
-    
-    let currentStep = 0;
-    const animationDuration = 1000; // duration in ms
-    let animating = false;
 
     const texts = document.querySelectorAll('text');
 
