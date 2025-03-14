@@ -33,6 +33,7 @@
 
         #movingNode {
             fill: #007acc;
+            stroke: white;
         }
 
         .stepText {
@@ -164,7 +165,7 @@ function convertPathToAnchorPoints(pathString) {
 
         // 'slice' to cover entire area
         image.setAttribute('preserveAspectRatio', 'xMidYMid slice');
-        
+
         svg.insertBefore(image, svg.firstChild);
 
         // Then set the href when the URL is available
