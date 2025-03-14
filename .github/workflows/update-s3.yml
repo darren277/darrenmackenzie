@@ -9,7 +9,6 @@ on:
 jobs:
   upload-to-s3:
     runs-on: ubuntu-latest
-    needs: deploy
     
     steps:
     - uses: actions/checkout@v3
