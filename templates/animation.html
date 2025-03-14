@@ -57,7 +57,7 @@
 
 <h1>{{ title }}</h1>
 
-<svg width="100%" height="600" viewBox="0 0 4500 2500">
+<svg width="100%" height="600">
     <!-- <image href="{{ background_image_url }}" width="100%" height="100%" /> -->
 
     <path id="workflowPath"
@@ -151,6 +151,13 @@ function convertPathToAnchorPoints(pathString) {
         fetchSignedUrl(imageUrl).then((signedUrl) => {
             console.log('signedUrl', signedUrl);
             image.setAttribute('href', signedUrl);
+
+            // Now set dimensions based on the current viewBox
+            const viewBox = svg.viewBox.baseVal;
+            image.setAttribute('x', viewBox.x);
+            image.setAttribute('y', viewBox.y);
+            image.setAttribute('width', viewBox.width);
+            image.setAttribute('height', viewBox.height);
         }).catch(error => {
             console.error('Error fetching signed URL:', error);
         });
@@ -280,15 +287,60 @@ function convertPathToAnchorPoints(pathString) {
         }
     });
 
+    function calculatePathBounds(points) {
+        if (!points || points.length === 0) {
+            return { minX: 0, minY: 0, maxX: 1000, maxY: 1000 };
+        }
+
+        const bounds = {
+            minX: Number.MAX_VALUE,
+            minY: Number.MAX_VALUE,
+            maxX: Number.MIN_VALUE,
+            maxY: Number.MIN_VALUE
+        };
+
+        points.forEach(point => {
+            bounds.minX = Math.min(bounds.minX, point.x);
+            bounds.minY = Math.min(bounds.minY, point.y);
+            bounds.maxX = Math.max(bounds.maxX, point.x);
+            bounds.maxY = Math.max(bounds.maxY, point.y);
+        });
+
+        return bounds;
+    }
+
     window.onload = () => {
+        const svg = document.querySelector('svg');
+
+        // Calculate the bounds of your path to set a dynamic viewBox
+        const pathBounds = calculatePathBounds(anchorPoints);
+        
+        // Add some padding around the bounds
+        const padding = 50;
+        const viewBoxX = Math.max(0, pathBounds.minX - padding);
+        const viewBoxY = Math.max(0, pathBounds.minY - padding);
+        const viewBoxWidth = pathBounds.maxX - pathBounds.minX + (padding * 2);
+        const viewBoxHeight = pathBounds.maxY - pathBounds.minY + (padding * 2);
+        
+        // Set the viewBox dynamically based on path coordinates
+        svg.setAttribute('viewBox', `${viewBoxX} ${viewBoxY} ${viewBoxWidth} ${viewBoxHeight}`);
+
         if (animationType === 'anchor_points') {
             positionAnchorTexts();
         } else {
             positionTexts();
         }
-        const point = path.getPointAtLength(steps[currentStep] * pathLength);
-        node.setAttribute('cx', point.x);
-        node.setAttribute('cy', point.y);
+        
+        // Set initial position
+        if (animationType === 'anchor_points' && anchorPoints.length > 0) {
+            node.setAttribute('cx', anchorPoints[currentStep].x);
+            node.setAttribute('cy', anchorPoints[currentStep].y);
+        } else {
+            const point = path.getPointAtLength(steps[currentStep] * pathLength);
+            node.setAttribute('cx', point.x);
+            node.setAttribute('cy', point.y);
+        }
+
         updateTextVisibility(currentStep);
     };
 </script>
