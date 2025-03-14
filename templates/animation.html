@@ -20,6 +20,9 @@
 
         svg {
             overflow: visible;
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #eee; /* Optional: adds a border so you can see the SVG bounds */
         }
 
         #workflowPath {
@@ -54,7 +57,7 @@
 
 <h1>{{ title }}</h1>
 
-<svg width="600" height="300">
+<svg width="100%" height="600" viewBox="0 0 4500 2500">
     <!-- <image href="{{ background_image_url }}" width="100%" height="100%" /> -->
 
     <path id="workflowPath"
@@ -139,6 +142,7 @@ function convertPathToAnchorPoints(pathString) {
         
         image.setAttribute('width', '100%');
         image.setAttribute('height', '100%');
+        image.setAttribute('preserveAspectRatio', 'xMidYMid meet');
 
         // Add the image as the first child of SVG (so it's behind other elements)
         svg.insertBefore(image, svg.firstChild);
