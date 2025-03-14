@@ -28,6 +28,13 @@
             fill: #007acc;
         }
 
+        .stepText {
+            font-size: 14px;
+            fill: #333;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
         .controls {
             margin-top: 20px;
         }
@@ -48,6 +55,9 @@
           stroke-width="2"
           fill="none"/>
     <circle id="movingNode" r="10" />
+    {% for step in steps %}
+        <text class="stepText" id="{{ step._id }}">{{ step.text }}</text>
+    {% endfor %}
 </svg>
 
 <div class="controls">
@@ -60,13 +70,34 @@
     const node = document.getElementById('movingNode');
     const pathLength = path.getTotalLength();
 
+    // TODO: Make this dynamic...
     const steps = [0, 0.33, 0.66, 1];
+    
     let currentStep = 0;
     const animationDuration = 1000; // duration in ms
     let animating = false;
 
+    //const texts = [document.getElementById('{{ steps[0]._id }}'), document.getElementById('{{ steps[1]._id }}'), document.getElementById('{{ steps[2]._id }}'), document.getElementById('{{ steps[3]._id }}')];
+    // use element name selector and iterate over all `text` elements
+    const texts = document.querySelectorAll('text');
+
     function easeInOut(t) {
+        // TODO: Make this dynamic?
         return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+    }
+
+    function updateTextVisibility(stepIndex) {
+        texts.forEach((text, index) => {
+            text.style.opacity = index === stepIndex ? 1 : 0;
+        });
+    }
+
+    function positionTexts() {
+        steps.forEach((progress, index) => {
+            const point = path.getPointAtLength(progress * pathLength);
+            texts[index].setAttribute('x', point.x + 15);
+            texts[index].setAttribute('y', point.y);
+        });
     }
 
     function animateToStep(targetStep) {
@@ -93,6 +124,7 @@
             } else {
                 animating = false;
                 currentStep = targetStep;
+                updateTextVisibility(currentStep);
             }
         }
 
@@ -112,9 +144,11 @@
     });
 
     window.onload = () => {
+        positionTexts();
         const point = path.getPointAtLength(steps[currentStep] * pathLength);
         node.setAttribute('cx', point.x);
         node.setAttribute('cy', point.y);
+        updateTextVisibility(currentStep);
     };
 </script>
 

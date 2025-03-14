@@ -546,7 +546,15 @@ def stripe_webhook():
 
 
 ANIMATIONS_DICT = {
-    'my_animation': 'M 50,250 C 150,-100 450,400 550,50'
+    'my_animation': {
+        'path': 'M 50,250 C 150,-100 450,400 550,50',
+        'steps': [
+            {'_id': 'text0', 'text': 'Start here.'},
+            {'_id': 'text1', 'text': 'Stop off here.'},
+            {'_id': 'text2', 'text': 'Visit here.'},
+            {'_id': 'text3', 'text': "You've reached your destination!"}
+        ]
+    }
 }
 
 @app.route('/animation', methods=['GET'])
@@ -556,14 +564,18 @@ def animation():
     if not animation_name:
         return Response(body='Path (`animation_name`) required.', status_code=400)
     
-    path = ANIMATIONS_DICT.get(animation_name, None)
+    animation_data = ANIMATIONS_DICT.get(animation_name, None)
+
+    path = animation_data.get('path', None) if animation_data else None
 
     if not path:
         return Response(body=f'Animation name (`{animation_name}`) not found.', status_code=404)
+    
+    steps = animation_data.get('steps', None)
 
     template = get_s3_template(os.environ['BUCKET_NAME'], template_name='frontend/animation.html')
 
-    html_content = template.render(**{'workflow_path': path})
+    html_content = template.render(**{'workflow_path': path, 'steps': steps})
     
     return create_compressed_response(html_content)
 
