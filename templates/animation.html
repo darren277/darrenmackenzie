@@ -62,31 +62,59 @@
 
     const steps = [0, 0.33, 0.66, 1];
     let currentStep = 0;
+    const animationDuration = 1000; // duration in ms
+    let animating = false;
 
-    function moveToStep(stepIndex) {
-        const progress = steps[stepIndex];
-        const point = path.getPointAtLength(progress * pathLength);
+    function easeInOut(t) {
+        return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+    }
 
-        node.setAttribute('cx', point.x);
-        node.setAttribute('cy', point.y);
+    function animateToStep(targetStep) {
+        if (animating) return;
+        animating = true;
+
+        const startProgress = steps[currentStep];
+        const endProgress = steps[targetStep];
+        const startTime = performance.now();
+
+        function animate(time) {
+            const elapsed = time - startTime;
+            let progress = Math.min(elapsed / animationDuration, 1);
+            progress = easeInOut(progress);
+
+            const currentProgress = startProgress + (endProgress - startProgress) * progress;
+            const point = path.getPointAtLength(currentProgress * pathLength);
+
+            node.setAttribute('cx', point.x);
+            node.setAttribute('cy', point.y);
+
+            if (elapsed < animationDuration) {
+                requestAnimationFrame(animate);
+            } else {
+                animating = false;
+                currentStep = targetStep;
+            }
+        }
+
+        requestAnimationFrame(animate);
     }
 
     document.getElementById('nextStep').addEventListener('click', () => {
         if (currentStep < steps.length - 1) {
-            currentStep++;
-            moveToStep(currentStep);
+            animateToStep(currentStep + 1);
         }
     });
 
     document.getElementById('prevStep').addEventListener('click', () => {
         if (currentStep > 0) {
-            currentStep--;
-            moveToStep(currentStep);
+            animateToStep(currentStep - 1);
         }
     });
 
     window.onload = () => {
-        moveToStep(currentStep);
+        const point = path.getPointAtLength(steps[currentStep] * pathLength);
+        node.setAttribute('cx', point.x);
+        node.setAttribute('cy', point.y);
     };
 </script>
 
