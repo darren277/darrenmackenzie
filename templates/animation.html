@@ -14,17 +14,31 @@
         body {
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            
+            /* justify-content: center; */
+            justify-content: flex-start;
+
             align-items: center;
-            height: 100vh;
+            
+            /* height: 100vh; */
+            min-height: 100vh;
+
             background-color: #f5f7fa;
             margin: 0;
+
+            padding: 20px 0;
+
+            /* Allow scrolling if content is taller than viewport */
+            overflow-y: auto;
         }
 
         svg {
             overflow: visible;
             max-width: 100%;
-            height: auto;
+            
+            /* height: auto; */
+            height: 800px;
+
             aspect-ratio: auto;
             border: 1px solid #eee; /* Optional: adds a border so you can see the SVG bounds */
         }
@@ -123,6 +137,18 @@ function convertPathToAnchorPoints(pathString) {
 </script>
 
 <script>
+    // Dynamically adjust SVG height based on viewBox ratio
+    function adjustSvgHeight(viewBoxWidth, viewBoxHeight) {
+        const svg = document.querySelector('svg');
+        const aspectRatio = viewBoxHeight / viewBoxWidth;
+        
+        // Set height based on aspect ratio, with a minimum height
+        const calculatedHeight = Math.max(800, window.innerWidth * aspectRatio * 0.8);
+        svg.style.height = `${calculatedHeight}px`;
+    }
+</script>
+
+<script>
     const fetchSignedUrl = (img_url) => {
         return fetch('/load_img?img_url=' + img_url, {method: 'GET'})
             .then(response => response.text())
@@ -150,18 +176,17 @@ function convertPathToAnchorPoints(pathString) {
     const imageUrl = document.querySelector('meta[name="imgUrl"]').getAttribute('content');
     
     const svg = document.querySelector('svg');
+
+    const pathString = path.getAttribute('d');
+    const anchorPoints = convertPathToAnchorPoints(pathString);
+
+    // Calculate path bounds
+    const pathBounds = calculatePathBounds(anchorPoints);
 </script>
 
 <script>
     // Core viewBox and path setup that works with or without an image
     function setupPathAndViewBox() {
-        const svg = document.querySelector('svg');
-        const pathString = path.getAttribute('d');
-        const anchorPoints = convertPathToAnchorPoints(pathString);
-
-        // Calculate path bounds
-        const pathBounds = calculatePathBounds(anchorPoints);
-
         // Add padding around the bounds
         const topPadding = parseInt(document.querySelector('meta[name="imgTopPadding"]')?.getAttribute('content') || "100");
         const bottomPadding = parseInt(document.querySelector('meta[name="imgBottomPadding"]')?.getAttribute('content') || "100");
@@ -175,12 +200,13 @@ function convertPathToAnchorPoints(pathString) {
         // Set the viewBox
         svg.setAttribute('viewBox', `${viewBoxX} ${viewBoxY} ${viewBoxWidth} ${viewBoxHeight}`);
 
-        return {viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight, anchorPoints};
+        return {viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight};
     }
 </script>
 
 <script>
     const viewBoxInfo = setupPathAndViewBox();
+    adjustSvgHeight(viewBoxInfo.viewBoxWidth, viewBoxInfo.viewBoxHeight);
 
     if (imageUrl) {
         const image = document.createElementNS('http://www.w3.org/2000/svg', 'image');
