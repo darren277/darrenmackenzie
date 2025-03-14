@@ -548,12 +548,48 @@ def stripe_webhook():
 ANIMATIONS_DICT = {
     'my_animation': {
         'title': 'My Animation',
+        'animation_type': 'default',
         'path': 'M 50,250 C 150,-100 450,400 550,50',
         'steps': [
             {'_id': 'text0', 'text': 'Start here.'},
             {'_id': 'text1', 'text': 'Stop off here.'},
             {'_id': 'text2', 'text': 'Visit here.'},
             {'_id': 'text3', 'text': "You've reached your destination!"}
+        ]
+    },
+    'special_path': {
+        'title': 'Special Path',
+        'animation_type': 'anchor_points',
+        'path': """
+        M 104.00,192.00
+           C 104.00,192.00 1424.00,220.00 1424.00,220.00
+             1424.00,220.00 1356.00,880.00 1356.00,880.00
+             1356.00,880.00 2300.00,196.00 2300.00,196.00
+             2300.00,196.00 2296.00,796.00 2296.00,796.00
+             2296.00,796.00 2996.00,276.00 2996.00,276.00
+             2996.00,276.00 3748.00,1052.00 3748.00,1052.00
+             3748.00,1052.00 4204.00,244.00 4204.00,244.00
+             4204.00,244.00 4248.00,1560.00 4248.00,1560.00
+             4248.00,1560.00 140.00,980.00 140.00,980.00
+             140.00,980.00 200.00,1576.00 200.00,1576.00
+             200.00,1576.00 1276.00,1440.00 1276.00,1440.00
+             1276.00,1440.00 1392.00,2084.00 1392.00,2084.00
+""",
+        'steps': [
+            {'_id': 'text0', 'text': 'A'},
+            {'_id': 'text1', 'text': 'B'},
+            {'_id': 'text2', 'text': 'C'},
+            {'_id': 'text3', 'text': 'D'},
+            {'_id': 'text4', 'text': 'E'},
+            {'_id': 'text5', 'text': 'F'},
+            {'_id': 'text6', 'text': 'G'},
+            {'_id': 'text7', 'text': 'H'},
+            {'_id': 'text8', 'text': 'I'},
+            {'_id': 'text9', 'text': 'J'},
+            {'_id': 'text10', 'text': 'K'},
+            {'_id': 'text11', 'text': 'L'},
+            {'_id': 'text12', 'text': 'M'},
+            {'_id': 'text13', 'text': 'N'}
         ]
     }
 }
@@ -576,7 +612,7 @@ def animation():
 
     template = get_s3_template(os.environ['BUCKET_NAME'], template_name='frontend/animation.html')
 
-    html_content = template.render(**{'workflow_path': path, 'steps': steps, 'title': animation_data.get('title', 'Animation')})
+    html_content = template.render(**{'workflow_path': path, 'steps': steps, 'title': animation_data.get('title', 'Animation'), 'animation_type': animation_data.get('animation_type', 'default')})
     
     return create_compressed_response(html_content)
 

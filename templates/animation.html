@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ title }}</title>
+    <!-- animation_type: 'default' or 'anchor_points' -->
+    <meta name="animationType" content="{{ animation_type }}">
     <style>
         body {
             display: flex;
@@ -68,6 +70,48 @@
 </div>
 
 <script>
+/**
+ * Converts an SVG path string from GIMP into an array of anchor points
+ * @param {string} pathString - The SVG path string (d attribute)
+ * @returns {Array<{x: number, y: number}>} Array of anchor points
+ */
+function convertPathToAnchorPoints(pathString) {
+    // Clean up the path string by removing 'd=' and quotes if present
+    let path = pathString;
+    if (path.startsWith('d=')) {
+        path = path.substring(2);
+    }
+    path = path.replace(/["']/g, '').replace(/\n/g, ' ').trim();
+  
+    // Extract all coordinate pairs
+    const coordMatches = [...path.matchAll(/(\d+(?:\.\d+)?),(\d+(?:\.\d+)?)/g)];
+
+    // Extract unique points (GIMP repeats coordinates in its path format)
+    const anchorPoints = [];
+    const seen = new Set();
+  
+    for (const match of coordMatches) {
+        // Parse x and y values
+        const x = parseFloat(match[1]);
+        const y = parseFloat(match[2]);
+
+        // Create a key to track unique points
+        const key = `${x},${y}`;
+
+        // Only add if we haven't seen this point before
+        if (!seen.has(key)) {
+            anchorPoints.push({ x, y });
+            seen.add(key);
+        }
+    }
+  
+    return anchorPoints;
+}
+</script>
+
+<script>
+    const animationType = document.querySelector('meta[name="animationType"]').getAttribute('content');
+
     const path = document.getElementById('workflowPath');
     const node = document.getElementById('movingNode');
     const pathLength = path.getTotalLength();
@@ -128,21 +172,73 @@
 
         requestAnimationFrame(animate);
     }
+    
+
+    function animateToAnchorPoint(targetStep) {
+        if (animating) return;
+        animating = true;
+
+        const startPoint = anchorPoints[currentStep];
+        const endPoint = anchorPoints[targetStep];
+        const startTime = performance.now();
+
+        function animate(time) {
+            const elapsed = time - startTime;
+            let progress = Math.min(elapsed / animationDuration, 1);
+            progress = easeInOut(progress);
+
+            const currentX = startPoint.x + (endPoint.x - startPoint.x) * progress;
+            const currentY = startPoint.y + (endPoint.y - startPoint.y) * progress;
+
+            node.setAttribute('cx', currentX);
+            node.setAttribute('cy', currentY);
+
+            if (elapsed < animationDuration) {
+            requestAnimationFrame(animate);
+            } else {
+            animating = false;
+            currentStep = targetStep;
+            updateTextVisibility(currentStep);
+            }
+        }
+
+        requestAnimationFrame(animate);
+    }
+
+    function positionAnchorTexts() {
+        anchorPoints.forEach((pt, index) => {
+            texts[index].setAttribute('x', pt.x + 15);
+            texts[index].setAttribute('y', pt.y);
+        });
+    }
+
 
     document.getElementById('nextStep').addEventListener('click', () => {
         if (currentStep < steps.length - 1) {
-            animateToStep(currentStep + 1);
+            if (animationType === 'anchor_points') {
+                animateToAnchorPoint(currentStep + 1);
+            } else {
+                animateToStep(currentStep + 1);
+            }
         }
     });
 
     document.getElementById('prevStep').addEventListener('click', () => {
         if (currentStep > 0) {
-            animateToStep(currentStep - 1);
+            if (animationType === 'anchor_points') {
+                animateToAnchorPoint(currentStep - 1);
+            } else {
+                animateToStep(currentStep - 1);
+            }
         }
     });
 
     window.onload = () => {
-        positionTexts();
+        if (animationType === 'anchor_points') {
+            positionAnchorTexts();
+        } else {
+            positionTexts();
+        }
         const point = path.getPointAtLength(steps[currentStep] * pathLength);
         node.setAttribute('cx', point.x);
         node.setAttribute('cy', point.y);
