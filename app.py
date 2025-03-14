@@ -149,10 +149,10 @@ def get_menu_items():
         # dict(title='Contact', url='#contact')
     ]
 
-def get_s3_template(bucket_name):
+def get_s3_template(bucket_name, template_name: str = 'frontend/index.html'):
     """Retrieve and process the HTML template from S3."""
     s3 = boto3.resource('s3')
-    myString = s3.Object(bucket_name, 'frontend/index.html').get()["Body"].read().decode('utf-8').replace('__THREEJS_VERSION__', '0.172.0')
+    myString = s3.Object(bucket_name, template_name).get()["Body"].read().decode('utf-8').replace('__THREEJS_VERSION__', '0.172.0')
     return s3_env.from_string(myString)
 
 def get_website_data(table_name):
@@ -543,6 +543,29 @@ def stripe_webhook():
 
     # Return a 200 response to acknowledge receipt of the event
     return {}
+
+
+ANIMATIONS_DICT = {
+    'my_animation': 'M 50,250 C 150,-100 450,400 550,50'
+}
+
+@app.route('/animation', methods=['GET'])
+def animation():
+    animation_name = app.current_request.query_params.get('animation_name', None)
+
+    if not animation_name:
+        return Response(body='Path (`animation_name`) required.', status_code=400)
+    
+    path = ANIMATIONS_DICT.get(animation_name, None)
+
+    if not path:
+        return Response(body=f'Animation name (`{animation_name}`) not found.', status_code=404)
+
+    template = get_s3_template(os.environ['BUCKET_NAME'], template_name='frontend/animation.html')
+
+    html_content = template.render(**{'workflow_path': path})
+    
+    return create_compressed_response(html_content)
 
 
 @app.route('/sitemap.xml')
