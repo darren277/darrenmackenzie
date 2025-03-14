@@ -367,6 +367,14 @@ function convertPathToAnchorPoints(pathString) {
             }
         }
     });
+    
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowRight') {
+            document.getElementById('nextStep').click();
+        } else if (event.key === 'ArrowLeft') {
+            document.getElementById('prevStep').click();
+        }
+    });
 
     window.onload = () => {
         if (animationType === 'anchor_points') {
