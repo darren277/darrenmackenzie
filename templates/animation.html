@@ -140,9 +140,15 @@ function convertPathToAnchorPoints(pathString) {
         image.setAttribute('width', '100%');
         image.setAttribute('height', '100%');
 
-        const signedUrl = fetchSignedUrl(imageUrl).then((signedUrl) => {
+        // Add the image as the first child of SVG (so it's behind other elements)
+        svg.insertBefore(image, svg.firstChild);
+
+        // Then set the href when the URL is available
+        fetchSignedUrl(imageUrl).then((signedUrl) => {
             console.log('signedUrl', signedUrl);
             image.setAttribute('href', signedUrl);
+        }).catch(error => {
+            console.error('Error fetching signed URL:', error);
         });
     }
 
