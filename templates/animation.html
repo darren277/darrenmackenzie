@@ -137,6 +137,28 @@ function convertPathToAnchorPoints(pathString) {
 </script>
 
 <script>
+    function calculatePathBounds(points) {
+        if (!points || points.length === 0) {
+            return { minX: 0, minY: 0, maxX: 1000, maxY: 1000 };
+        }
+
+        const bounds = {
+            minX: Number.MAX_VALUE,
+            minY: Number.MAX_VALUE,
+            maxX: Number.MIN_VALUE,
+            maxY: Number.MIN_VALUE
+        };
+
+        points.forEach(point => {
+            bounds.minX = Math.min(bounds.minX, point.x);
+            bounds.minY = Math.min(bounds.minY, point.y);
+            bounds.maxX = Math.max(bounds.maxX, point.x);
+            bounds.maxY = Math.max(bounds.maxY, point.y);
+        });
+
+        return bounds;
+    }
+
     // Dynamically adjust SVG height based on viewBox ratio
     function adjustSvgHeight(viewBoxWidth, viewBoxHeight) {
         const svg = document.querySelector('svg');
@@ -345,28 +367,6 @@ function convertPathToAnchorPoints(pathString) {
             }
         }
     });
-
-    function calculatePathBounds(points) {
-        if (!points || points.length === 0) {
-            return { minX: 0, minY: 0, maxX: 1000, maxY: 1000 };
-        }
-
-        const bounds = {
-            minX: Number.MAX_VALUE,
-            minY: Number.MAX_VALUE,
-            maxX: Number.MIN_VALUE,
-            maxY: Number.MIN_VALUE
-        };
-
-        points.forEach(point => {
-            bounds.minX = Math.min(bounds.minX, point.x);
-            bounds.minY = Math.min(bounds.minY, point.y);
-            bounds.maxX = Math.max(bounds.maxX, point.x);
-            bounds.maxY = Math.max(bounds.maxY, point.y);
-        });
-
-        return bounds;
-    }
 
     window.onload = () => {
         if (animationType === 'anchor_points') {
