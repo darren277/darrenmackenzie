@@ -133,6 +133,7 @@ function convertPathToAnchorPoints(pathString) {
 </script>
 
 <script>
+    // Core attributes
     let currentStep = 0;
     const animationDuration = 1000; // duration in ms
     let animating = false;
@@ -143,33 +144,48 @@ function convertPathToAnchorPoints(pathString) {
 
     const animationType = document.querySelector('meta[name="animationType"]').getAttribute('content');
     const imageUrl = document.querySelector('meta[name="imgUrl"]').getAttribute('content');
-
-    // Move this code outside the window.onload function so it's available earlier
-    const pathString = path.getAttribute('d');
-    const anchorPoints = convertPathToAnchorPoints(pathString);
-    const pathBounds = calculatePathBounds(anchorPoints);
-
-    // Add some padding around the bounds
-    const padding = 100; // Increased padding
-    const viewBoxX = Math.max(0, pathBounds.minX - padding);
-    const viewBoxY = Math.max(0, pathBounds.minY - padding);
-    const viewBoxWidth = pathBounds.maxX - pathBounds.minX + (padding * 2);
-    const viewBoxHeight = pathBounds.maxY - pathBounds.minY + (padding * 2);
-
-    // Set the viewBox immediately
+    
     const svg = document.querySelector('svg');
-    svg.setAttribute('viewBox', `${viewBoxX} ${viewBoxY} ${viewBoxWidth} ${viewBoxHeight}`);
+</script>
+
+<script>
+    // Core viewBox and path setup that works with or without an image
+    function setupPathAndViewBox() {
+        const svg = document.querySelector('svg');
+        const pathString = path.getAttribute('d');
+        const anchorPoints = convertPathToAnchorPoints(pathString);
+
+        // Calculate path bounds
+        const pathBounds = calculatePathBounds(anchorPoints);
+
+        // Add padding around the bounds
+        const padding = 100;
+        const viewBoxX = Math.max(0, pathBounds.minX - padding);
+        const viewBoxY = Math.max(0, pathBounds.minY - padding);
+        const viewBoxWidth = pathBounds.maxX - pathBounds.minX + (padding * 2);
+        const viewBoxHeight = pathBounds.maxY - pathBounds.minY + (padding * 2);
+
+        // Set the viewBox
+        svg.setAttribute('viewBox', `${viewBoxX} ${viewBoxY} ${viewBoxWidth} ${viewBoxHeight}`);
+
+        return {viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight, anchorPoints};
+    }
+</script>
+
+<script>
+    const viewBoxInfo = setupPathAndViewBox();
 
     if (imageUrl) {
-        // prepend `image` with `href` to `svg` element
-        const svg = document.querySelector('svg');
         const image = document.createElementNS('http://www.w3.org/2000/svg', 'image');
         
         // Set explicit coordinates matching the viewBox
-        image.setAttribute('x', viewBoxX);
-        image.setAttribute('y', viewBoxY);
-        image.setAttribute('width', viewBoxWidth);
-        image.setAttribute('height', viewBoxHeight);
+        
+        // Position image at the viewBox origin
+        image.setAttribute('x', viewBoxInfo.viewBoxX);
+        image.setAttribute('y', viewBoxInfo.viewBoxY);
+        image.setAttribute('width', viewBoxInfo.viewBoxWidth);
+        image.setAttribute('height', viewBoxInfo.viewBoxHeight);
+        image.setAttribute('preserveAspectRatio', 'xMidYMid slice');
 
         // 'slice' to cover entire area
         image.setAttribute('preserveAspectRatio', 'xMidYMid slice');
