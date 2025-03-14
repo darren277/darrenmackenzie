@@ -612,7 +612,7 @@ def load_img():
         return Response(body=str(e), status_code=404)
     
     return Response(
-        body=json.dumps({'img_url': presigned_url}),
+        body=json.dumps({'signedUrl': presigned_url}),
         headers={'Content-Type': 'application/json'},
         status_code=200
     )
