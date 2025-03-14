@@ -647,6 +647,15 @@ def animation():
     if background_image_url:
         template_data.update({'background_image_url': background_image_url})
 
+        image_top_padding = app.current_request.query_params.get('top_padding', None)
+        image_bottom_padding = app.current_request.query_params.get('bottom_padding', None)
+
+        if image_top_padding:
+            template_data.update({'top_padding': image_top_padding})
+        
+        if image_bottom_padding:
+            template_data.update({'bottom_padding': image_bottom_padding})
+
     html_content = template.render(**template_data)
     
     return create_compressed_response(html_content)

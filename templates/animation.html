@@ -7,6 +7,9 @@
     <meta name="animationType" content="{{ animation_type }}">
     <!-- background_image_url (optional): URL of the background image -->
     <meta name="imgUrl" content="{{ background_image_url }}">
+
+    <meta name="imgTopPadding" content="{{ top_padding }}">
+    <meta name="imgBottomPadding" content="{{ bottom_padding }}">
     <style>
         body {
             display: flex;
@@ -22,6 +25,7 @@
             overflow: visible;
             max-width: 100%;
             height: auto;
+            aspect-ratio: auto;
             border: 1px solid #eee; /* Optional: adds a border so you can see the SVG bounds */
         }
 
@@ -159,11 +163,14 @@ function convertPathToAnchorPoints(pathString) {
         const pathBounds = calculatePathBounds(anchorPoints);
 
         // Add padding around the bounds
-        const padding = 100;
-        const viewBoxX = Math.max(0, pathBounds.minX - padding);
-        const viewBoxY = Math.max(0, pathBounds.minY - padding);
-        const viewBoxWidth = pathBounds.maxX - pathBounds.minX + (padding * 2);
-        const viewBoxHeight = pathBounds.maxY - pathBounds.minY + (padding * 2);
+        const topPadding = parseInt(document.querySelector('meta[name="imgTopPadding"]')?.getAttribute('content') || "100");
+        const bottomPadding = parseInt(document.querySelector('meta[name="imgBottomPadding"]')?.getAttribute('content') || "100");
+        const sidePadding = 100;
+
+        const viewBoxX = Math.max(0, pathBounds.minX - sidePadding);
+        const viewBoxY = Math.max(0, pathBounds.minY - topPadding);
+        const viewBoxWidth = pathBounds.maxX - pathBounds.minX + (sidePadding * 2);
+        const viewBoxHeight = pathBounds.maxY - pathBounds.minY + topPadding + bottomPadding;
 
         // Set the viewBox
         svg.setAttribute('viewBox', `${viewBoxX} ${viewBoxY} ${viewBoxWidth} ${viewBoxHeight}`);
@@ -185,10 +192,9 @@ function convertPathToAnchorPoints(pathString) {
         image.setAttribute('y', viewBoxInfo.viewBoxY);
         image.setAttribute('width', viewBoxInfo.viewBoxWidth);
         image.setAttribute('height', viewBoxInfo.viewBoxHeight);
-        image.setAttribute('preserveAspectRatio', 'xMidYMid slice');
 
-        // 'slice' to cover entire area
-        image.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+        // Use 'none' to avoid any scaling that might cause cropping
+        image.setAttribute('preserveAspectRatio', 'none');
 
         svg.insertBefore(image, svg.firstChild);
 
