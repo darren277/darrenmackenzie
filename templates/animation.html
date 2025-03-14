@@ -136,9 +136,9 @@ function convertPathToAnchorPoints(pathString) {
         const svg = document.querySelector('svg');
         const image = document.createElementNS('http://www.w3.org/2000/svg', 'image');
 
-        const signedUrl = url;
+        const signedUrl = fetchSignedUrl(imageUrl);
 
-        image.setAttribute('href', imageUrl);
+        image.setAttribute('href', signedUrl);
         image.setAttribute('width', '100%');
         image.setAttribute('height', '100%');
     }
