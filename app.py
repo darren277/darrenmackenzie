@@ -625,6 +625,14 @@ def animation():
     animation_name = app.current_request.query_params.get('animation_name', None)
     background_image_url = app.current_request.query_params.get('background_image_url', None)
 
+    show_path = app.current_request.query_params.get('show_path', None)
+    show_path_bool = show_path == 'true'
+
+    dot_size = app.current_request.query_params.get('dot_size', None)
+    dot_size = int(dot_size) if dot_size else None
+
+    dot_color = app.current_request.query_params.get('dot_color', None)
+
     if not animation_name:
         return Response(body='Path (`animation_name`) required.', status_code=400)
     
@@ -643,8 +651,15 @@ def animation():
         'workflow_path': path,
         'steps': steps,
         'title': animation_data.get('title', 'Animation'),
-        'animation_type': animation_data.get('animation_type', 'default')
+        'animation_type': animation_data.get('animation_type', 'default'),
+        'show_path': show_path_bool
     }
+
+    if dot_size:
+        template_data.update({'dot_size': dot_size})
+    
+    if dot_color:
+        template_data.update({'dot_color': dot_color})
 
     if animation_data.get('view_box', None):
         template_data.update({'view_box': animation_data['view_box']})

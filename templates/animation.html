@@ -12,6 +12,9 @@
     <meta name="imgBottomPadding" content="{{ bottom_padding }}">
 
     <meta name="viewBoxString" content="{{ view_box }}">
+    <meta name="showPath" content="{{ show_path }}">
+    <meta name="dotSize" content="{{ dot_size }}">
+    <meta name="dotColor" content="{{ dot_color }}">
     <style>
         body {
             display: flex;
@@ -192,8 +195,23 @@ function convertPathToAnchorPoints(pathString) {
     const animationDuration = 1000; // duration in ms
     let animating = false;
 
+    const showPath = document.querySelector('meta[name="showPath"]').getAttribute('content') === 'true';
+    const dotSize = parseInt(document.querySelector('meta[name="dotSize"]').getAttribute('content'));
+    const dotColor = document.querySelector('meta[name="dotColor"]').getAttribute('content');
+
     const path = document.getElementById('workflowPath');
+
+    path.style.display = showPath ? 'block' : 'none';
+
     const node = document.getElementById('movingNode');
+
+    if (dotSize) {
+        node.setAttribute('r', dotSize);
+    }
+    if (dotColor) {
+        node.setAttribute('fill', dotColor);
+    }
+
     const pathLength = path.getTotalLength();
 
     const animationType = document.querySelector('meta[name="animationType"]').getAttribute('content');
