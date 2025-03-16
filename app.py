@@ -549,6 +549,7 @@ ANIMATIONS_DICT = {
     'my_animation': {
         'title': 'My Animation',
         'animation_type': 'default',
+        'view_box': None,
         'path': 'M 50,250 C 150,-100 450,400 550,50',
         'steps': [
             {'_id': 'text0', 'text': 'Start here.'},
@@ -560,6 +561,7 @@ ANIMATIONS_DICT = {
     'special_path': {
         'title': 'Special Path',
         'animation_type': 'anchor_points',
+        'view_box': '0 0 5118 3596',
         'path': """
         M 104.00,192.00
            C 104.00,192.00 1424.00,220.00 1424.00,220.00
@@ -643,6 +645,9 @@ def animation():
         'title': animation_data.get('title', 'Animation'),
         'animation_type': animation_data.get('animation_type', 'default')
     }
+
+    if animation_data.get('view_box', None):
+        template_data.update({'view_box': animation_data['view_box']})
 
     if background_image_url:
         template_data.update({'background_image_url': background_image_url})

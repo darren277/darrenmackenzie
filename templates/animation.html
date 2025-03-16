@@ -10,6 +10,8 @@
 
     <meta name="imgTopPadding" content="{{ top_padding }}">
     <meta name="imgBottomPadding" content="{{ bottom_padding }}">
+
+    <meta name="viewBoxString" content="{{ view_box }}">
     <style>
         body {
             display: flex;
@@ -227,7 +229,19 @@ function convertPathToAnchorPoints(pathString) {
 </script>
 
 <script>
-    const viewBoxInfo = setupPathAndViewBox();
+    const viewBoxString = document.querySelector('meta[name="viewBoxString"]').getAttribute('content');
+
+    let viewBoxInfo;
+
+    if (!viewBoxString) {
+        viewBoxInfo = setupPathAndViewBox();
+    } else {
+        const [viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight] = viewBoxString.split(' ').map(parseFloat);
+        viewBoxInfo = {viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight};
+        svg.setAttribute('viewBox', `${viewBoxX} ${viewBoxY} ${viewBoxWidth} ${viewBoxHeight}`);
+    }
+
+    
     adjustSvgHeight(viewBoxInfo.viewBoxWidth, viewBoxInfo.viewBoxHeight);
 
     if (imageUrl) {
@@ -367,7 +381,7 @@ function convertPathToAnchorPoints(pathString) {
             }
         }
     });
-    
+
     document.addEventListener('keydown', (event) => {
         if (event.key === 'ArrowRight') {
             document.getElementById('nextStep').click();
