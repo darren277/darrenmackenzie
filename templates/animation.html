@@ -346,7 +346,13 @@ function convertPathToAnchorPoints(pathString) {
         animating = true;
 
         const startPoint = anchorPoints[currentStep];
-        const endPoint = anchorPoints[targetStep];
+        let endPoint = anchorPoints[targetStep];
+
+        if (!endPoint) {
+            console.log('This is the last step');
+            endPoint = startPoint;
+        }
+
         const startTime = performance.now();
 
         function animate(time) {
@@ -361,11 +367,11 @@ function convertPathToAnchorPoints(pathString) {
             node.setAttribute('cy', currentY);
 
             if (elapsed < animationDuration) {
-            requestAnimationFrame(animate);
+                requestAnimationFrame(animate);
             } else {
-            animating = false;
-            currentStep = targetStep;
-            updateTextVisibility(currentStep);
+                animating = false;
+                currentStep = targetStep;
+                updateTextVisibility(currentStep);
             }
         }
 
