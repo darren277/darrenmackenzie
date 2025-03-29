@@ -52,3 +52,51 @@ create-log:
 
 test:
 	pytest -v tests/ --cov=app
+
+
+
+## CACHE CONTROL ##
+
+# AWS Parameter Store CLI commands for cache control values
+
+# Set up variables
+AWS_REGION ?= us-east-1
+PARAM_PREFIX = //darrenmackenzie
+HTML_PARAM_NAME = $(PARAM_PREFIX)_cache-control-duration-html
+CSS_JS_PARAM_NAME = $(PARAM_PREFIX)_cache-control-duration-css-and-js
+JSON_PARAM_NAME = $(PARAM_PREFIX)_cache-control-duration-json
+FALLBACK_PARAM_NAME = $(PARAM_PREFIX)_cache-control-duration-fallback
+
+# Set default values
+set-default-cache-params:
+	aws ssm put-parameter --name $(HTML_PARAM_NAME) --value "DAY" --type "String" --overwrite --region $(AWS_REGION)
+	aws ssm put-parameter --name $(CSS_JS_PARAM_NAME) --value "WEEK" --type "String" --overwrite --region $(AWS_REGION)
+	aws ssm put-parameter --name $(JSON_PARAM_NAME) --value "HOUR" --type "String" --overwrite --region $(AWS_REGION)
+	aws ssm put-parameter --name $(FALLBACK_PARAM_NAME) --value "MINUTE" --type "String" --overwrite --region $(AWS_REGION)
+	@echo "Default cache parameters set successfully"
+
+# aws ssm put-parameter --name "/darrenmackenzie/cache-control-duration-html" --value "DAY" --type "String" --overwrite --region us-east-1
+# Switch to debug mode (1 minute caching for all)
+set-debug-cache-mode:
+	aws ssm put-parameter --name $(HTML_PARAM_NAME) --value "MINUTE" --type "String" --overwrite --region $(AWS_REGION)
+	aws ssm put-parameter --name $(CSS_JS_PARAM_NAME) --value "MINUTE" --type "String" --overwrite --region $(AWS_REGION)
+	aws ssm put-parameter --name $(JSON_PARAM_NAME) --value "MINUTE" --type "String" --overwrite --region $(AWS_REGION)
+	@echo "Debug cache mode enabled (all set to 1 minute)"
+
+# Update individual parameters
+update-html-cache:
+	aws ssm put-parameter --name $(HTML_PARAM_NAME) --value "$(VALUE)" --type "String" --overwrite --region $(AWS_REGION)
+	@echo "HTML cache duration updated to $(VALUE)"
+
+update-css-js-cache:
+	aws ssm put-parameter --name $(CSS_JS_PARAM_NAME) --value "$(VALUE)" --type "String" --overwrite --region $(AWS_REGION)
+	@echo "CSS/JS cache duration updated to $(VALUE)"
+
+update-json-cache:
+	aws ssm put-parameter --name $(JSON_PARAM_NAME) --value "$(VALUE)" --type "String" --overwrite --region $(AWS_REGION)
+	@echo "JSON cache duration updated to $(VALUE)"
+
+# Example usage:
+# make update-html-cache VALUE=MINUTE
+# make update-css-js-cache VALUE=DAY
+# make set-debug-cache-mode
