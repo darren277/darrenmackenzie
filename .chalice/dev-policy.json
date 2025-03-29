@@ -78,6 +78,18 @@
                 "arn:aws:secretsmanager:us-east-1:160751179089:secret:STRIPE_RESTRICTED_KEY-ko4kLT",
                 "arn:aws:secretsmanager:us-east-1:160751179089:secret:STRIPE_WEBHOOK_SECRET-IZ39P3"
             ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ssm:GetParameters",
+                "ssm:GetParameter",
+                "ssm:GetParametersByPath"
+            ],
+            "Resource": [
+                "arn:aws:ssm:us-east-1:160751179089:parameter/darrenmackenzie*",
+                "arn:aws:ssm:us-east-1:160751179089:parameter/darrenmackenzie/*"
+            ]
         }
     ],
     "Version": "2012-10-17"
