@@ -72,9 +72,9 @@
             <nav>
                 <h2 class="logo">dm creations</h2>
                 <ul>
-                    {% for entry in menu %}<li><a href="{{ entry.url }}">{{ entry.title }}</a></li>{% endfor %}
-                    <li><a href="https://github.com/darren277"><i class="fa-brands fa-github"></i> GitHub</a></li>
-                    <li><a href="#contact" id="contactbutton" class="btn">Contact</a></li>
+                    {% for entry in menu %}<li><a href="{{ entry.url }}" aria-label="{{ entry.title }}">{{ entry.title }}</a></li>{% endfor %}
+                    <li><a href="https://github.com/darren277" aria-label="My GitHub profile"><i class="fa-brands fa-github"></i> GitHub</a></li>
+                    <li><a href="#contact" id="contactbutton" class="btn" aria-label="Contact form below">Contact</a></li>
                 </ul>
             </nav>
             <div class="content">
@@ -215,7 +215,7 @@
     <footer>
         <p>Darren MacKenzie</p>
         <p></p>
-        <div class="social">{% for entry in social %}<a href="{{ entry.url }}"><i class="{{ entry.icon }}"></i></a>{% endfor %}</div>
+        <div class="social">{% for entry in social %}<a href="{{ entry.url }}" aria-label="{{ entry.icon | icon_to_descriptive }}"><i class="{{ entry.icon }}"></i></a>{% endfor %}</div>
         <p></p>
     </footer>
     <script></script>
