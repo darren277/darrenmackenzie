@@ -140,7 +140,11 @@
         <!-- <canvas></canvas> -->
         <div class="hero">
             <nav>
-                <p class="logo">dm creations</p>
+                <!-- Commenting the next element out for now because it can be problematic in several ways. -->
+                <!-- <p class="logo">dm creations</p> -->
+                <!-- This next empty `p` tag is because it was a load bearing element apparently. -->
+                <p></p>
+                 
                 <ul>
                     {% for entry in menu %}<li><a href="{{ entry.url }}" aria-label="{{ entry.title }}">{{ entry.title }}</a></li>{% endfor %}
                     <li><a href="https://github.com/darren277" aria-label="My GitHub profile"><i class="fa-brands fa-github"></i> GitHub</a></li>
