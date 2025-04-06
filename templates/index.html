@@ -248,7 +248,16 @@
     <script></script>
     <script></script>
     <script></script>
-    <script src="/scripts/main.js" type="module"></script>
+    <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/build/three.module.js">
+    <link rel="modulepreload" href="/scripts/main.js">
+    <script>
+        window.addEventListener('load', () => {
+            const threeScript = document.createElement('script');
+            threeScript.type = 'module';
+            threeScript.src = '/scripts/main.js';
+            document.body.appendChild(threeScript);
+        });
+    </script>
     
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WPKZ9BSM31"></script>
