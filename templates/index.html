@@ -25,6 +25,45 @@
                 }
         }
     </script>
+    <style>
+        /* ===============================
+        1) Root-Level Custom Properties
+        =============================== */
+        :root {
+            /* Primary Colors */
+            --color-primary: #5361FF;
+            --color-white: #FFFFFF;
+            --color-alt-white: #fcfcfc; /* for h4 if you like that distinct color */
+            --color-h6: #bfbff2;
+        
+            /* Typography */
+            --font-body: 'Montserrat', sans-serif;
+            /* Fluid sizes for headings (min, viewport-based, max). Adjust as you like. */
+            /* --fs-h1: clamp(1.75rem, 5vw, 4rem); */
+            /* a bit smaller */
+            --fs-h1: clamp(1rem, 3vw, 2.5rem);
+            --fs-h2: clamp(1.5rem, 4vw, 3rem);
+            --fs-h3: clamp(0.8rem, 2.5vw, 1.5rem);
+            --fs-h4: clamp(1.125rem, 3vw, 2rem);
+            --fs-h5: clamp(1rem, 2.5vw, 1.75rem);
+            --fs-h6: clamp(0.875rem, 2vw, 1.25rem);
+        }
+        
+        /* =====================
+            2) Base Global Styles
+            ===================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-body);
+            background-color: #000; /* or whichever background you use */
+            color: var(--color-white);
+        }
+    </style>
     <link rel="stylesheet" href="/style.css"></link>
     <style>
         .threejs-container {
