@@ -1,8 +1,19 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <link crossorigin="anonymous" referrerpolicy="no-referrer" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"></link>
+    <link
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"
+        integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+        media="print"
+        onload="this.media='all'"
+        ></link>
     <title>dm creations - Home</title>
     <meta name="datasrc" content="data"></meta>
+    <meta name="description" content="Personal website of Darren MacKenzie, a software developer and solution architect."></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
     <script type="importmap">
         {
             "imports":
@@ -48,31 +59,63 @@
         .centered-text {
             text-align: center;
         }
+
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+
+        .subtitle {
+            font-size: var(--fs-h3);
+            margin-bottom: 3rem;
+            color: '#fcfc';
+        }
+
+        /* Was h6 (now a `p`) */
+        .date {
+            font-size: var(--fs-h6);
+            color: var(--color-h6);
+        }
+
+        /* Was h5 (now `h3`) */
+        .card-title {
+            font-size: var(--fs-h5);
+        }
     </style>
-    <link crossorigin="anonymous" referrerpolicy="no-referrer" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"></link>
 </head>
 <body>
     <div style="	position: relative;">
         <!-- <canvas></canvas> -->
         <div class="hero">
             <nav>
-                <h2 class="logo">dm creations</h2>
+                <p class="logo">dm creations</p>
                 <ul>
-                    {% for entry in menu %}<li><a href="{{ entry.url }}">{{ entry.title }}</a></li>{% endfor %}
-                    <li><a href="https://github.com/darren277"><i class="fa-brands fa-github"></i> GitHub</a></li>
-                    <li><a href="#contact" id="contactbutton" class="btn">Contact</a></li>
+                    {% for entry in menu %}<li><a href="{{ entry.url }}" aria-label="{{ entry.title }}">{{ entry.title }}</a></li>{% endfor %}
+                    <li><a href="https://github.com/darren277" aria-label="My GitHub profile"><i class="fa-brands fa-github"></i> GitHub</a></li>
+                    <li><a href="#contact" id="contactbutton" class="btn" aria-label="Contact form below">Contact</a></li>
                 </ul>
             </nav>
             <div class="content">
                 <div>
                     <h1><span>Darren MacKenzie</span></h1>
-                    <h3>Software developer and solution architect.</h3>
+                    <p class="subtitle">Software developer and solution architect.</p>
                     <!-- <h1>This site is largely unmaintained at the moment. Check out <a href="https://tech.jfdmconsulting.com">JFDM Tech</a> for now!</h1> -->
-                    <a href="https://tech.jfdmconsulting.com"><img src="https://tech.jfdmconsulting.com/wp-content/uploads/sites/2/2022/10/JFDM-Tech-Front-Page-2048x391.png" style="height: 39px; width: 205px" /></a>
+                    <a href="https://tech.jfdmconsulting.com">
+                        <img src="https://tech.jfdmconsulting.com/wp-content/uploads/sites/2/2022/10/JFDM-Tech-Front-Page-2048x391.png" alt="JFDM Tech Consulting company logo" style="height: 39px; width: 205px" />
+                    </a>
                 </div>
                 <div>
                     <div class="contact" id="herocontactformParent">
-                        <h5>Get in touch</h5>
+                        <h2>Get in touch</h2>
                         <form class="ui form" method="POST" action="/contact" id="herocontactform"><input type="email" name="email" placeholder="Email" id="email">
                             <textarea name="message" id="message" placeholder="Enter a brief message"></textarea>
                             <input type="submit" name="submit" placeholder="None" id="submit">
@@ -109,13 +152,13 @@
                     <div class='icons'>{% for icon in article.icons %}<a href='/icons/{{icon}}'><i class='{{icon}}'></i></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div>
                     <div class='tags'>{% for tag in article.tags %}<a href='/tags/{{tag}}'><span class='tag'>{{tag}}</span></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div>
                     <div class="pra title-and-description">
-                        <h5>{{ article.title }}</h5>
+                        <h3 class="card-title">{{ article.title }}</h3>
                         <!-- Human readable date (YYYY-MM-DD) from epoch -->
-                        <h6>{{ article.created | datetime }}</h6>
-                        <img src="{{ article.thumbnail }}"></img>
+                        <p class="date">{{ article.created | datetime }}</p>
+                        {% if article.thumbnail %}<img src="{{ article.thumbnail }}"></img>{% endif %}
                         <p style="text-align: center;">{{ article.description }}</p>
                     </div>
-                    <div class="pra"><a class="button" href="{{ article.url }}">Read More</a></div>
+                    <div class="pra"><a class="button" href="{{ article.url }}" aria-label="Read more about {{ article.url | url_to_descriptive }}">Read More <span class="sr-only">about {{ article.url | url_to_descriptive }}</span></a></div>
                 </div>
                 {% endfor %}
             </div>
@@ -175,7 +218,7 @@
             <div id="contact">
                 <div>
                     <div class="contact" id="footercontactformParent">
-                        <h5>Get in touch</h5>
+                        <h3>Get in touch</h3>
                         <form class="ui form" method="POST" action="/contact" id="footercontactform">
                             <input type="email" name="email" placeholder="Email" id="email">
                             <textarea name="message" id="message" placeholder="Enter a brief message"></textarea>
@@ -198,14 +241,19 @@
     
     <footer>
         <p>Darren MacKenzie</p>
-        <p></p>
-        <div class="social">{% for entry in social %}<a href="{{ entry.url }}"><i class="{{ entry.icon }}"></i></a>{% endfor %}</div>
-        <p></p>
+        <div class="social">{% for entry in social %}<a href="{{ entry.url }}" aria-label="{{ entry.icon | icon_to_descriptive }}"><i class="{{ entry.icon }}"></i></a>{% endfor %}</div>
     </footer>
-    <script></script>
-    <script></script>
-    <script></script>
-    <script src="/scripts/main.js" type="module"></script>
+
+    <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/build/three.module.js">
+    <link rel="modulepreload" href="/scripts/main.js">
+    <script>
+        window.addEventListener('load', () => {
+            const threeScript = document.createElement('script');
+            threeScript.type = 'module';
+            threeScript.src = '/scripts/main.js';
+            document.body.appendChild(threeScript);
+        });
+    </script>
     
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WPKZ9BSM31"></script>

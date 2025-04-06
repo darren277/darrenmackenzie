@@ -39,3 +39,10 @@ Edit config.json manually and locate the CacheBehavior for /articles_list.
 Needs to be enabled from the web UI at the moment. See image below:
 
 ![API Gateway Cache](APIGatewayCaching.png)
+
+### SEO and Accessibility
+
+#### TODO
+
+- [ ] Minimum font size: "Document doesn't use legible font sizesText is illegible because there's no viewport meta tag optimized for mobile screens. Font sizes less than 12px are too small to be legible and require mobile visitors to “pinch to zoom” in order to read. Strive to have >60% of page text ≥12px."
+- [ ] Everything you did for `index.html` needs to be done for the other pages.
