@@ -192,9 +192,18 @@ def datetime_filter(value, format='%b %d, %Y'):
     ts = datetime.datetime.fromtimestamp(v)
     return ts.strftime(format)
 
+def url_to_descriptive(url):
+    """
+    Convert a url to a descriptive string.
+    """
+    return url.split('/')[-1].replace('-', ' ').replace('_', ' ')
+
 
 env.filters['datetime'] = datetime_filter
 s3_env.filters['datetime'] = datetime_filter
+
+env.filters['url_to_descriptive'] = url_to_descriptive
+s3_env.filters['url_to_descriptive'] = url_to_descriptive
 
 
 def test_filter():

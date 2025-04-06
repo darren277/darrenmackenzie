@@ -49,6 +49,19 @@
         .centered-text {
             text-align: center;
         }
+
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
     </style>
     <link crossorigin="anonymous" referrerpolicy="no-referrer" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"></link>
 </head>
@@ -116,7 +129,7 @@
                         <img src="{{ article.thumbnail }}"></img>
                         <p style="text-align: center;">{{ article.description }}</p>
                     </div>
-                    <div class="pra"><a class="button" href="{{ article.url }}">Read More</a></div>
+                    <div class="pra"><a class="button" href="{{ article.url }}" aria-label="Read more about {{ article.url | url_to_descriptive }}">Read More <span class="sr-only">about {{ article.url | url_to_descriptive }}</span></a></div>
                 </div>
                 {% endfor %}
             </div>
