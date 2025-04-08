@@ -1,5 +1,7 @@
 .chalice/deployments/
 
+.idea/
+
 __pycache__/
 
 venv/
