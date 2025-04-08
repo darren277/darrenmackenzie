@@ -8,14 +8,23 @@
 			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
 			media="print"
 			onload="this.media='all'"
-        ></link>
-<meta name="datasrc" content="data"></meta>
-{% if article.threejs %}
-	<script type="importmap" contents="{"imports": {"three": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/examples/jsm/", "three/fonts/": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/examples/fonts/" } }"></script>
-{% endif %}
-<link rel="stylesheet" href="/style.css"></link>
-<title>dm creations - Article - {{ article.title }}</title>
-<meta propery="og:title" content="{{ article.title }}" />
+		/>
+		<meta name="datasrc" content="data"></meta>
+		{% if article.threejs %}
+			<script type="importmap" contents="{"imports": {"three": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/examples/jsm/", "three/fonts/": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/examples/fonts/" } }"></script>
+		{% endif %}
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/themes/prism.min.css"
+			integrity="sha512-/mZ1FHPkg6EKcxo0fKXF51ak6Cr2ocgDi5ytaTBjsQZIH/RNs6GF6+oId/vPe3eJB836T36nXwVh/WBl/cWT4w=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+			media="print"
+			onload="this.media='all'"
+		/>
+		<link rel="stylesheet" href="/style.css"></link>
+		<title>dm creations - Article - {{ article.title }}</title>
+		<meta propery="og:title" content="{{ article.title }}" />
 
 <style>
 .article {
@@ -185,4 +194,23 @@ data-term="Transpiling from Python to React"
 <p></p></footer>
 <script></script>
 <script></script>
-<script></script></body></html>
+<script></script>
+
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.js"
+	integrity="sha512-aCQNEettKyH8SDQJruz2wZN44qnmyshACcptYnNs0cBU68fRbyZ/NMcTzSK2RbwnyYWqy4TQpjBE5s956Qcotg=="
+	crossorigin="anonymous"
+	referrerpolicy="no-referrer"
+	defer	
+></script>
+
+<script>
+window.Prism = window.Prism || {};
+window.Prism.manual = true;
+console.log("PRISM", Prism);
+</script>
+
+<script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js" defer></script>
+<script type="module" src="https://md-block.verou.me/md-block.js" defer></script>
+
+</body></html>
