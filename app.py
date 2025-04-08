@@ -582,6 +582,12 @@ def articles(section, article):
     article_table = db.Table(os.environ['ARTICLE_TABLE'])
     article_data = article_table.get_item(Key={'type_of_article': section, "slug": article}).get('Item')
 
+    if DEBUG:
+        print("[DEBUG] Section", section)
+        print("[DEBUG] Article Slug", article)
+        print("[DEBUG] Article Table", os.environ['ARTICLE_TABLE'])
+        print("[DEBUG] Article:", article_data)
+    
     if article_data:
         html_content = s3_env.from_string(s3.Object(os.environ['BUCKET_NAME'], 'frontend/article.html').get()["Body"].read().decode('utf-8')).render(section=section, article=article_data, menu=non_index_menu)
 
