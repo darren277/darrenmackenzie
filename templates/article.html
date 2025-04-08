@@ -1,6 +1,8 @@
 <html><head><link crossorigin="anonymous" referrerpolicy="no-referrer" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"></link>
 <meta name="datasrc" content="data"></meta>
-<script type="importmap" contents="{"imports": {"three": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/examples/jsm/", "three/fonts/": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/examples/fonts/" } }"></script>
+{% if article.threejs %}
+	<script type="importmap" contents="{"imports": {"three": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/examples/jsm/", "three/fonts/": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/examples/fonts/" } }"></script>
+{% endif %}
 <link rel="stylesheet" href="/style.css"></link>
 <link crossorigin="anonymous" referrerpolicy="no-referrer" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"></link>
 <title>dm creations - Article - {{ article.title }}</title>
