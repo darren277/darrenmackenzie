@@ -9,3 +9,6 @@ venv/
 etag.txt
 
 .coverage
+
+# Just a folder for various things I keep adjacent for reference but not in the repo
+stuff/
