@@ -40,6 +40,12 @@ Needs to be enabled from the web UI at the moment. See image below:
 
 ![API Gateway Cache](APIGatewayCaching.png)
 
+##### Path Level Caching
+
+Do not forget to enable this each time you deploy:
+
+![API Gateway Path Caching](APIGatewayPathCaching.png)
+
 ### SEO and Accessibility
 
 #### TODO
