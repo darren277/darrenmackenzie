@@ -31,191 +31,211 @@
 
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-.article {
-	background: #302626;
-	width: 100%;
-	padding-top: 100px;
-	padding-bottom: 100px;
-	padding-left: 0px;
-	padding-right: 0px;
-}
+		<style>
+			.article {
+				background: #302626;
+				width: 100%;
+				padding-top: 100px;
+				padding-bottom: 100px;
+				padding-left: 0px;
+				padding-right: 0px;
+			}
 
-.article-card {
-	width: 60%;
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-	color: lightgrey;
-	left: 20%;
-	right: 20%;
-	padding-top: 20px;
-	padding-bottom: 20px;
-	padding-left: 25px;
-	padding-right: 25px;
-	background: #191919;
-	border-radius: 20px;
-	margin: 15px;
-	position: relative;
-	overflow: hidden;
-	margin-top: 25px;
-	margin-bottom: 25px;
-	margin-left: 0px;
-	margin-right: 0px;
-}
+			.article-card {
+				width: 60%;
+				box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+				color: lightgrey;
+				left: 20%;
+				right: 20%;
+				padding-top: 20px;
+				padding-bottom: 20px;
+				padding-left: 25px;
+				padding-right: 25px;
+				background: #191919;
+				border-radius: 20px;
+				margin: 15px;
+				position: relative;
+				overflow: hidden;
+				margin-top: 25px;
+				margin-bottom: 25px;
+				margin-left: 0px;
+				margin-right: 0px;
+			}
 
-.article-header {
-	padding-top: 20px;
-	padding-bottom: 20px;
-	padding-left: 25px;
-	padding-right: 25px;
+			.article-header {
+				padding-top: 20px;
+				padding-bottom: 20px;
+				padding-left: 25px;
+				padding-right: 25px;
 
-	text-align: center;
-}
+				text-align: center;
+			}
 
-.article ol {
-	/* INDENT */
-	padding-left: 20px;
-}
+			.article ol {
+				/* INDENT */
+				padding-left: 20px;
+			}
 
-.article p {
-	/* add space between paragraphs */
-	margin-bottom: 20px;
-}
+			.article p {
+				/* add space between paragraphs */
+				margin-bottom: 20px;
+			}
 
-.article h1 {
-	margin-bottom: 20px;
-}
+			.article h1 {
+				margin-bottom: 20px;
+			}
 
-.article h2 {
-	margin-bottom: 20px;
-}
+			.article h2 {
+				margin-bottom: 20px;
+			}
 
-.article h3 {
-	margin-bottom: 20px;
-}
+			.article h3 {
+				margin-bottom: 20px;
+			}
 
-.article h4 {
-	margin-bottom: 20px;
-}
+			.article h4 {
+				margin-bottom: 20px;
+			}
 
-.article h5 {
-	margin-bottom: 20px;
-}
+			.article h5 {
+				margin-bottom: 20px;
+			}
 
-.article-hero {
-	height: auto;
-}
+			.article-hero {
+				height: auto;
+			}
+		</style>
+	</head>
+<body>
+	<div style="	position: relative;">
 
-</style></head>
-<body><div style="	position: relative;"><canvas></canvas>
-<div class="article-hero"><nav><h2 class="logo">dm creations</h2>
-<ul>{% for entry in menu %}
-<li>
- <a href="{{ entry.url }}">
-  {{ entry.title }}
- </a>
-</li>
-{% endfor %}
-
-<li><a href="https://github.com/darren277"><i class="fa-brands fa-github"></i>
- GitHub</a></li>
-<li><a href="#contact" id="contactbutton" class="btn">Contact</a></li></ul></nav>
-<!-- <div class="content">
-	<div>
-		<h1><span>Darren MacKenzie</span></h1>
-		<h3>Software developer and solution architect.</h3>
-		<h1>This site is largely unmaintained at the moment. Check out <a href="https://tech.jfdmconsulting.com">JFDM Tech</a> for now!</h1>
-	</div>
-	<div>
-		<div class="contact" id="herocontactformParent">
-			<h5>Get in touch</h5>
-			<form class="ui form" method="POST" action="/contact" id="herocontactform"><input type="email" name="email" placeholder="Email" id="email">
-				<textarea name="message" id="message" placeholder="Enter a brief message"></textarea>
-				<input type="submit" name="submit" placeholder="None" id="submit">
-			</form>
+		<!-- HEADER SECTION -->
+		<canvas></canvas>
+		<div class="article-hero">
+			<nav>
+				<h2 class="logo">dm creations</h2>
+				
+				<ul>
+					{% for entry in menu %}
+					<li>
+						<a href="{{ entry.url }}">{{ entry.title }}</a>
+					</li>
+					{% endfor %}
+					<li><a href="https://github.com/darren277"><i class="fa-brands fa-github"></i> GitHub</a></li>
+					<li><a href="#contact" id="contactbutton" class="btn">Contact</a></li>
+				</ul>
+			</nav>
+			<!-- <div class="content">
+				<div>
+					<h1><span>Darren MacKenzie</span></h1>
+					<h3>Software developer and solution architect.</h3>
+					<h1>This site is largely unmaintained at the moment. Check out <a href="https://tech.jfdmconsulting.com">JFDM Tech</a> for now!</h1>
+				</div>
+				<div>
+					<div class="contact" id="herocontactformParent">
+						<h5>Get in touch</h5>
+						<form class="ui form" method="POST" action="/contact" id="herocontactform"><input type="email" name="email" placeholder="Email" id="email">
+							<textarea name="message" id="message" placeholder="Enter a brief message"></textarea>
+							<input type="submit" name="submit" placeholder="None" id="submit">
+						</form>
+					</div>
+				</div>
+			</div> -->
 		</div>
 	</div>
-</div> -->
-</div>
-</div>
-<section class="article">
-	<div class="article-card">
-		<div class="article-header">
-			<h1>{{ article.title }}</h1>
-			<div>
-				<p class="date">Date published: {{ article.date_published }}.</p>
-				<div class='tags'>{% for tag in article.tags %}<a href='/tags/{{tag}}'><span class='tag'>{{tag}}</span></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div>
-				<div class='icons'>{% for icon in article.icons %}<a href='/icons/{{icon}}'><i class='{{icon}}'></i></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div>
+
+	<!-- ARTICLE SECTION -->
+	<section class="article">
+		<div class="article-card">
+			<div class="article-header">
+				<h1>{{ article.title }}</h1>
+				<div>
+					<p class="date">Date published: {{ article.date_published }}.</p>
+					<div class='tags'>{% for tag in article.tags %}<a href='/tags/{{tag}}'><span class='tag'>{{tag}}</span></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div>
+					<div class='icons'>{% for icon in article.icons %}<a href='/icons/{{icon}}'><i class='{{icon}}'></i></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div>
+				</div>
+			</div>
+			<article>{{ article.body | safe }}</article>
+		</div>
+	</section>
+
+	<!-- GISCUS SECTION -->
+	<!-- 
+	data-mapping="og:title"
+	data-strict="0"
+
+	data-mapping="number"
+	data-term="1"
+
+	data-mapping="specific"
+	data-term="Transpiling from Python to React"
+	-->
+	<section>
+		<div class="giscus article-card" id="giscus"></div>
+	</section>
+	<script src="https://giscus.app/client.js"
+			data-repo="darren277/blog"
+			data-repo-id="R_kgDOOFZRCw"
+			data-category="Announcements"
+			data-category-id="DIC_kwDOOFZRC84CnuQr"
+
+			data-mapping="specific"
+			data-term="{{ article.title }}"
+
+			data-reactions-enabled="1"
+			data-emit-metadata="0"
+			data-input-position="top"
+			data-theme="noborder_dark"
+			data-lang="en"
+			data-loading="lazy"
+			crossorigin="anonymous"
+			async>
+	</script>
+
+	<!-- CONTACT SECTION -->
+	<section>
+		<div id="contact_section">
+			<div id="contact">
+				<div>
+					<div class="contact" id="footercontactformParent">
+						<h2>Get in touch</h2>
+						<form class="ui form" method="POST" action="/contact" id="footercontactform"><input type="email" name="email" placeholder="Email" id="email">
+							<textarea name="message" id="message" placeholder="Enter a brief message"></textarea>
+							<input type="submit" name="submit" placeholder="None" id="submit">
+						</form>
+					</div>
+				</div>
 			</div>
 		</div>
-		<article>{{ article.body | safe }}</article>
-	</div>
-</section>
+	</section>
+	
+	<!-- FOOTER SECTION -->
+	<footer>
+		<p>Darren MacKenzie</p>
+		<div class="social">
+			{% for entry in social %}
+			<a href="{{ entry.url }}"><i class="{{ entry.icon }}"></i></a>
+			{% endfor %}
+		</div>
+	</footer>
 
-<!-- 
-data-mapping="og:title"
-data-strict="0"
+	<!-- SCRIPTS -->
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.js"
+		integrity="sha512-aCQNEettKyH8SDQJruz2wZN44qnmyshACcptYnNs0cBU68fRbyZ/NMcTzSK2RbwnyYWqy4TQpjBE5s956Qcotg=="
+		crossorigin="anonymous"
+		referrerpolicy="no-referrer"
+		defer	
+	></script>
 
-data-mapping="number"
-data-term="1"
+	<script>
+	window.Prism = window.Prism || {};
+	window.Prism.manual = true;
+	console.log("PRISM", Prism);
+	</script>
 
-data-mapping="specific"
-data-term="Transpiling from Python to React"
--->
-<section>
-	<div class="giscus article-card" id="giscus"></div>
-</section>
-<script src="https://giscus.app/client.js"
-        data-repo="darren277/blog"
-        data-repo-id="R_kgDOOFZRCw"
-        data-category="Announcements"
-        data-category-id="DIC_kwDOOFZRC84CnuQr"
+	<script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js" defer></script>
+	<script type="module" src="https://md-block.verou.me/md-block.js" defer></script>
 
-        data-mapping="specific"
-		data-term="{{ article.title }}"
-
-		data-reactions-enabled="1"
-        data-emit-metadata="0"
-        data-input-position="top"
-        data-theme="noborder_dark"
-        data-lang="en"
-        data-loading="lazy"
-        crossorigin="anonymous"
-        async>
-</script>
-
-<section><div id="contact_section"><div id="contact"><div><div class="contact" id="footercontactformParent"><h2>Get in touch</h2>
-<form class="ui form" method="POST" action="/contact" id="footercontactform"><input type="email" name="email" placeholder="Email" id="email">
-<textarea name="message" id="message" placeholder="Enter a brief message"></textarea>
-<input type="submit" name="submit" placeholder="None" id="submit"></form></div></div></div></div></section>
-<footer><p>Darren MacKenzie</p>
-<p></p>
-<div class="social">{% for entry in social %}
-<a href="{{ entry.url }}">
- <i class="{{ entry.icon }}">
- </i>
-</a>
-{% endfor %}
-</div>
-<p></p></footer>
-<script></script>
-<script></script>
-<script></script>
-
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.js"
-	integrity="sha512-aCQNEettKyH8SDQJruz2wZN44qnmyshACcptYnNs0cBU68fRbyZ/NMcTzSK2RbwnyYWqy4TQpjBE5s956Qcotg=="
-	crossorigin="anonymous"
-	referrerpolicy="no-referrer"
-	defer	
-></script>
-
-<script>
-window.Prism = window.Prism || {};
-window.Prism.manual = true;
-console.log("PRISM", Prism);
-</script>
-
-<script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js" defer></script>
-<script type="module" src="https://md-block.verou.me/md-block.js" defer></script>
-
-</body></html>
+</body>
+</html>
