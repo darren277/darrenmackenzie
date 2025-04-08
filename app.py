@@ -580,10 +580,10 @@ def articles(section, article):
     
     db = boto3.resource('dynamodb')
     article_table = db.Table(os.environ['ARTICLE_TABLE'])
-    article = article_table.get_item(Key={'type_of_article': section, "slug": article}).get('Item')
+    article_data = article_table.get_item(Key={'type_of_article': section, "slug": article}).get('Item')
 
-    if article:
-        html_content = s3_env.from_string(s3.Object(os.environ['BUCKET_NAME'], 'frontend/article.html').get()["Body"].read().decode('utf-8')).render(section=section, article=article, menu=non_index_menu)
+    if article_data:
+        html_content = s3_env.from_string(s3.Object(os.environ['BUCKET_NAME'], 'frontend/article.html').get()["Body"].read().decode('utf-8')).render(section=section, article=article_data, menu=non_index_menu)
 
         compressed_html = brotli_compress(html_content.encode('utf-8'))
 
