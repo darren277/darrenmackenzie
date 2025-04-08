@@ -17,6 +17,7 @@ DEBUG = True
 
 
 
+
 def debug(current_request):
     print("[DEBUG] Requested Context:", current_request.context)
     print("[DEBUG] Query Parameters:", current_request.query_params)
