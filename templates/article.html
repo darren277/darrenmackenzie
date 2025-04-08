@@ -142,9 +142,9 @@
 		<div class="article-header">
 			<h1>{{ article.title }}</h1>
 			<div>
-				<h4>Date published: {{ article.date_published }}.</h4>
-				<h5><div class='tags'>{% for tag in article.tags %}<a href='/tags/{{tag}}'><span class='tag'>{{tag}}</span></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div></h5>
-				<h5><div class='icons'>{% for icon in article.icons %}<a href='/icons/{{icon}}'><i class='{{icon}}'></i></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div></h5>
+				<p class="date">Date published: {{ article.date_published }}.</p>
+				<div class='tags'>{% for tag in article.tags %}<a href='/tags/{{tag}}'><span class='tag'>{{tag}}</span></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div>
+				<div class='icons'>{% for icon in article.icons %}<a href='/icons/{{icon}}'><i class='{{icon}}'></i></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div>
 			</div>
 		</div>
 		<article>{{ article.body | safe }}</article>
@@ -183,7 +183,7 @@ data-term="Transpiling from Python to React"
         async>
 </script>
 
-<section><div id="contact_section"><div id="contact"><div><div class="contact" id="footercontactformParent"><h5>Get in touch</h5>
+<section><div id="contact_section"><div id="contact"><div><div class="contact" id="footercontactformParent"><h2>Get in touch</h2>
 <form class="ui form" method="POST" action="/contact" id="footercontactform"><input type="email" name="email" placeholder="Email" id="email">
 <textarea name="message" id="message" placeholder="Enter a brief message"></textarea>
 <input type="submit" name="submit" placeholder="None" id="submit"></form></div></div></div></div></section>
