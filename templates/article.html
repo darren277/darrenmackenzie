@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 	<head>
 		<link
 			crossorigin="anonymous"
@@ -25,6 +26,10 @@
 		<link rel="stylesheet" href="/style.css"></link>
 		<title>dm creations - Article - {{ article.title }}</title>
 		<meta propery="og:title" content="{{ article.title }}" />
+		<meta property="og:description" content="{{ article.description }}" />
+		<meta name="description" content="{{ article.description }}" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 .article {
