@@ -348,9 +348,9 @@ function convertPathToAnchorPoints(pathString) {
         const startPoint = anchorPoints[currentStep];
         let endPoint = anchorPoints[targetStep];
 
-        if (!endPoint) {
-            console.log('This is the last step');
-            endPoint = startPoint;
+        if (!startPoint || !endPoint) {
+            console.error('Invalid anchor points:', startPoint, endPoint);
+            return;
         }
 
         const startTime = performance.now();
