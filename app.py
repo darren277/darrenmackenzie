@@ -10,6 +10,7 @@ from os import path
 import boto3 as boto3
 from jinja2 import Environment, FileSystemLoader, BaseLoader
 import stripe
+import markdown
 
 from chalicelib.paginator import Paginator
 
@@ -582,9 +583,15 @@ def articles(section, article):
         print("[DEBUG] Article:", article_data)
     
     if article_data:
-        html_content = s3_env.from_string(s3.Object(os.environ['BUCKET_NAME'], 'frontend/article.html').get()["Body"].read().decode('utf-8')).render(section=section, article=article_data, menu=non_index_menu)
+        full_article_html = s3_env.from_string(s3.Object(os.environ['BUCKET_NAME'], 'frontend/article.html').get()["Body"].read().decode('utf-8')).render(section=section, article=article_data, menu=non_index_menu)
+        
+        md_content = article_data['body']
 
-        compressed_html = brotli_compress(html_content.encode('utf-8'))
+        html_content = markdown.markdown(md_content, extensions=["fenced_code", "codehilite", "tables", "toc"])
+
+        full_article_html = full_article_html.replace('___ARTICLE___', html_content)
+
+        compressed_html = brotli_compress(full_article_html.encode('utf-8'))
 
         return Response(
             body=compressed_html,
