@@ -133,6 +133,11 @@
         .card-title {
             font-size: var(--fs-h5);
         }
+
+        .button-wrapper {
+            position: relative;
+            top: 75%;
+        }
     </style>
 </head>
 <body>
@@ -205,7 +210,7 @@
                         {% if article.thumbnail %}<img src="{{ article.thumbnail }}"></img>{% endif %}
                         <p style="text-align: center;">{{ article.description }}</p>
                     </div>
-                    <div class="pra"><a class="button" href="{{ article.url }}" aria-label="Read more about {{ article.url | url_to_descriptive }}">Read More <span class="sr-only">about {{ article.url | url_to_descriptive }}</span></a></div>
+                    <div class="pra button-wrapper"><a class="button" href="{{ article.url }}" aria-label="Read more about {{ article.url | url_to_descriptive }}">Read More <span class="sr-only">about {{ article.url | url_to_descriptive }}</span></a></div>
                 </div>
                 {% endfor %}
             </div>
