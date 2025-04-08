@@ -7,16 +7,22 @@
 import requests
 import json
 import datetime
+import time
 
 
 url = 'https://www.darrenmackenzie.com'
 url2 = "https://www.darrenmackenzie.com/?page=2&limit=9&lb=0&ub=1704589199999&newestTimestamp=1704937800000"
 
 def cache_check(url):
+    start_time = time.time()
     response = requests.get(url)
     response_headers = response.headers
-    print(response_headers)
     x_cache = response_headers.get('x-cache')
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    print(f"Elapsed time: {elapsed_time:.2f} seconds")
+    print(f"x-cache: {x_cache}")
+    print(f"Response Headers: {response_headers}")
     return x_cache
 
 result = cache_check(url)
