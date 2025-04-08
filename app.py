@@ -145,20 +145,13 @@ def create_response_headers(content_type: str, content: str):
 
 
 def debug(current_request):
-    # Log requested URL (full path) for CloudWatch logs
-    print("[DEBUG] Requested URL:", current_request.url)
-    # Log query parameters for debugging
+    print("[DEBUG] Requested Context:", current_request.context)
     print("[DEBUG] Query Parameters:", current_request.query_params)
-    # Log headers for debugging
-    print("[DEBUG] Headers:", current_request.headers)
-    # Log request body for debugging
-    print("[DEBUG] Request Body:", current_request.raw_body.decode('utf-8'))
-    # Log request method for debugging
+    print("[DEBUG] Path Parameters:", current_request.uri_params)
     print("[DEBUG] Request Method:", current_request.method)
-    # Log request path for debugging
-    print("[DEBUG] Request Path:", current_request.path)
-    # Log request context for debugging
-    print("[DEBUG] Request Context:", current_request.context)
+    # Log headers for debugging
+    #print("[DEBUG] Headers:", current_request.headers)
+
 
 
 app = Chalice(app_name="darrenmackenzie")
