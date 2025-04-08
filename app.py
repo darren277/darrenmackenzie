@@ -15,6 +15,8 @@ from chalicelib.paginator import Paginator
 
 APP_NAME = 'darrenmackenzie'
 
+DEBUG = True
+
 
 # Cache for 24 hours
 CACHE_CONTROL_ONE_DAY = 'public, s-maxage=86400, max-age=86400'
@@ -140,6 +142,23 @@ def create_response_headers(content_type: str, content: str):
         'ETag': etag_value,
         'Last-Modified': last_modified
     }
+
+
+def debug(current_request):
+    # Log requested URL (full path) for CloudWatch logs
+    print("[DEBUG] Requested URL:", current_request.url)
+    # Log query parameters for debugging
+    print("[DEBUG] Query Parameters:", current_request.query_params)
+    # Log headers for debugging
+    print("[DEBUG] Headers:", current_request.headers)
+    # Log request body for debugging
+    print("[DEBUG] Request Body:", current_request.raw_body.decode('utf-8'))
+    # Log request method for debugging
+    print("[DEBUG] Request Method:", current_request.method)
+    # Log request path for debugging
+    print("[DEBUG] Request Path:", current_request.path)
+    # Log request context for debugging
+    print("[DEBUG] Request Context:", current_request.context)
 
 
 app = Chalice(app_name="darrenmackenzie")
@@ -340,6 +359,9 @@ def create_compressed_response(html_content):
 @app.route('/')
 def script_template():
     """Handle the main website endpoint."""
+    if DEBUG:
+        debug(app.current_request)
+    
     try:
         # Get menu items and parse query parameters
         menu = get_menu_items()
@@ -534,6 +556,9 @@ def contact_form():
 """
 @app.route('/{section}/{article}')
 def articles(section, article):
+    if DEBUG:
+        debug(app.current_request)
+    
     s3 = boto3.resource('s3')
     website_menu = [
         dict(title='Home', url='#'),
