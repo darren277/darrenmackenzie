@@ -74,6 +74,11 @@ def script_template():
     """Handle the main website endpoint."""
     if DEBUG:
         debug(app.current_request)
+
+    threejs_drawings = ['data']
+    threejs_drawing = app.current_request.query_params.get('threejs_drawing', None)
+    if threejs_drawing:
+        threejs_drawings = [threejs_drawing]
     
     try:
         # Get menu items and parse query parameters
@@ -125,6 +130,7 @@ def script_template():
             'prevPageUrl': prev_page_url,
             'firstPage': is_first_page,
             'newestTimestamp': newest_timestamp,
+            'threejs_drawings': threejs_drawings
         }
         html_content = template.render(**template_data)
         

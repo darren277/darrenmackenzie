@@ -11,7 +11,9 @@
         onload="this.media='all'"
         ></link>
     <title>dm creations - Home</title>
-    <meta name="datasrc" content="data"></meta>
+    {% for data_src in threejs_drawings %}
+        <meta name="datasrc" content="{{ data_src }}"></meta>
+    {% endfor %}
     <meta name="description" content="Personal website of Darren MacKenzie, a software developer and solution architect."></meta>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
     <script type="importmap">
