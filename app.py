@@ -164,10 +164,10 @@ def articles_list():
     JAVASCRIPT, JSON, AND CSS ENDPOINTS
 """
 # Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://darrenmackenzie-chalice-bucket.s3.us-east-1.amazonaws.com/scripts/main.js. (Reason: CORS header ‘Access-Control-Allow-Origin’ missing). Status code: 200.
-@app.route('/scripts/main.js')
+@app.route('/scripts/threejs/main.js')
 def serve_js():
     s3 = boto3.resource('s3')
-    js_content = s3.Object(os.environ['BUCKET_NAME'], 'scripts/main.js').get()["Body"].read().decode('utf-8')
+    js_content = s3.Object(os.environ['BUCKET_NAME'], 'scripts/threejs/main.js').get()["Body"].read().decode('utf-8')
 
     compressed_js = brotli_compress(js_content.encode('utf-8'))
     
@@ -176,6 +176,33 @@ def serve_js():
         headers=create_response_headers('application/javascript', compressed_js),
         status_code=200
     )
+
+@app.route('/scripts/threejs/config/{filename}')
+def serve_config(filename):
+    s3 = boto3.resource('s3')
+    js_content = s3.Object(os.environ['BUCKET_NAME'], f'scripts/threejs/config/{filename}').get()["Body"].read().decode('utf-8')
+
+    compressed_js = brotli_compress(js_content.encode('utf-8'))
+
+    return Response(
+        body=compressed_js,
+        headers=create_response_headers('application/javascript', compressed_js),
+        status_code=200
+    )
+
+@app.route('/scripts/threejs/drawing/{filename}')
+def serve_drawing(filename):
+    s3 = boto3.resource('s3')
+    js_content = s3.Object(os.environ['BUCKET_NAME'], f'scripts/threejs/drawing/{filename}').get()["Body"].read().decode('utf-8')
+
+    compressed_js = brotli_compress(js_content.encode('utf-8'))
+
+    return Response(
+        body=compressed_js,
+        headers=create_response_headers('application/javascript', compressed_js),
+        status_code=200
+    )
+
 
 @app.route('/scripts/helvetiker_regular.typeface.json')
 def serve_font():
