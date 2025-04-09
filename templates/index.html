@@ -13,6 +13,9 @@
     <title>dm creations - Home</title>
     {% for data_src in threejs_drawings %}
         <meta name="datasrc" content="{{ data_src }}"></meta>
+        {% if data_src == "music" %}
+        <meta name="music" content="true"></meta>
+        {% endif %}
     {% endfor %}
     <meta name="description" content="Personal website of Darren MacKenzie, a software developer and solution architect."></meta>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
@@ -289,9 +292,47 @@
         <h1>Three JS</h1>
         <div class="threejs-container">
             <div id="c"></div>
-            <button id="orbit-toggle-btn" style="position: absolute; top: 1em; right: 1em; z-index: 9999; padding: 0.5em 1em; cursor: pointer;">Orbit: ON</button>
+<!--            <button id="orbit-toggle-btn" style="position: absolute; top: 1em; right: 1em; z-index: 9999; padding: 0.5em 1em; cursor: pointer;">Orbit: ON</button>-->
+            <!-- UI container (floating overlay) -->
+            <div id="ui-container" style="position: absolute; top: 1em; right: 1em; z-index: 9999; background-color: rgba(255, 255, 255, 0.2); padding: 0.5em;">
+                <!-- Orbit Toggle Button -->
+                <button id="orbit-toggle-btn" style="display: block; width: 120px; margin-bottom: 0.5em; cursor: pointer;">Orbit: ON</button>
+
+                <!-- Example Slider -->
+                <label for="zoom-slider" style="margin-right: 0.5em;">Zoom:</label>
+                <input type="range" id="zoom-slider" min="1" max="100" value="5" step="1" style="width: 100px;"/>
+
+                <!-- Tempo Slider -->
+                <label for="tempo-slider" style="display: hidden;">Tempo:</label>
+                <input id="tempo-slider" style="display: hidden;" type="range" min="0.25" max="2.0" value="1" step="0.01" />
+                <span id="tempo-value" style="display: hidden;">1.00x</span>
+            </div>
         </div>
     </section>
+
+    <script>
+        // Function to load the Three.js script
+        function updateUI() {
+            const zoomSlider = document.getElementById('zoom-slider');
+            const tempoSlider = document.getElementById('tempo-slider');
+            const tempoValue = document.getElementById('tempo-value');
+
+            const musicBool = document.querySelector('meta[name="music"]');
+
+            if (musicBool) {
+                tempoSlider.style.display = 'block';
+                tempoValue.style.display = 'block';
+            } else {
+                tempoSlider.style.display = 'none';
+                tempoValue.style.display = 'none';
+            }
+        }
+
+        // Check if the page is fully loaded before executing the script
+        window.addEventListener('load', () => {
+            updateUI();
+        });
+    </script>
     
     <footer>
         <p>Darren MacKenzie</p>
