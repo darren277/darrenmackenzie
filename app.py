@@ -75,15 +75,16 @@ def script_template():
     if DEBUG:
         debug(app.current_request)
 
+    query_params = app.current_request.query_params or {}
+
     threejs_drawings = ['data']
-    threejs_drawing = app.current_request.query_params.get('threejs_drawing', None)
+    threejs_drawing = query_params.get('threejs_drawing', None)
     if threejs_drawing:
         threejs_drawings = [threejs_drawing]
     
     try:
         # Get menu items and parse query parameters
         menu = get_menu_items()
-        query_params = app.current_request.query_params or {}
         tags_param = query_params.get('tags')
         tags = tags_param.split(',') if tags_param else None
         
