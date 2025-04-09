@@ -218,18 +218,29 @@ def serve_font():
         status_code=200
     )
 
-@app.route('/data/data.json')
-def serve_data():
-    s3 = boto3.resource('s3')
-    json_content = s3.Object(os.environ['BUCKET_NAME'], 'data/data.json').get()["Body"].read().decode('utf-8')
+@app.route('/data/{filename}')
+def serve_data(filename):
+    if filename == 'data.json' or filename == 'music.json':
+        s3 = boto3.resource('s3')
+        json_content = s3.Object(os.environ['BUCKET_NAME'], f'data/{filename}').get()["Body"].read().decode('utf-8')
 
-    compressed_json = brotli_compress(json_content.encode('utf-8'))
+        compressed_json = brotli_compress(json_content.encode('utf-8'))
 
-    return Response(
-        body=compressed_json,
-        headers=create_response_headers('application/json', compressed_json),
-        status_code=200
-    )
+        return Response(
+            body=compressed_json,
+            headers=create_response_headers('application/json', compressed_json),
+            status_code=200
+        )
+    else:
+        # return 404...
+        json_content = {'error': 'File not found'}
+        compressed_json = brotli_compress(json_content)
+
+        return Response(
+            body=compressed_json,
+            headers={'Content-Type': 'application/json'},
+            status_code=404
+        )
 
 @app.route('/style.css')
 def serve_css():
