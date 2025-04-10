@@ -14,6 +14,7 @@ from chalicelib.payments import stripe_webhook_handler, checkout_session_handler
 from chalicelib.utils import datetime_filter, url_to_descriptive, icon_to_descriptive
 
 DEBUG = True
+LOCAL = False
 
 
 
@@ -96,7 +97,7 @@ def script_template():
             return Response(str(e), status_code=400)
         
         # Get template from S3 and website data from DynamoDB
-        template = get_s3_template(s3_env, os.environ['BUCKET_NAME'])
+        template = get_s3_template(s3_env, os.environ['BUCKET_NAME'], local=LOCAL)
         website_data = get_website_data(os.environ['HOME_TABLE'])
         
         # Query articles
@@ -158,6 +159,36 @@ def articles_list():
     cursor = int(app.current_request.query_params.get('cursor', datetime.datetime.now().timestamp() * 1_000))
     tags = app.current_request.query_params.get('tags', None)
 
+    if LOCAL:
+        return [
+            dict(
+                tags=['aws', 'python', 'lambda'],
+                icons=[],
+                title='Lambda Layers',
+                slug='lambda-layers',
+                created=1672790400000,
+                description='Using Lambda layers can help you to reduce the size of your Lambda function deployment package. This is especially useful when you have a lot of dependencies.',
+                thumbnail='',
+            ),
+            dict(
+                tags=['aws', 'python', 'lambda'],
+                icons=[],
+                title='Lambda Layers 2',
+                slug='lambda-layers-2',
+                created=1672790400000,
+                description='This is a story all about how my life got flipped turned upside down. Now I\'d like to take a minute so just site right there...',
+                thumbnail='',
+            ),
+            dict(
+                tags=['aws', 'python', 'lambda'],
+                icons=[],
+                title='Lambda Layers 3',
+                slug='lambda-layers-3',
+                created=1672790400000,
+                description='This is a story lambda layers and how they got flipped turned upside down. Now I\'d like to take a minute so just site right there...',
+                thumbnail='',
+            ),
+        ]
     return articles_list_handler(limit, cursor, tags)
 
 
@@ -245,7 +276,10 @@ def serve_data(filename):
 @app.route('/style.css')
 def serve_css():
     s3 = boto3.resource('s3')
-    css_content = s3.Object(os.environ['BUCKET_NAME'], 'frontend/style.css').get()["Body"].read().decode('utf-8')
+    if LOCAL:
+        css_content = open(join(cwd, 'templates', 'style.css'), 'r').read()
+    else:
+        css_content = s3.Object(os.environ['BUCKET_NAME'], 'frontend/style.css').get()["Body"].read().decode('utf-8')
 
     compressed_css = brotli_compress(css_content.encode('utf-8'))
 
@@ -312,7 +346,11 @@ def articles(section, article):
         print("[DEBUG] Article:", article_data)
     
     if article_data:
-        full_article_html = s3_env.from_string(s3.Object(os.environ['BUCKET_NAME'], 'frontend/article.html').get()["Body"].read().decode('utf-8')).render(section=section, article=article_data, menu=non_index_menu)
+        if LOCAL:
+            full_article_html_string = open(join(cwd, 'templates', 'article.html'), 'r').read()
+        else:
+            full_article_html_string = s3.Object(os.environ['BUCKET_NAME'], 'frontend/article.html').get()["Body"].read().decode('utf-8')
+        full_article_html = s3_env.from_string(full_article_html_string).render(section=section, article=article_data, menu=non_index_menu)
         
         md_content = article_data['body']
 
