@@ -159,6 +159,36 @@ def articles_list():
     cursor = int(app.current_request.query_params.get('cursor', datetime.datetime.now().timestamp() * 1_000))
     tags = app.current_request.query_params.get('tags', None)
 
+    if LOCAL:
+        return [
+            dict(
+                tags=['aws', 'python', 'lambda'],
+                icons=[],
+                title='Lambda Layers',
+                slug='lambda-layers',
+                created=1672790400000,
+                description='Using Lambda layers can help you to reduce the size of your Lambda function deployment package. This is especially useful when you have a lot of dependencies.',
+                thumbnail='',
+            ),
+            dict(
+                tags=['aws', 'python', 'lambda'],
+                icons=[],
+                title='Lambda Layers 2',
+                slug='lambda-layers-2',
+                created=1672790400000,
+                description='This is a story all about how my life got flipped turned upside down. Now I\'d like to take a minute so just site right there...',
+                thumbnail='',
+            ),
+            dict(
+                tags=['aws', 'python', 'lambda'],
+                icons=[],
+                title='Lambda Layers 3',
+                slug='lambda-layers-3',
+                created=1672790400000,
+                description='This is a story lambda layers and how they got flipped turned upside down. Now I\'d like to take a minute so just site right there...',
+                thumbnail='',
+            ),
+        ]
     return articles_list_handler(limit, cursor, tags)
 
 
