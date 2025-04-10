@@ -14,7 +14,7 @@ from chalicelib.payments import stripe_webhook_handler, checkout_session_handler
 from chalicelib.utils import datetime_filter, url_to_descriptive, icon_to_descriptive
 
 DEBUG = True
-LOCAL = True
+LOCAL = False
 
 
 
