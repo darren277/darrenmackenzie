@@ -1,10 +1,9 @@
 /* Base styles */
 :root {
     --black: #000000;
-    /* --dark-gray: #1a1a1a; */
     --dark-gray: #302626;
     --white: #ffffff;
-    --pink: #d1347b;
+    --pink: #811c4a;
     --max-width: 1200px;
     --header-height: 40vh;
 }
