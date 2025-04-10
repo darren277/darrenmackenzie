@@ -27,10 +27,6 @@
 			.article {
 				background: #302626;
 				width: 100%;
-				padding-top: 100px;
-				padding-bottom: 100px;
-				padding-left: 0px;
-				padding-right: 0px;
 			}
 
 			.article-card {
@@ -62,10 +58,6 @@
 
 				text-align: center;
 			}
-
-			.article-hero {
-				height: auto;
-			}
 		</style>
 		<style>
 			.markdown-body {
@@ -74,7 +66,6 @@
 				font-family: system-ui, sans-serif;
 				line-height: 1.6;
 				padding: 1rem;
-				max-width: 700px;
 				margin: 0 auto;
 			}
 
@@ -137,120 +128,102 @@
 		</style>
 	</head>
 <body>
-	<div style="position: relative;">
+	<div class="layout">
 
 		<!-- HEADER SECTION -->
-		<canvas></canvas>
-		<div class="article-hero">
-			<nav>
+		<header class="header">
+            <div class="header-left">
 				<h2 class="logo">dm creations</h2>
-				
+			</div>
+			<nav class="header-right">
 				<ul>
-					{% for entry in menu %}
-					<li>
-						<a href="{{ entry.url }}">{{ entry.title }}</a>
-					</li>
-					{% endfor %}
-					<li><a href="https://github.com/darren277"><i class="fa-brands fa-github"></i> GitHub</a></li>
-					<li><a href="#contact" id="contactbutton" class="btn">Contact</a></li>
+					{% for entry in menu %}<li><a href="{{ entry.url }}" aria-label="{{ entry.title }}">{{ entry.title }}</a></li>{% endfor %}
+					<li><a href="https://github.com/darren277" aria-label="My GitHub profile"><i class="fa-brands fa-github"></i> GitHub</a></li>
+					<li><a href="#contact" id="contactbutton" class="btn" aria-label="Contact form below">Contact</a></li>
 				</ul>
 			</nav>
-			<!-- <div class="content">
-				<div>
-					<h1><span>Darren MacKenzie</span></h1>
-					<h3>Software developer and solution architect.</h3>
-					<h1>This site is largely unmaintained at the moment. Check out <a href="https://tech.jfdmconsulting.com">JFDM Tech</a> for now!</h1>
+		</header>
+
+		<main class="main-grid">
+			<!-- ARTICLE SECTION -->
+			<section class="article">
+				<div class="article-card">
+					<div class="article-header">
+						<h1>{{ article.title }}</h1>
+						<div>
+							<p class="date">Date published: {{ article.date_published }}.</p>
+							<div class='tags'>{% for tag in article.tags %}<a href='/tags/{{tag}}'><span class='tag'>{{tag}}</span></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div>
+							<div class='icons'>{% for icon in article.icons %}<a href='/icons/{{icon}}'><i class='{{icon}}'></i></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div>
+						</div>
+					</div>
+					<article class="markdown-body">
+						___ARTICLE___
+					</article>
 				</div>
-				<div>
-					<div class="contact" id="herocontactformParent">
-						<h5>Get in touch</h5>
-						<form class="ui form" method="POST" action="/contact" id="herocontactform"><input type="email" name="email" placeholder="Email" id="email">
-							<textarea name="message" id="message" placeholder="Enter a brief message"></textarea>
-							<input type="submit" name="submit" placeholder="None" id="submit">
-						</form>
+			</section>
+		</main>
+
+		<!-- GISCUS SECTION -->
+		<!-- 
+		data-mapping="og:title"
+		data-strict="0"
+
+		data-mapping="number"
+		data-term="1"
+
+		data-mapping="specific"
+		data-term="Transpiling from Python to React"
+		-->
+		<section>
+			<div class="giscus article-card" id="giscus"></div>
+		</section>
+		<script src="https://giscus.app/client.js"
+				data-repo="darren277/blog"
+				data-repo-id="R_kgDOOFZRCw"
+				data-category="Announcements"
+				data-category-id="DIC_kwDOOFZRC84CnuQr"
+
+				data-mapping="specific"
+				data-term="{{ article.title }}"
+
+				data-reactions-enabled="1"
+				data-emit-metadata="0"
+				data-input-position="top"
+				data-theme="noborder_dark"
+				data-lang="en"
+				data-loading="lazy"
+				crossorigin="anonymous"
+				async>
+		</script>
+
+		<!-- CONTACT SECTION -->
+		<section>
+			<div id="contact_section">
+				<div id="contact">
+					<div>
+						<div class="contact" id="footercontactformParent">
+							<h2>Get in touch</h2>
+							<form class="ui form" method="POST" action="/contact" id="footercontactform"><input type="email" name="email" placeholder="Email" id="email">
+								<textarea name="message" id="message" placeholder="Enter a brief message"></textarea>
+								<input type="submit" name="submit" placeholder="None" id="submit">
+							</form>
+						</div>
 					</div>
 				</div>
-			</div> -->
-		</div>
+			</div>
+		</section>
+		
+		<!-- FOOTER SECTION -->
+		<footer>
+			<p>Darren MacKenzie</p>
+			<div class="social">
+				{% for entry in social %}
+				<a href="{{ entry.url }}"><i class="{{ entry.icon }}"></i></a>
+				{% endfor %}
+			</div>
+		</footer>
 	</div>
-
-	<!-- ARTICLE SECTION -->
-	<section class="article">
-		<div class="article-card">
-			<div class="article-header">
-				<h1>{{ article.title }}</h1>
-				<div>
-					<p class="date">Date published: {{ article.date_published }}.</p>
-					<div class='tags'>{% for tag in article.tags %}<a href='/tags/{{tag}}'><span class='tag'>{{tag}}</span></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div>
-					<div class='icons'>{% for icon in article.icons %}<a href='/icons/{{icon}}'><i class='{{icon}}'></i></a>{{ ' ' if not loop.last else '' }}{% endfor %}</div>
-				</div>
-			</div>
-			<article class="markdown-body">
-				___ARTICLE___
-			</article>
-		</div>
-	</section>
-
-	<!-- GISCUS SECTION -->
-	<!-- 
-	data-mapping="og:title"
-	data-strict="0"
-
-	data-mapping="number"
-	data-term="1"
-
-	data-mapping="specific"
-	data-term="Transpiling from Python to React"
-	-->
-	<section>
-		<div class="giscus article-card" id="giscus"></div>
-	</section>
-	<script src="https://giscus.app/client.js"
-			data-repo="darren277/blog"
-			data-repo-id="R_kgDOOFZRCw"
-			data-category="Announcements"
-			data-category-id="DIC_kwDOOFZRC84CnuQr"
-
-			data-mapping="specific"
-			data-term="{{ article.title }}"
-
-			data-reactions-enabled="1"
-			data-emit-metadata="0"
-			data-input-position="top"
-			data-theme="noborder_dark"
-			data-lang="en"
-			data-loading="lazy"
-			crossorigin="anonymous"
-			async>
-	</script>
-
-	<!-- CONTACT SECTION -->
-	<section>
-		<div id="contact_section">
-			<div id="contact">
-				<div>
-					<div class="contact" id="footercontactformParent">
-						<h2>Get in touch</h2>
-						<form class="ui form" method="POST" action="/contact" id="footercontactform"><input type="email" name="email" placeholder="Email" id="email">
-							<textarea name="message" id="message" placeholder="Enter a brief message"></textarea>
-							<input type="submit" name="submit" placeholder="None" id="submit">
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
 	
-	<!-- FOOTER SECTION -->
-	<footer>
-		<p>Darren MacKenzie</p>
-		<div class="social">
-			{% for entry in social %}
-			<a href="{{ entry.url }}"><i class="{{ entry.icon }}"></i></a>
-			{% endfor %}
-		</div>
-	</footer>
-
 	<script>
 		window.MathJax = {
 		  tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
