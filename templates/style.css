@@ -1,667 +1,209 @@
-.hero {
-	width: 100%;
-	overflow: hidden;
-	background-size: cover;
-	background-position: center;
-	position: relative;
+/* Base styles */
+:root {
+    --black: #000000;
+    /* --dark-gray: #1a1a1a; */
+    --dark-gray: #302626;
+    --white: #ffffff;
+    --pink: #d1347b;
+    --max-width: 1200px;
+    --header-height: 40vh;
 }
 
-
-.hero p, h1, h2, h3, h4, h5, h6 {
-	position: relative;
+body {
+    margin: 0;
+    padding: 0;
+    background: var(--black);
+    color: var(--white);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-
-nav {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding-top: 45px;
-	padding-left: 8%;
-	padding-right: 8%;
+/* Layout */
+.layout {
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: var(--header-height) 1fr auto;
 }
 
-
-nav ul li {
-	list-style-type: none;
-	display: inline-block;
-	padding-top: 10px;
-	padding-bottom: 10px;
+/* Header section */
+.header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    width: 100%;
+    align-items: center;
 }
 
-
-nav ul li a {
-	color: white;
-	text-decoration: none;
-	font-weight: bold;
-	text-transform: capitalize;
+.header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
-
-nav ul li a:hover {
-	color: #d1347b;
-	transition: 0.4s;
+.header-left h1 {
+    font-size: 2.5rem;
+    margin: 0;
 }
 
-
-.contact form {
-	border-radius: 30px;
-	transition: box-shadow 1s;
+.header-left .subtitle {
+    font-size: 1.2rem;
+    color: #888;
+    margin: 0;
 }
 
-
-.contact form {
-	width: var(--contact-form-width);
-	max-width: 100%;
-	position: relative;
+/* Navigation */
+.header-right ul {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
-
-.contact form #email {
-	display: inline-block;
-	width: 100%;
-	padding: 14px 130px 14px 15px;
-	border-width: 2px;
-	border-style: solid;
-	border-color: #d1347b;
-	outline: none;
-	border-top-left-radius: 10px;
-	border-top-right-radius: 10px;
+.header-right a {
+    color: var(--white);
+    text-decoration: none;
+    font-weight: 500;
 }
 
-
-.contact form #message {
-	display: inline-block;
-	width: 100%;
-	padding: 14px 130px 14px 15px;
-	border-width: 2px;
-	border-style: solid;
-	border-color: #d1347b;
-	outline: none;
-	border-bottom-left-radius: 10px;
-	border-bottom-right-radius: 10px;
+.header-right a:hover {
+    color: var(--pink);
 }
 
-
-.contact form #submit {
-	position: absolute;
-	display: inline-block;
-	padding: 10px 30px;
-	border: none;
-	outline: none;
-	border-radius: 10px;
-	background-color: #d1347b;
-	color: white;
-	box-shadow: 0px 0px 5px #000,0px 0px 15px #858585;
-	top: 6px;
-	right: 6px;
-	cursor: pointer;
+.header-right .btn {
+    background: var(--pink);
+    padding: 0.5rem 1.5rem;
+    border-radius: 2rem;
 }
 
-
-.about {
-	width: 100%;
-	padding: 100px 0;
-	background-color: #191919;
+.header-right .btn:hover {
+    background: transparent;
+    color: var(--pink);
+    outline: 2px solid var(--pink);
 }
 
-
-.about img {
-	height: auto;
-	width: 430px;
+/* Main content */
+.main-grid {
+    background: var(--dark-gray);
+    padding: 4rem 2rem;
 }
 
-
-.about-text {
-	width: 550px;
+/* Blog section */
+.blogarticles {
+    max-width: var(--max-width);
+    margin: 0 auto;
 }
 
-
-.about-text h2 {
-	color: white;
-	font-size: 75px;
-	text-transform: capitalize;
-	margin-bottom: 20px;
+.title h2 {
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
 }
-
-
-.about-text h5 {
-	color: white;
-	font-size: 22px;
-	letter-spacing: 2px;
-	text-transform: capitalize;
-	margin-bottom: 25px;
-}
-
-
-.about-text p {
-	color: #fcfc;
-	font-size: 18px;
-	letter-spacing: 1px;
-	margin-bottom: 45px;
-	line-height: 28px;
-}
-
-
-.service {
-	background: #302626;
-	width: 100%;
-	padding-top: var(--cards-section-vertical-padding);
-	padding-bottom: 100px;
-	padding-left: 0px;
-	padding-right: 0px;
-}
-
 
 .cards {
-	display: grid;
-	grid-auto-rows: auto;
-	grid-gap: 1rem;
-	justify-content: center;
-	align-items: center;
-	min-height: 400px;
-	margin-left: 20%;
-	margin-right: 20%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);  /* Always 3 columns on large screens */
+    gap: 2rem;
+    max-width: var(--max-width);
+    margin: 0 auto;
 }
-
 
 .card {
-	height: 365px;
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-	padding: 20px 25px;
-	background: #191919;
-	border-radius: 20px;
-	margin: 15px;
-	position: relative;
-	overflow: hidden;
-	text-align: center;
-	margin: 25px 0px;
+    /* background: rgba(255, 255, 255, 0.05); */
+    background: #1a1a1a;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
-
-.card i {
-	font-size: 50px;
-	display: block;
-	text-align: center;
-	margin: 25px 0px;
-	color: #d1347b;
+/* Tags */
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
 }
 
-
-.pra p {
-	color: #fcfc;
-	font-size: 16px;
-	line-height: 27px;
-	margin-bottom: 25px;
+.tag {
+    background: var(--pink);
+    color: var(--white);
+    padding: 0.25rem 1rem;
+    border-radius: 1rem;
+    font-size: 0.875rem;
 }
 
-
-.card .tags {
-
+/* Card content */
+.card-title {
+    font-size: 1.25rem;
+    margin: 0;
 }
 
-
-.card .button {
-	background-color: #d1347b;
-	color: white;
-	text-decoration: none;
-	border-width: 2px;
-	border-style: solid;
-	border-color: transparent;
-	font-weight: bold;
-	padding: 9px 22px;
-	border-radius: 10px;
-	transition: 0.4s;
+.date {
+    color: #888;
+    font-size: 0.875rem;
 }
 
-
-.card .button:hover {
-	background-color: transparent;
-	border-width: 2px;
-	border-style: solid;
-	border-color: #d1347b;
-	cursor: pointer;
+.button {
+    background: var(--pink);
+    color: var(--white);
+    text-decoration: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 2rem;
+    display: inline-block;
+    margin-top: auto;
 }
 
-
-.contact {
-	width: 100%;
-	height: 290px;
-	display: flex;
-	align-items: center;
-	flex-direction: column;
-	justify-content: center;
+.button:hover {
+    background: transparent;
+    outline: 2px solid var(--pink);
 }
 
-
-.contact p {
-	color: white;
-	font-size: 30px;
-	font-weight: bold;
-	margin-bottom: 25px;
+/* Footer */
+.footer {
+    padding: 2rem;
+    text-align: center;
+    background: var(--black);
 }
-
-
-.contact .button-two {
-	background-color: #d1347b;
-	color: white;
-	text-decoration: none;
-	border-width: 2px;
-	border-style: solid;
-	border-color: transparent;
-	font-weight: bold;
-	padding: 13px 30px;
-	border-radius: 10px;
-	transition: 0.4s;
-}
-
-
-.contact .button-two:hover {
-	background-color: transparent;
-	border-width: 2px;
-	border-style: solid;
-	border-color: #d1347b;
-	cursor: pointer;
-}
-
-
-#contactbutton, #email {
-	transition: box-shadow 1s;
-}
-
-
-#contact_section {
-	width: 100%;
-	display: flex;
-	align-items: center;
-	flex-direction: column;
-	justify-content: center;
-	background: #191919;
-}
-
-
-footer {
-	position: relative;
-	width: 100%;
-	height: 400px;
-	background: #302626;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-}
-
-
-footer p:nth-child(1) {
-	font-size: 30px;
-	color: white;
-	margin-bottom: 20px;
-	font-weight: bold;
-}
-
-
-footer p:nth-child(2) {
-	font-size: 17px;
-	color: white;
-	width: 500px;
-	text-align: center;
-	line-height: 26px;
-}
-
 
 .social {
-	display: flex;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
 }
-
 
 .social a {
-	width: 45px;
-	height: 45px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background: #d1347b;
-	border-radius: 50%;
-	margin: 22px 10px;
-	color: white;
-	text-decoration: none;
-	font-size: 20px;
+    color: var(--white);
+    text-decoration: none;
+    font-size: 1.25rem;
 }
-
 
 .social a:hover {
-	transform: scale(1.3);
-	transition: 0.3s;
+    color: var(--pink);
 }
 
-
-* {
-	padding: 0;
-	margin: 0;
-	font-family: 'Josefin Sans', sans-serif;
-	box-sizing: border-box;
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .cards {
+        grid-template-columns: repeat(2, 1fr);  /* 2 columns on medium screens */
+    }
 }
 
+@media (max-width: 768px) {
+    .header {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
 
-html, body {
-	height: 100%;
-	margin: 0;
-}
+    .header-right ul {
+        flex-direction: column;
+        align-items: center;
+    }
 
-
-.main {
-	width: 1130px;
-	max-width: 95%;
-	margin: 0 auto;
-	display: flex;
-	align-items: center;
-	justify-content: space-around;
-}
-
-
-html, body {
-	margin: 0;
-	height: 100%;
-}
-
-
-textarea {
-	resize: vertical;
-}
-
-
-.logo {
-	color: white;
-	font-size: 35px;
-	letter-spacing: 1px;
-	cursor: pointer;
-}
-
-
-/*
-span {
-	color: #d1347b;
-}
-*/
-
-
-html {
-	background-color: black;
-}
-
-
-.btn {
-	background-color: #d1347b;
-	color: white;
-	text-decoration: none;
-	border-style: solid;
-	border-color: transparent;
-	border-size: 2px;
-	font-weight: bold;
-	padding: 10px 25px;
-	border-radius: 10px;
-	transition: transform .4s;
-}
-
-
-.btn:hover {
-	transform: scale(1.2);
-	color: white;
-}
-
-
-.content {
-	position: absolute;
-	top: 50%;
-	left: 8%;
-	transform: translateY(-50%);
-}
-
-
-button {
-	background-color: #d1347b;
-	color: white;
-	text-decoration: none;
-	border-size: 2px;
-	border-style: solid;
-	border-color: transparent;
-	font-weight: bold;
-	padding: 13px 30px;
-	border-radius: 10px;
-	transition: 0.4s;
-}
-
-
-button:hover {
-	background-color: transparent;
-	border-size: 2px;
-	border-style: solid;
-	border-color: #d1347b;
-	cursor: pointer;
-}
-
-
-.end {
-	position: absolute;
-	color: #d1347b;
-	bottom: 35px;
-	font-size: 14px;
-}
-
-
-.logo {
-	color: #d1347b;
-	filter: hue-rotate(0deg);
-	animation: hue_rotation 5s infinite ease-out alternate;;
-}
-
-
-@keyframes hue_rotation{
-	to {
-		filter: hue-rotate(30deg);
-}
-
-}
-
-
-canvas {
-	position: absolute;
-	display: block;
-	width: 100%;
-	height: 100%;
-	top: 0;
-	left: 0;
-	z-index: -9999;
-	overflow: hidden;
-}
-
-.pra .button {
-	/* Push to bottom of containing element */
-	position: absolute;
-	bottom: 50;
-
-	/* Center horizontally */
-	left: 50%;
-	transform: translateX(-50%);
-}
-
-.title-and-description {
-	flex-direction: column;
-
-	/* Center vertically */
-	top: 90;
-	position: absolute;
-	width: 90%;
-}
-
-.tags a {
-	display: inline-block;       /* ensures each tag can have its own box */
-	padding: 3px 10px;           /* adjust to taste */
-	margin: 2px 5px 2px 0;       /* space between tags */
-	border-radius: 15px;         /* gives a pill-like shape */
-	/* background-color: #d1347b; */   /* pick colors that complement your design */
-	/* too bright, let's go with a more subtle color */
-	background-color: #601f2c;   /* a nice pink */
-	color: #fff;                 /* text color; white often works well */
-	font-size: 0.85rem;          /* slightly smaller than body text can look nice */
-	text-decoration: none;       /* remove underlines if you prefer a clean look */
-}
-
-.tags a:hover {
-	background-color: #ff8fa6;   /* a slightly lighter/darker shade on hover */
-	color: #fff;                 /* keep text white */
-	transition: background-color 0.2s ease; /* a subtle transition is nice */
-}
-
-
-  
-  /* ===================
-	 3) Headings & Text
-	 =================== */
-  h1, h2, h3, h4, h5, h6 {
-	margin: 1rem 0;
-	font-weight: 500; /* or whatever suits your headings */
-	color: var(--color-white);
-  }
-  
-  h1 {
-	font-size: var(--fs-h1);
-  }
-  h2 {
-	font-size: var(--fs-h2);
-  }
-  h3 {
-	font-size: var(--fs-h3);
-	/* If you really want more bottom spacing for h3 only: */
-	margin-bottom: 3rem; /* Instead of 50px */
-  }
-  h4 {
-	font-size: var(--fs-h4);
-	color: var(--color-alt-white); /* #fcfcfc */
-	letter-spacing: 0.125rem; /* old "2px" in rem units */
-  }
-  h5 {
-	font-size: var(--fs-h5);
-  }
-  h6 {
-	font-size: var(--fs-h6);
-	color: var(--color-h6); /* #bfbff2 */
-  }
-  
-  .title h2 {
-	color: white;
-	/* font-size: var(--big-font-size); */
-	font-size: 2.5rem;
-	/* width: var(--title-width); */
-	/* width: 100%; */
-	margin: 30px auto;
-	text-align: center;
-	padding-top: 10rem;
-  }
-
-  /* select nth section (1st) */
-  section:nth-of-type(1) {
-	padding-top: 0;
-  }
-
-  .contact div:nth-of-type(1) {
-	padding-top: 30%;
-  }
-
-  .content {
-	padding-top: 10rem;
-  }
-
-  /* ================
-	 4) Navigation
-	 ================ */
-  nav ul {
-	list-style: none;
-  }
-  
-  nav ul li {
-	display: inline-block;
-	padding: 10px 5px; /* a simpler shorthand */
-  }
-  
-  /* Slightly increase horizontal padding on larger screens: */
-  @media (min-width: 600px) {
-	nav ul li {
-	  padding: 10px 10px;
-	}
-  }
-  
-  /* =====================
-	 5) Hero & Cards Grid
-	 ===================== */
-  
-  /* Hero section heights: mobile-first approach */
-  .hero {
-	width: 100%;
-	min-height: 20vh;
-	max-height: 30vh;
-	background-size: cover;
-	background-position: center;
-	position: relative;
-  }
-  
-  @media (min-width: 600px) {
-	.hero {
-	  min-height: 20vh;
-	  max-height: 30vh;
-	}
-  }
-  @media (min-width: 800px) {
-	.hero {
-	  min-height: 40vh;
-	  max-height: 50vh;
-	}
-  }
-  @media (min-width: 1200px) {
-	.hero {
-	  min-height: 50vh;
-	  max-height: 70vh;
-	}
-  }
-  
-  /* Cards container: base = single column */
-  .cards {
-	display: grid;
-	grid-template-columns: 1fr;
-	gap: 1rem;
-  }
-  
-  /* Two columns at 800px+ */
-  @media (min-width: 800px) {
-	.cards {
-	  grid-template-columns: repeat(2, 1fr);
-	}
-  }
-  
-  /* Three columns at 1200px+ */
-  @media (min-width: 1200px) {
-	.cards {
-	  grid-template-columns: repeat(3, 1fr);
-	}
-  }
-  
-  /* Card sizing: mobile-first approach */
-  .card {
-	width: 200px;
-	height: 200px;
-	/* The rest of your card styles go here (box-shadow, border-radius, etc.) */
-  }
-  
-  @media (min-width: 600px) {
-	.card {
-	  width: 300px;
-	  height: 300px;
-	}
-  }
-  @media (min-width: 800px) {
-	.card {
-	  width: 500px;
-	  height: 500px;
-	}
-  }
-  
+    .cards {
+        grid-template-columns: 1fr;  /* Single column on mobile */
+    }
+} 
