@@ -19,10 +19,14 @@ def get_menu_items():
     ]
 
 
-def get_s3_template(s3_env, bucket_name, template_name: str = 'frontend/index.html'):
+def get_s3_template(s3_env, bucket_name, template_name: str = 'frontend/index.html', local: bool = False):
     """Retrieve and process the HTML template from S3."""
     s3 = boto3.resource('s3')
-    myString = s3.Object(bucket_name, template_name).get()["Body"].read().decode('utf-8').replace('__THREEJS_VERSION__', '0.172.0')
+    if local:
+        # For local development, read the file from the local filesystem
+        myString = open(template_name.replace('frontend', 'templates'), 'r').read().replace('__THREEJS_VERSION__', '0.172.0')
+    else:
+        myString = s3.Object(bucket_name, template_name).get()["Body"].read().decode('utf-8').replace('__THREEJS_VERSION__', '0.172.0')
     return s3_env.from_string(myString)
 
 

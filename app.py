@@ -14,6 +14,7 @@ from chalicelib.payments import stripe_webhook_handler, checkout_session_handler
 from chalicelib.utils import datetime_filter, url_to_descriptive, icon_to_descriptive
 
 DEBUG = True
+LOCAL = True
 
 
 
@@ -96,7 +97,7 @@ def script_template():
             return Response(str(e), status_code=400)
         
         # Get template from S3 and website data from DynamoDB
-        template = get_s3_template(s3_env, os.environ['BUCKET_NAME'])
+        template = get_s3_template(s3_env, os.environ['BUCKET_NAME'], local=LOCAL)
         website_data = get_website_data(os.environ['HOME_TABLE'])
         
         # Query articles
@@ -245,7 +246,10 @@ def serve_data(filename):
 @app.route('/style.css')
 def serve_css():
     s3 = boto3.resource('s3')
-    css_content = s3.Object(os.environ['BUCKET_NAME'], 'frontend/style.css').get()["Body"].read().decode('utf-8')
+    if LOCAL:
+        css_content = open(join(cwd, 'templates', 'style.css'), 'r').read()
+    else:
+        css_content = s3.Object(os.environ['BUCKET_NAME'], 'frontend/style.css').get()["Body"].read().decode('utf-8')
 
     compressed_css = brotli_compress(css_content.encode('utf-8'))
 
@@ -312,7 +316,11 @@ def articles(section, article):
         print("[DEBUG] Article:", article_data)
     
     if article_data:
-        full_article_html = s3_env.from_string(s3.Object(os.environ['BUCKET_NAME'], 'frontend/article.html').get()["Body"].read().decode('utf-8')).render(section=section, article=article_data, menu=non_index_menu)
+        if LOCAL:
+            full_article_html_string = open(join(cwd, 'templates', 'article.html'), 'r').read()
+        else:
+            full_article_html_string = s3.Object(os.environ['BUCKET_NAME'], 'frontend/article.html').get()["Body"].read().decode('utf-8')
+        full_article_html = s3_env.from_string(full_article_html_string).render(section=section, article=article_data, menu=non_index_menu)
         
         md_content = article_data['body']
 
