@@ -57,6 +57,19 @@
 				padding-right: 25px;
 
 				text-align: center;
+			}			
+
+			.logo {
+				color: #d1347b;
+				filter: hue-rotate(0deg);
+				animation: hue_rotation 5s infinite ease-out alternate;
+				font-size: 2em;
+				font-weight: bold;
+			}
+			@keyframes hue_rotation{
+				to {
+					filter: hue-rotate(30deg);
+				}
 			}
 		</style>
 		<style>
@@ -133,7 +146,7 @@
 		<!-- HEADER SECTION -->
 		<header class="header">
             <div class="header-left">
-				<h2 class="logo">dm creations</h2>
+				<p class="logo">dm creations</p>
 			</div>
 			<nav class="header-right">
 				<ul>
