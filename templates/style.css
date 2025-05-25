@@ -20,8 +20,14 @@ body {
 /* Layout */
 .layout {
     min-height: 100vh;
-    display: grid;
-    grid-template-rows: var(--header-height) 1fr auto;
+
+    display: flex;
+    flex-direction: column;
+}
+
+main,
+.main-grid {                    /* both home & article use .main-grid */
+    flex: 1 0 auto;
 }
 
 /* Header section */
