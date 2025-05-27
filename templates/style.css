@@ -357,3 +357,9 @@ main,
         align-items: center;
     }
 }
+
+@media (min-width: 901px) {
+    .header {
+        justify-content: center;   /* centre the two columns as a group */
+    }
+}
