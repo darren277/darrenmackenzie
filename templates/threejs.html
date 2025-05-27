@@ -14,6 +14,8 @@
         <meta name="{{ key }}" content="{{ value }}" />
     {% endfor %}
 
+    <meta name="data_selected" content="{{ data_selected }}" />
+
     <script src="//cdn.jsdelivr.net/npm/3d-force-graph"></script>
 
     <script type="importmap">
@@ -141,6 +143,14 @@
             <option value="{{ nav_item }}" {% if nav_item == threejs_drawings.name.lower() %}selected{% endif %}>{{ nav_item }}</option>
         {% endfor %}
     </select>
+    {% if threejs_drawings.data_sources %}
+    <label for="data-select" style="margin-left: 1em; margin-right: 0.5em;">Choose data:</label>
+    <select id="data-select">
+        {% for data_src in threejs_drawings.data_sources %}
+            <option value="{{ data_src }}" {% if data_src == data_selected %}selected{% endif %}>{{ data_src }}</option>
+        {% endfor %}
+    </select>
+    {% endif %}
 </header>
 <main class="threejs">
     <div class="threejs-container" style="position: relative;">
@@ -174,6 +184,15 @@
         const selectedScene = event.target.value;
         window.location.href = `/threejs/${selectedScene}`;
     });
+
+    {% if threejs_drawings.data_sources %}
+    const dataSelect = document.getElementById('data-select');
+
+    dataSelect.addEventListener('change', (event) => {
+        const selectedData = event.target.value;
+        window.location.href = `/threejs/{{ threejs_drawings.name.lower() }}?data_selected=${selectedData}`;
+    });
+    {% endif %}
 </script>
 
 <script type="module" src="{{ main_js_path }}"></script>
