@@ -5,6 +5,10 @@
 1. `. venv/Scripts/activate`.
 2. `chalice deploy`.
 
+### Running Locally
+
+1. `chalice local --port 8001`.
+
 ### GitHub Actions
 
 This repository is set up to automatically deploy to AWS Lambda using GitHub Actions. The workflow is defined in `.github/workflows/chalice-deploy.yml`.
