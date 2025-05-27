@@ -6,6 +6,7 @@ from jinja2 import Environment, FileSystemLoader, BaseLoader
 import markdown
 
 from chalicelib.animation import animation_page_handler, load_img_handler
+from chalicelib.threejs_dict import ANIMATIONS_DICT
 from chalicelib.articles import articles_list_handler
 from chalicelib.caching import brotli_compress, create_response_headers, create_compressed_response
 from chalicelib.main import build_paginator_from_query_params, get_menu_items, get_s3_template, get_website_data, \
@@ -15,6 +16,7 @@ from chalicelib.utils import datetime_filter, url_to_descriptive, icon_to_descri
 
 DEBUG = True
 LOCAL = False
+THREEJS_VERSION = '0.169.0'
 
 
 
@@ -190,6 +192,38 @@ def articles_list():
             ),
         ]
     return articles_list_handler(limit, cursor, tags)
+
+
+@app.route('/threejs/<animation>')
+def serve_threejs(animation):
+    print('ABOUT TO SERVE THREEJS ANIMATION:', animation)
+    s3 = boto3.resource('s3')
+
+    if LOCAL:
+        template_string = open(join(cwd, 'templates', 'threejs.html'), 'r').read()
+    else:
+        template_string = s3_env.from_string(s3.Object(os.environ['BUCKET_NAME'], 'frontend/threejs.html').get()["Body"].read().decode('utf-8'))
+
+    viz = ANIMATIONS_DICT.get(animation, ANIMATIONS_DICT['multiaxis'])
+    #data_selected_query_param = request.args.get('data_selected')
+    data_selected_query_param = app.current_request.query_params.get('data_selected', None) if app.current_request.query_params else None
+    data_selected = data_selected_query_param if data_selected_query_param else viz.get('data_sources', [None])[0] if len(viz.get('data_sources', [])) > 0 else None
+    print('data_selected:', data_selected)
+
+    html_content = s3_env.from_string(template_string).render(
+        threejs_version=THREEJS_VERSION,
+        threejs_drawings=viz,
+        nav_items=ANIMATIONS_DICT.keys(),
+        main_js_path='/threejs/scripts/main.js',
+        data_selected=data_selected,
+    )
+    compressed_html = brotli_compress(html_content.encode('utf-8'))
+
+    return Response(
+        body=compressed_html,
+        headers=create_response_headers('text/html; charset=UTF-8', compressed_html),
+        status_code=404
+    )
 
 
 """
