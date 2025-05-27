@@ -6,6 +6,7 @@ from jinja2 import Environment, FileSystemLoader, BaseLoader
 import markdown
 
 from chalicelib.animation import animation_page_handler, load_img_handler
+from chalicelib.threejs_dict import ANIMATIONS_DICT
 from chalicelib.articles import articles_list_handler
 from chalicelib.caching import brotli_compress, create_response_headers, create_compressed_response
 from chalicelib.main import build_paginator_from_query_params, get_menu_items, get_s3_template, get_website_data, \
@@ -15,6 +16,7 @@ from chalicelib.utils import datetime_filter, url_to_descriptive, icon_to_descri
 
 DEBUG = True
 LOCAL = False
+THREEJS_VERSION = '0.169.0'
 
 
 
@@ -192,11 +194,43 @@ def articles_list():
     return articles_list_handler(limit, cursor, tags)
 
 
+@app.route('/threejs/<animation>')
+def serve_threejs(animation):
+    print('ABOUT TO SERVE THREEJS ANIMATION:', animation)
+    s3 = boto3.resource('s3')
+
+    if LOCAL:
+        template_string = open(join(cwd, 'templates', 'threejs.html'), 'r').read()
+    else:
+        template_string = s3_env.from_string(s3.Object(os.environ['BUCKET_NAME'], 'frontend/threejs.html').get()["Body"].read().decode('utf-8'))
+
+    viz = ANIMATIONS_DICT.get(animation, ANIMATIONS_DICT['multiaxis'])
+    #data_selected_query_param = request.args.get('data_selected')
+    data_selected_query_param = app.current_request.query_params.get('data_selected', None) if app.current_request.query_params else None
+    data_selected = data_selected_query_param if data_selected_query_param else viz.get('data_sources', [None])[0] if len(viz.get('data_sources', [])) > 0 else None
+    print('data_selected:', data_selected)
+
+    html_content = s3_env.from_string(template_string).render(
+        threejs_version=THREEJS_VERSION,
+        threejs_drawings=viz,
+        nav_items=ANIMATIONS_DICT.keys(),
+        main_js_path='/threejs/scripts/main.js',
+        data_selected=data_selected,
+    )
+    compressed_html = brotli_compress(html_content.encode('utf-8'))
+
+    return Response(
+        body=compressed_html,
+        headers=create_response_headers('text/html; charset=UTF-8', compressed_html),
+        status_code=404
+    )
+
+
 """
     JAVASCRIPT, JSON, AND CSS ENDPOINTS
 """
 # Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://darrenmackenzie-chalice-bucket.s3.us-east-1.amazonaws.com/scripts/main.js. (Reason: CORS header ‘Access-Control-Allow-Origin’ missing). Status code: 200.
-@app.route('/scripts/threejs/main.js')
+@app.route('/threejs/scripts/main.js')
 def serve_js():
     s3 = boto3.resource('s3')
     js_content = s3.Object(os.environ['BUCKET_NAME'], 'scripts/threejs/main.js').get()["Body"].read().decode('utf-8')
@@ -209,7 +243,7 @@ def serve_js():
         status_code=200
     )
 
-@app.route('/scripts/threejs/config/{filename}')
+@app.route('/threejs/scripts/config/{filename}')
 def serve_config(filename):
     s3 = boto3.resource('s3')
     js_content = s3.Object(os.environ['BUCKET_NAME'], f'scripts/threejs/config/{filename}').get()["Body"].read().decode('utf-8')
@@ -222,7 +256,7 @@ def serve_config(filename):
         status_code=200
     )
 
-@app.route('/scripts/threejs/drawing/{filename}')
+@app.route('/threejs/scripts/drawing/{filename}')
 def serve_drawing(filename):
     s3 = boto3.resource('s3')
     js_content = s3.Object(os.environ['BUCKET_NAME'], f'scripts/threejs/drawing/{filename}').get()["Body"].read().decode('utf-8')
@@ -236,7 +270,7 @@ def serve_drawing(filename):
     )
 
 
-@app.route('/scripts/helvetiker_regular.typeface.json')
+@app.route('/threejs/scripts/helvetiker_regular.typeface.json')
 def serve_font():
     s3 = boto3.resource('s3')
     json_content = s3.Object(os.environ['BUCKET_NAME'], 'scripts/helvetiker_regular.typeface.json').get()["Body"].read().decode('utf-8')
@@ -249,9 +283,9 @@ def serve_font():
         status_code=200
     )
 
-@app.route('/data/{filename}')
+@app.route('/threejs/data/{filename}')
 def serve_data(filename):
-    if filename == 'data.json' or filename == 'music.json':
+    if filename in ['data.json', 'music.json', 'cayley.json', 'force.json', 'adventure1.json', 'adventure2.json', 'experimental.json', 'experimental_1.json']:
         s3 = boto3.resource('s3')
         json_content = s3.Object(os.environ['BUCKET_NAME'], f'data/{filename}').get()["Body"].read().decode('utf-8')
 
@@ -272,6 +306,52 @@ def serve_data(filename):
             headers={'Content-Type': 'application/json'},
             status_code=404
         )
+
+@app.route('/threejs/textures/{filename}')
+def serve_texture(filename):
+    print("[DEBUG] Serving texture:", filename)
+    s3 = boto3.resource('s3')
+    if filename.endswith('.jpg') or filename.endswith('.jpeg'):
+        mimetype = 'image/jpeg'
+    elif filename.endswith('.png'):
+        mimetype = 'image/png'
+    else:
+        return Response(body='Unsupported file type', status_code=400)
+
+    try:
+        image_content = s3.Object(os.environ['BUCKET_NAME'], f'textures/{filename}').get()["Body"].read()
+    except:
+        image_content = s3.Object(os.environ['BUCKET_NAME'], f'textures/Canestra_di_frutta_Caravaggio.jpg').get()["Body"].read()
+
+    compressed_image = brotli_compress(image_content)
+
+    return Response(
+        body=compressed_image,
+        headers=create_response_headers(mimetype, compressed_image),
+        status_code=200
+    )
+
+@app.route('/threejs/imagery/{filename}')
+def serve_image(filename):
+    s3 = boto3.resource('s3')
+    if filename.endswith('.jpg') or filename.endswith('.jpeg'):
+        mimetype = 'image/jpeg'
+    elif filename.endswith('.png'):
+        mimetype = 'image/png'
+    elif filename.endswith('.svg'):
+        mimetype = 'image/svg+xml'
+    else:
+        return Response(body='Unsupported file type', status_code=400)
+
+    image_content = s3.Object(os.environ['BUCKET_NAME'], f'imagery/{filename}').get()["Body"].read()
+
+    compressed_image = brotli_compress(image_content)
+
+    return Response(
+        body=compressed_image,
+        headers=create_response_headers(mimetype, compressed_image),
+        status_code=200
+    )
 
 @app.route('/style.css')
 def serve_css():
@@ -315,6 +395,9 @@ def contact_form():
 def articles(section, article):
     if DEBUG:
         debug(app.current_request)
+
+    if section == 'threejs':
+        return serve_threejs(article)
     
     s3 = boto3.resource('s3')
     website_menu = [

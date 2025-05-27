@@ -11,25 +11,8 @@
         onload="this.media='all'"
     ></link>
     <title>dm creations - Home</title>
-    {% for data_src in threejs_drawings %}
-        <meta name="datasrc" content="{{ data_src }}"></meta>
-        {% if data_src == "music" %}
-        <meta name="music" content="true"></meta>
-        {% endif %}
-    {% endfor %}
     <meta name="description" content="Personal website of Darren MacKenzie, a software developer and solution architect."></meta>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-    <script type="importmap">
-        {
-            "imports":
-                {
-                    "three": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/build/three.module.js",
-                    "textgeometry": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/examples/jsm/geometries/TextGeometry.js",
-                    "fontloader": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/examples/jsm/loaders/FontLoader.js",
-                    "orbitcontrols": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/examples/jsm/controls/OrbitControls.js"
-                }
-        }
-    </script>
     <link rel="stylesheet" href="/style.css"></link>
 </head>
 <body>
@@ -39,7 +22,7 @@
                 <h1>Darren MacKenzie</h1>
                 <p class="subtitle">Software developer and solution architect.</p>
                 <a href="https://tech.jfdmconsulting.com">
-                    <img src="https://tech.jfdmconsulting.com/wp-content/uploads/sites/2/2022/10/JFDM-Tech-Front-Page-2048x391.png" alt="JFDM Tech Consulting company logo" style="height: 39px; width: 205px" />
+                    <img src="https://tech.jfdmconsulting.com/wp-content/uploads/sites/2/2022/10/JFDM-Tech-Front-Page-2048x391.png" alt="JFDM Tech Consulting company logo" />
                 </a>
             </div>
             <nav class="header-right">
@@ -104,37 +87,5 @@
             </div>
         </footer>
     </div>
-
-    <script>
-        // Function to load the Three.js script
-        function updateUI() {
-            const zoomSlider = document.getElementById('zoom-slider');
-            const tempoSlider = document.getElementById('tempo-slider');
-            const tempoValue = document.getElementById('tempo-value');
-
-            const musicBool = document.querySelector('meta[name="music"]');
-
-            if (musicBool) {
-                tempoSlider.style.display = 'block';
-                tempoValue.style.display = 'block';
-            } else {
-                tempoSlider.style.display = 'none';
-                tempoValue.style.display = 'none';
-            }
-        }
-
-        // Check if the page is fully loaded before executing the script
-        window.addEventListener('load', () => {
-            updateUI();
-        });
-
-        // Three.js and other scripts remain unchanged
-        window.addEventListener('load', () => {
-            const threeScript = document.createElement('script');
-            threeScript.type = 'module';
-            threeScript.src = '/scripts/main.js';
-            document.body.appendChild(threeScript);
-        });
-    </script>
 </body>
 </html>

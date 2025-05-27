@@ -5,7 +5,8 @@
     --white: #ffffff;
     --pink: #811c4a;
     --max-width: 1200px;
-    --header-height: 30vh;
+    /* let the header shrink on smaller screens */
+    --header-height: auto;
 }
 
 body {
@@ -19,8 +20,14 @@ body {
 /* Layout */
 .layout {
     min-height: 100vh;
-    display: grid;
-    grid-template-rows: var(--header-height) 1fr auto;
+
+    display: flex;
+    flex-direction: column;
+}
+
+main,
+.main-grid {                    /* both home & article use .main-grid */
+    flex: 1 0 auto;
 }
 
 /* Header section */
@@ -31,7 +38,7 @@ body {
     padding: 2rem;
     max-width: var(--max-width);
     margin: 0 auto;
-    width: 100%;
+    /* width: 100%; */
     align-items: center;
 }
 
@@ -50,6 +57,11 @@ body {
     font-size: 1.2rem;
     color: #888;
     margin: 0;
+}
+
+.header-left img {
+    width: clamp(140px, 35vw, 220px);
+    height: auto;
 }
 
 /* Navigation */
@@ -148,6 +160,11 @@ body {
 	position: relative !important;
 }
 
+/* Three‑JS box: shrink gracefully */
+.threejs-container {
+    height: clamp(300px, 60vh, 600px);
+}
+
 .centered-text {
 	text-align: center;
 }
@@ -169,7 +186,8 @@ body {
 }
 
 .subtitle {
-	font-size: var(--fs-h3);
+	/* font-size: var(--fs-h3); */
+	font-size: 1.25rem;
 	margin-bottom: 3rem;
 	color: '#fcfc';
 }
@@ -237,6 +255,12 @@ body {
     margin: 0;
 }
 
+/* Ensure thumbnails don’t overflow */
+.card .pra img {
+    max-width: 100%;
+    height: auto;
+}
+
 .date {
     color: #888;
     font-size: 0.875rem;
@@ -273,19 +297,38 @@ body {
     }
 }
 
-@media (max-width: 768px) {
+/*@media (max-width: 768px) {*/
+@media (max-width: 900px) {
     .header {
         grid-template-columns: 1fr;
         text-align: center;
     }
 
+   .header-left h1 {
+      font-size: clamp(1.5rem, 6vw, 2.5rem);
+      word-break: break-word;       /* handles very long words if needed */
+      max-width: 90vw;              /* prevents horizontal overflow */
+      margin: 0 auto;               /* center it if it wraps */
+
+      font-weight: 600;          /* slightly lighter than default bold */
+      letter-spacing: -0.5px;    /* tighten characters very subtly */
+   }
+
     .header-right ul {
         flex-direction: column;
-        align-items: center;
+        /* so buttons stretch */
+        align-items: stretch;
+        gap: .75rem;
+    }
+
+    .header-right .btn {
+        width: 100%;
+        text-align: center;
     }
 
     .cards {
         grid-template-columns: 1fr;  /* Single column on mobile */
+        padding: 0 5vw;
     }
 
     .card {
@@ -297,5 +340,26 @@ body {
 @media (min-width: 1200px) {
     .card {
         min-height: 500px;  /* Larger on big screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .card {
+        aspect-ratio: auto;   /* let height follow content */
+        min-height: 260px;    /* or just `min-height: auto;` */
+    }
+
+    /* Stack the UI controls under the canvas on phones */
+    #ui-container {
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+        align-items: center;
+    }
+}
+
+@media (min-width: 901px) {
+    .header {
+        justify-content: center;   /* centre the two columns as a group */
     }
 }
