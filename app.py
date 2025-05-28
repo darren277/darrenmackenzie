@@ -73,7 +73,7 @@ s3_env.filters['icon_to_descriptive'] = icon_to_descriptive
 
 
 @app.route('/')
-def script_template():
+def index():
     """Handle the main website endpoint."""
     if DEBUG:
         debug(app.current_request)
@@ -147,7 +147,7 @@ def script_template():
 
 
 @app.route('/index.html')
-def index():
+def index_html():
     # redirect to `/`
     return Response(body='', headers={'Location': 'https://www.darrenmackenzie.com'}, status_code=301)
 
