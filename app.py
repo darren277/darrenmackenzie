@@ -455,6 +455,18 @@ def animation():
 
     return animation_page_handler(animation_name, background_image_url, show_path_bool, dot_size, dot_color, image_top_padding, image_bottom_padding)
 
+@app.route('/favicon.ico')
+def favicon():
+    s3 = boto3.resource('s3')
+    favicon_content = s3.Object(os.environ['BUCKET_NAME'], 'frontend/favicon.ico').get()["Body"].read()
+
+    compressed_favicon = brotli_compress(favicon_content)
+
+    return Response(
+        body=compressed_favicon,
+        headers=create_response_headers('image/x-icon', compressed_favicon),
+        status_code=200
+    )
 
 @app.route('/sitemap.xml')
 def sitemap():
