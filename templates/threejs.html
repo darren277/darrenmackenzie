@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
     <link rel="stylesheet" href="/style.css"></link>
 
-    <meta name="threejs_drawing_name" content="{{ threejs_drawings.name.lower() }}" />
+    <meta name="threejs_drawing_name" content="{{ threejs_drawings.name|lower }}" />
 
     {% for key, value in threejs_drawings.custom_meta.items() %}
         <meta name="{{ key }}" content="{{ value }}" />
@@ -115,7 +115,7 @@
         {% for category, items in grouped_nav_items.items() %}
             <optgroup label="{{ category }}">
                 {% for item in items %}
-                    <option value="{{ item.name }}" {% if item.name == threejs_drawings.name.lower() %}selected{% endif %}>
+                    <option value="{{ item.name }}" {% if item.name == threejs_drawings.name|lower %}selected{% endif %}>
                         {{ item.name }}
                     </option>
                 {% endfor %}
@@ -178,7 +178,7 @@
 
     dataSelect.addEventListener('change', (event) => {
         const selectedData = event.target.value;
-        window.location.href = `/threejs/{{ threejs_drawings.name.lower() }}?data_selected=${selectedData}`;
+        window.location.href = `/threejs/{{ threejs_drawings.name|lower }}?data_selected=${selectedData}`;
     });
     {% endif %}
 </script>
