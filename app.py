@@ -1,5 +1,6 @@
 """"""
-import datetime
+import json
+
 from chalice import Chalice, Response
 import boto3 as boto3
 from jinja2 import Environment, FileSystemLoader, BaseLoader
@@ -8,11 +9,10 @@ import markdown
 from chalicelib.animation import animation_page_handler, load_img_handler
 from chalicelib.paginator_v2 import _unb64, list_articles
 from chalicelib.threejs_dict import ANIMATIONS_DICT
-from chalicelib.articles import articles_list_handler
 from chalicelib.caching import brotli_compress, create_response_headers, create_compressed_response
-from chalicelib.main import build_paginator_from_query_params, get_menu_items, get_s3_template, get_website_data, \
-    query_articles, build_pagination_urls, determine_page_status
+from chalicelib.main import get_menu_items, get_s3_template, get_website_data
 from chalicelib.payments import stripe_webhook_handler, checkout_session_handler
+from chalicelib.threejs_helpers import populate_importmaps, grouped_nav_items
 from chalicelib.utils import datetime_filter, url_to_descriptive, icon_to_descriptive
 
 DEBUG = True
@@ -167,12 +167,19 @@ def serve_threejs(animation):
     data_selected = data_selected_query_param if data_selected_query_param else viz.get('data_sources', [None])[0] if len(viz.get('data_sources', [])) > 0 else None
     print('data_selected:', data_selected)
 
+    threejs_version = viz.get('threejs_version', THREEJS_VERSION)
+    importmap = populate_importmaps(animation, threejs_version)
+
+    nav_item_ordering = ['Special', 'Educational', 'Quantitative', 'Spatial', 'World Building', 'Experimental', 'Component', 'Attribution', 'Work in Progress', 'Local']
+    ordered_grouped_nav_items = grouped_nav_items(nav_item_ordering)
+
     html_content = s3_env.from_string(template_string).render(
         threejs_version=THREEJS_VERSION,
         threejs_drawings=viz,
-        nav_items=ANIMATIONS_DICT.keys(),
+        grouped_nav_items=ordered_grouped_nav_items,
         main_js_path='/threejs/scripts/main.js',
         data_selected=data_selected,
+        importmap=json.dumps(importmap, indent=4),
     )
     compressed_html = brotli_compress(html_content.encode('utf-8'))
 
@@ -200,10 +207,49 @@ def serve_js():
         status_code=200
     )
 
+@app.route('/threejs/scripts/drawings.js')
+def serve_js():
+    s3 = boto3.resource('s3')
+    js_content = s3.Object(os.environ['BUCKET_NAME'], 'scripts/threejs/drawings.js').get()["Body"].read().decode('utf-8')
+
+    compressed_js = brotli_compress(js_content.encode('utf-8'))
+
+    return Response(
+        body=compressed_js,
+        headers=create_response_headers('application/javascript', compressed_js),
+        status_code=200
+    )
+
 @app.route('/threejs/scripts/config/{filename}')
 def serve_config(filename):
     s3 = boto3.resource('s3')
     js_content = s3.Object(os.environ['BUCKET_NAME'], f'scripts/threejs/config/{filename}').get()["Body"].read().decode('utf-8')
+
+    compressed_js = brotli_compress(js_content.encode('utf-8'))
+
+    return Response(
+        body=compressed_js,
+        headers=create_response_headers('application/javascript', compressed_js),
+        status_code=200
+    )
+
+@app.route('/threejs/scripts/drawing/adventure/{filename}')
+def serve_adventure_drawing(filename):
+    s3 = boto3.resource('s3')
+    js_content = s3.Object(os.environ['BUCKET_NAME'], f'scripts/threejs/drawing/adventure/{filename}').get()["Body"].read().decode('utf-8')
+
+    compressed_js = brotli_compress(js_content.encode('utf-8'))
+
+    return Response(
+        body=compressed_js,
+        headers=create_response_headers('application/javascript', compressed_js),
+        status_code=200
+    )
+
+@app.route('/threejs/scripts/drawing/library/{filename}')
+def serve_library_drawing(filename):
+    s3 = boto3.resource('s3')
+    js_content = s3.Object(os.environ['BUCKET_NAME'], f'scripts/threejs/drawing/library/{filename}').get()["Body"].read().decode('utf-8')
 
     compressed_js = brotli_compress(js_content.encode('utf-8'))
 
@@ -242,15 +288,37 @@ def serve_font():
 
 @app.route('/threejs/data/{filename}')
 def serve_data(filename):
-    if filename in ['data.json', 'music.json', 'cayley.json', 'force.json', 'adventure1.json', 'adventure2.json', 'experimental.json', 'experimental_1.json']:
+    if filename in [
+        'data.json',
+        'music.json',
+        'cayley.json',
+        'force.json',
+        'adventure1.json',
+        'adventure2.json',
+        'experimental.json',
+        'experimental_1.json',
+        'cards.json',
+        'clustering.json',
+        'force3d.json',
+        'philpapers.json',
+        'math.json',
+        'buildings.geojson',
+        'periodic.json',
+        'network.json',
+        'familytree.json'
+    ]:
         s3 = boto3.resource('s3')
         json_content = s3.Object(os.environ['BUCKET_NAME'], f'data/{filename}').get()["Body"].read().decode('utf-8')
 
         compressed_json = brotli_compress(json_content.encode('utf-8'))
 
+        prefix = 'geo+' if filename.endswith('.geojson') else ''
+
+        mimetype = f'application/{prefix}json'
+
         return Response(
             body=compressed_json,
-            headers=create_response_headers('application/json', compressed_json),
+            headers=create_response_headers(mimetype, compressed_json),
             status_code=200
         )
     else:
@@ -264,14 +332,18 @@ def serve_data(filename):
             status_code=404
         )
 
-@app.route('/threejs/textures/{filename}')
-def serve_texture(filename):
+
+def serve_texture_helper(filename: str):
     print("[DEBUG] Serving texture:", filename)
     s3 = boto3.resource('s3')
     if filename.endswith('.jpg') or filename.endswith('.jpeg'):
         mimetype = 'image/jpeg'
     elif filename.endswith('.png'):
         mimetype = 'image/png'
+    elif filename.endswith('.mp4'):
+        mimetype = 'video/mp4'
+    elif filename.endswith('.exr'):
+        mimetype = 'image/vnd.radiance'
     else:
         return Response(body='Unsupported file type', status_code=400)
 
@@ -288,8 +360,45 @@ def serve_texture(filename):
         status_code=200
     )
 
+
+# TODO: Something recursive like this: @app.route('/threejs/textures/{texture_path+}', methods=['GET'])
+@app.route('/threejs/textures/cards/standard/{filename}')
+def serve_cards_standard_texture(filename): return serve_texture_helper(f'cards/standard/{filename}')
+@app.route('/threejs/textures/cards/{filename}')
+def serve_cards_texture(filename): return serve_texture_helper(f'cards/{filename}')
+
+@app.route('/threejs/textures/{filename}')
+def serve_texture(filename): return serve_texture_helper(filename)
+
+
+
+
+
+@app.route('/threejs/imagery/brain/ply/{filename}')
+def serve_brain_ply_image(filename): return serve_image_helper(f'brain/ply/{filename}')
+@app.route('/threejs/imagery/brain/obj/{filename}')
+def serve_brain_obj_image(filename): return serve_image_helper(f'brain/obj/{filename}')
+@app.route('/threejs/imagery/farm/{filename}')
+def serve_farm_image(filename):
+    if '%20' in filename: filename = filename.replace('%20', ' ')
+    return serve_image_helper(f'farm/{filename}')
+@app.route('/threejs/imagery/pdb/{filename}')
+def serve_pdb_image(filename): return serve_image_helper(f'pdb/{filename}')
+@app.route('/threejs/imagery/piano/piano-mp3/{filename}')
+def serve_piano_mp3_image(filename): return serve_image_helper(f'piano/piano-mp3/{filename}')
+@app.route('/threejs/imagery/piano/textures/{filename}')
+def serve_piano_textures_image(filename): return serve_image_helper(f'piano/textures/{filename}')
+@app.route('/threejs/imagery/piano/{filename}')
+def serve_piano_image(filename): return serve_image_helper(f'piano/{filename}')
+@app.route('/threejs/imagery/skibidi/{filename}')
+def serve_skibidi_image(filename): return serve_image_helper(f'skibidi/{filename}')
+
+
 @app.route('/threejs/imagery/{filename}')
 def serve_image(filename):
+    return serve_image_helper(filename)
+
+def serve_image_helper(filename: str):
     s3 = boto3.resource('s3')
     if filename.endswith('.jpg') or filename.endswith('.jpeg'):
         mimetype = 'image/jpeg'
@@ -297,6 +406,20 @@ def serve_image(filename):
         mimetype = 'image/png'
     elif filename.endswith('.svg'):
         mimetype = 'image/svg+xml'
+    elif filename.endswith('.glb'):
+        mimetype = 'model/gltf-binary'
+    elif filename.endswith('.gltf'):
+        mimetype = 'model/gltf+json'
+    elif filename.endswith('.bin'):
+        mimetype = 'model/gltf-binary'
+    elif filename.endswith('.ply'):
+        mimetype = 'model/ply'
+    elif filename.endswith('.obj'):
+        mimetype = 'model/obj'
+    elif filename.endswith('.mp3'):
+        mimetype = 'audio/mpeg'
+    elif filename.endswith('.pdb'):
+        mimetype = 'chemical/x-pdb'
     else:
         return Response(body='Unsupported file type', status_code=400)
 
@@ -326,6 +449,18 @@ def serve_css():
         status_code=200
     )
 
+@app.route('/static/styles/caption-labels.css')
+def serve_css():
+    s3 = boto3.resource('s3')
+    css_content = s3.Object(os.environ['BUCKET_NAME'], 'frontend/caption-labels.css').get()["Body"].read().decode('utf-8')
+
+    compressed_css = brotli_compress(css_content.encode('utf-8'))
+
+    return Response(
+        body=compressed_css,
+        headers=create_response_headers('text/css', compressed_css),
+        status_code=200
+    )
 
 """
     CONTACT FORM
@@ -455,6 +590,18 @@ def animation():
 
     return animation_page_handler(animation_name, background_image_url, show_path_bool, dot_size, dot_color, image_top_padding, image_bottom_padding)
 
+@app.route('/favicon.ico')
+def favicon():
+    s3 = boto3.resource('s3')
+    favicon_content = s3.Object(os.environ['BUCKET_NAME'], 'frontend/favicon.ico').get()["Body"].read()
+
+    compressed_favicon = brotli_compress(favicon_content)
+
+    return Response(
+        body=compressed_favicon,
+        headers=create_response_headers('image/x-icon', compressed_favicon),
+        status_code=200
+    )
 
 @app.route('/sitemap.xml')
 def sitemap():

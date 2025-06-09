@@ -24,7 +24,7 @@ class DecimalEncoder(json.JSONEncoder):
         return super().default(o)
 
 
-def _b64(x: dict | None) -> str | None:
+def _b64(x: dict or None) -> str or None:
     if not x:
         return None
     try:
@@ -35,7 +35,7 @@ def _b64(x: dict | None) -> str | None:
         return None
 
 
-def _unb64(s: str | None) -> dict | None:
+def _unb64(s: str or None) -> dict or None:
     try:
         return json.loads(base64.urlsafe_b64decode(s)) if s else None
     except Exception as e:

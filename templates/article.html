@@ -15,6 +15,19 @@
 			<script type="importmap" contents="{"imports": {"three": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/examples/jsm/", "three/fonts/": "https://cdn.jsdelivr.net/npm/three@__THREEJS_VERSION__/examples/fonts/" } }"></script>
 		{% endif %}
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pygments-css@1.0.0/friendly.min.css">
+
+		<style>
+			/* Specific code highlighting overrides */
+			code[class*="language-"], pre[class*="language-"] {
+				color: rgb(255, 198, 109) !important;
+				text-shadow: none !important; /* Remove text shadow */
+			}
+
+			:not(pre) > code[class*="language-"], pre[class*="language-"] {
+				background: #2d2d2d !important; /* Remove background */
+			}
+		</style>
+
 		<link rel="stylesheet" href="/style.css"></link>
 		<title>dm creations - Article - {{ article.title }}</title>
 		<meta propery="og:title" content="{{ article.title }}" />
