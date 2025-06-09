@@ -58,6 +58,39 @@
                     </div>
                     {% endfor %}
                 </div>
+                <style>
+                    /* Add some basic styles for the pager */
+                    .pager {
+                        display: flex;
+                        justify-content: space-between;
+                        margin-top: 20px;
+                    }
+
+                    .pager a {
+                        text-decoration: none;
+                        color: #007bff;
+                        padding: 10px 15px;
+                        border: 1px solid #007bff;
+                        border-radius: 5px;
+                    }
+
+                    .pager a:hover {
+                        background-color: #007bff;
+                        color: white;
+                    }
+
+                    .pager a.newer {
+                        margin-right: auto;
+                    }
+
+                    .pager a.older {
+                        margin-left: auto;
+                    }
+                </style>
+                <nav class="pager">
+                    {% if prev_key %}<a class="btn newer" href="/?before={{ prev_key | urlencode }}">&#x2190; Newer </a>{% endif %}
+                    {% if next_key %}<a class="btn older" href="/?after={{ next_key | urlencode }}">Older &#x2192;</a>{% endif %}
+                </nav>
             </div>
 
             <section class="threejs">
