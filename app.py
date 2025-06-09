@@ -187,28 +187,32 @@ def serve_threejs(animation):
 
 
 @app.route('/threejs/imagery/{path+}', methods=['GET'])
-def imagery_fallback_to_s3(path):
+def imagery_fallback_to_s3():
+    path = app.current_request.uri_params['path']
     print("FALLBACK STATIC FILE ROUTER (imagery):", path)
     bucket_url = f"https://{os.environ['BUCKET_NAME']}.s3.amazonaws.com/scripts/threejs/imagery/{path}"
-    return Response(body='', status_code=302, headers={'Location': bucket_url})
+    return Response(body='', status_code=302, headers={'Location': bucket_url, 'Content-Type': 'text/plain'})
 
 @app.route('/threejs/textures/{path+}', methods=['GET'])
-def textures_fallback_to_s3(path):
+def textures_fallback_to_s3():
+    path = app.current_request.uri_params['path']
     print("FALLBACK STATIC FILE ROUTER (textures):", path)
     bucket_url = f"https://{os.environ['BUCKET_NAME']}.s3.amazonaws.com/scripts/threejs/textures/{path}"
-    return Response(body='', status_code=302, headers={'Location': bucket_url})
+    return Response(body='', status_code=302, headers={'Location': bucket_url, 'Content-Type': 'text/plain'})
 
 @app.route('/threejs/drawing/{path+}', methods=['GET'])
-def drawing_fallback_to_s3(path):
+def drawing_fallback_to_s3():
+    path = app.current_request.uri_params['path']
     print("FALLBACK STATIC FILE ROUTER (drawing):", path)
     bucket_url = f"https://{os.environ['BUCKET_NAME']}.s3.amazonaws.com/scripts/threejs/drawing/{path}"
-    return Response(body='', status_code=302, headers={'Location': bucket_url})
+    return Response(body='', status_code=302, headers={'Location': bucket_url, 'Content-Type': 'text/plain'})
 
 @app.route('/threejs/data/{path+}', methods=['GET'])
-def data_fallback_to_s3(path):
+def data_fallback_to_s3():
+    path = app.current_request.uri_params['path']
     print("FALLBACK STATIC FILE ROUTER (data):", path)
     bucket_url = f"https://{os.environ['BUCKET_NAME']}.s3.amazonaws.com/scripts/threejs/data/{path}"
-    return Response(body='', status_code=302, headers={'Location': bucket_url})
+    return Response(body='', status_code=302, headers={'Location': bucket_url, 'Content-Type': 'text/plain'})
 
 
 """
