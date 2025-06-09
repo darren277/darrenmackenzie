@@ -138,12 +138,22 @@ def create_response_headers(content_type: str, content: str):
     }
 
 
-def create_compressed_response(html_content):
+def create_compressed_response(html_content, skip_caching=False):
     """Create a compressed HTTP response."""
+    # NOTE that caching fucks with pagination, so we will be disabling it in the case of the home page endpoint.
+
     compressed_html = brotli_compress(html_content.encode('utf-8'))
+
+    headers = create_response_headers('text/html; charset=UTF-8', html_content) if not skip_caching else {
+        'Content-Type': 'text/html; charset=UTF-8',
+        'Content-Encoding': 'br',
+        'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+    }
 
     return Response(
         body=compressed_html,
-        headers=create_response_headers('text/html; charset=UTF-8', html_content),
+        headers=headers,
         status_code=200
     )

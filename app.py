@@ -137,7 +137,7 @@ def index():
         html_content = template.render(**template_data)
         
         # Create and return response
-        return create_compressed_response(html_content)
+        return create_compressed_response(html_content, skip_caching=True)
     
     except Exception as e:
         print(f"Unexpected error in script_template: {e}")
