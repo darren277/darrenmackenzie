@@ -28,6 +28,7 @@ jobs:
         aws s3 cp templates/index.html s3://darrenmackenzie-chalice-bucket/frontend/index.html
         aws s3 cp templates/style.css s3://darrenmackenzie-chalice-bucket/frontend/style.css
         aws s3 cp templates/animation.html s3://darrenmackenzie-chalice-bucket/frontend/animation.html
+        aws s3 cp templates/threejs.html s3://darrenmackenzie-chalice-bucket/frontend/threejs.html
 
   invalidate-cloudfront:
     runs-on: ubuntu-latest
