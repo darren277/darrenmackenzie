@@ -16,7 +16,7 @@ from chalicelib.threejs_helpers import populate_importmaps, grouped_nav_items
 from chalicelib.utils import datetime_filter, url_to_descriptive, icon_to_descriptive
 
 DEBUG = True
-LOCAL = True
+LOCAL = False
 THREEJS_VERSION = '0.169.0'
 
 
