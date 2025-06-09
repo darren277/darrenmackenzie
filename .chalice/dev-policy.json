@@ -53,7 +53,9 @@
                 "arn:aws:dynamodb:*:*:table/darrenmackenzie-contact",
                 "arn:aws:dynamodb:*:*:table/darrenmackenzie-home",
                 "arn:aws:dynamodb:*:*:table/darrenmackenzie-articles",
-                "arn:aws:dynamodb:*:*:table/darrenmackenzie-articles-list"
+                "arn:aws:dynamodb:*:*:table/darrenmackenzie-articles-list",
+                "arn:aws:dynamodb:*:*:table/darrenmackenzie-articles-v2",
+                "arn:aws:dynamodb:*:*:table/darrenmackenzie-articles-v2-tagindex"
             ]
         },
         {

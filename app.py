@@ -6,6 +6,7 @@ from jinja2 import Environment, FileSystemLoader, BaseLoader
 import markdown
 
 from chalicelib.animation import animation_page_handler, load_img_handler
+from chalicelib.paginator_v2 import _unb64, list_articles
 from chalicelib.threejs_dict import ANIMATIONS_DICT
 from chalicelib.articles import articles_list_handler
 from chalicelib.caching import brotli_compress, create_response_headers, create_compressed_response
@@ -73,12 +74,17 @@ s3_env.filters['icon_to_descriptive'] = icon_to_descriptive
 
 
 @app.route('/')
-def script_template():
+def index():
     """Handle the main website endpoint."""
     if DEBUG:
         debug(app.current_request)
 
     query_params = app.current_request.query_params or {}
+
+    after = _unb64(query_params.get("after"))
+    before = _unb64(query_params.get("before"))
+
+    tag = query_params.get('tag') if query_params else None
 
     threejs_drawings = ['data']
     threejs_drawing = query_params.get('threejs_drawing', None)
@@ -88,15 +94,6 @@ def script_template():
     try:
         # Get menu items and parse query parameters
         menu = get_menu_items()
-        tags_param = query_params.get('tags')
-        tags = tags_param.split(',') if tags_param else None
-        
-        # Build paginator
-        try:
-            paginator = build_paginator_from_query_params(query_params)
-        except Exception as e:
-            print("Error building paginator:", e)
-            return Response(str(e), status_code=400)
         
         # Get template from S3 and website data from DynamoDB
         template = get_s3_template(s3_env, os.environ['BUCKET_NAME'], local=LOCAL)
@@ -104,42 +101,43 @@ def script_template():
         
         # Query articles
         try:
-            page_of_articles = query_articles(os.environ['ARTICLE_LIST_TABLE'], paginator, tags)
+            if before:
+                direction = 'newer'
+                cursor = before
+            else:
+                direction = 'older'
+                cursor = after
+
+            items, next_key, prev_key = list_articles(
+                tag=tag,
+                start_key=cursor,
+                full_articles=False,
+                direction=direction
+            )
+
+            print(f"[DEBUG] Direction: {direction}, Tag: {tag}, After: {after}, Before: {before}, Cursor: {cursor}, Number of items: {len(items)}")
         except Exception as e:
             print("Error querying DynamoDB:", e)
             return Response(str(e), status_code=500)
-        
-        # Build pagination URLs
-        try:
-            next_page_url, prev_page_url = build_pagination_urls(
-                paginator, page_of_articles, "https://www.darrenmackenzie.com/", tags_param
-            )
-        except Exception as e:
-            print("Error building pagination URLs:", e)
-            return Response(str(e), status_code=500)
-        
-        # Determine page status
-        try:
-            is_first_page, newest_timestamp = determine_page_status(page_of_articles, query_params)
-        except Exception as e:
-            print("Error getting newest timestamp:", e)
-            return Response(str(e), status_code=500)
-        
+
+        print('[DEBUG] Queried articles:', len(items), items)
+
+        print('prev_key', prev_key)
+        print('next_key', next_key)
+
         # Render template
         template_data = {
             'social': website_data['social'],
-            'articles': page_of_articles,
+            'articles': items,
             'menu': menu,
-            'nextPageUrl': next_page_url,
-            'prevPageUrl': prev_page_url,
-            'firstPage': is_first_page,
-            'newestTimestamp': newest_timestamp,
+            'prev_key': prev_key,
+            'next_key': next_key,
             'threejs_drawings': threejs_drawings
         }
         html_content = template.render(**template_data)
         
         # Create and return response
-        return create_compressed_response(html_content)
+        return create_compressed_response(html_content, skip_caching=True)
     
     except Exception as e:
         print(f"Unexpected error in script_template: {e}")
@@ -147,51 +145,10 @@ def script_template():
 
 
 @app.route('/index.html')
-def index():
+def index_html():
     # redirect to `/`
     return Response(body='', headers={'Location': 'https://www.darrenmackenzie.com'}, status_code=301)
 
-
-
-
-# paginated article fetching...
-@app.route('/articles_list', methods=['GET'])
-def articles_list():
-    limit = int(app.current_request.query_params.get('limit', 10))
-    cursor = int(app.current_request.query_params.get('cursor', datetime.datetime.now().timestamp() * 1_000))
-    tags = app.current_request.query_params.get('tags', None)
-
-    if LOCAL:
-        return [
-            dict(
-                tags=['aws', 'python', 'lambda'],
-                icons=[],
-                title='Lambda Layers',
-                slug='lambda-layers',
-                created=1672790400000,
-                description='Using Lambda layers can help you to reduce the size of your Lambda function deployment package. This is especially useful when you have a lot of dependencies.',
-                thumbnail='',
-            ),
-            dict(
-                tags=['aws', 'python', 'lambda'],
-                icons=[],
-                title='Lambda Layers 2',
-                slug='lambda-layers-2',
-                created=1672790400000,
-                description='This is a story all about how my life got flipped turned upside down. Now I\'d like to take a minute so just site right there...',
-                thumbnail='',
-            ),
-            dict(
-                tags=['aws', 'python', 'lambda'],
-                icons=[],
-                title='Lambda Layers 3',
-                slug='lambda-layers-3',
-                created=1672790400000,
-                description='This is a story lambda layers and how they got flipped turned upside down. Now I\'d like to take a minute so just site right there...',
-                thumbnail='',
-            ),
-        ]
-    return articles_list_handler(limit, cursor, tags)
 
 
 @app.route('/threejs/<animation>')

@@ -4,9 +4,23 @@ from decimal import Decimal
 
 
 def datetime_filter(value, format='%b %d, %Y'):
-    v = int(value) / 1_000.0
-    ts = datetime.datetime.fromtimestamp(v)
-    return ts.strftime(format)
+    # possible format: 2024-01-02
+    if isinstance(value, datetime.datetime):
+        return value.strftime(format)
+    if isinstance(value, Decimal):
+        # Convert Decimal to float and then to int
+        v = int(value) / 1_000.0
+        ts = datetime.datetime.fromtimestamp(v)
+        return ts.strftime(format)
+    if isinstance(value, str):
+        # If the string is a valid integer, convert it
+        try:
+            v = int(value) / 1_000.0
+            ts = datetime.datetime.fromtimestamp(v)
+            return ts.strftime(format)
+        except ValueError:
+            # If it's not a valid integer, return the original string
+            return value
 
 def url_to_descriptive(url):
     """
