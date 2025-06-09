@@ -67,10 +67,12 @@ CSS_JS_PARAM_NAME = $(PARAM_PREFIX)_cache-control-duration-css-and-js
 JSON_PARAM_NAME = $(PARAM_PREFIX)_cache-control-duration-json
 FALLBACK_PARAM_NAME = $(PARAM_PREFIX)_cache-control-duration-fallback
 
+# DAY and WEEK are a bit excessive...
+
 # Set default values
 set-default-cache-params:
-	aws ssm put-parameter --name $(HTML_PARAM_NAME) --value "DAY" --type "String" --overwrite --region $(AWS_REGION)
-	aws ssm put-parameter --name $(CSS_JS_PARAM_NAME) --value "WEEK" --type "String" --overwrite --region $(AWS_REGION)
+	aws ssm put-parameter --name $(HTML_PARAM_NAME) --value "HOUR" --type "String" --overwrite --region $(AWS_REGION)
+	aws ssm put-parameter --name $(CSS_JS_PARAM_NAME) --value "HOUR" --type "String" --overwrite --region $(AWS_REGION)
 	aws ssm put-parameter --name $(JSON_PARAM_NAME) --value "HOUR" --type "String" --overwrite --region $(AWS_REGION)
 	aws ssm put-parameter --name $(FALLBACK_PARAM_NAME) --value "MINUTE" --type "String" --overwrite --region $(AWS_REGION)
 	@echo "Default cache parameters set successfully"
