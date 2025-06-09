@@ -40,7 +40,7 @@ app.api.binary_types.extend([
     'text/css',
     'text/html',
     'application/xml',
-    "image/x-icon"
+    'image/x-icon'
 ])
 
 
@@ -160,7 +160,7 @@ def serve_threejs(animation):
     if LOCAL:
         template_string = open(join(cwd, 'templates', 'threejs.html'), 'r').read()
     else:
-        template_string = s3_env.from_string(s3.Object(os.environ['BUCKET_NAME'], 'frontend/threejs.html').get()["Body"].read().decode('utf-8'))
+        template_string = s3.Object(os.environ['BUCKET_NAME'], 'frontend/threejs.html').get()["Body"].read().decode('utf-8')
 
     viz = ANIMATIONS_DICT.get(animation, ANIMATIONS_DICT['multiaxis'])
     #data_selected_query_param = request.args.get('data_selected')
