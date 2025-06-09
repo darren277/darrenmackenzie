@@ -186,6 +186,17 @@ def serve_threejs(animation):
     return create_compressed_response(html_content, skip_caching=True)
 
 
+@app.route('/threejs/{path+}', methods=['GET'])
+def fallback_to_s3(path):
+    print("FALLBACK STATIC FILE ROUTER:", path)
+    bucket_url = f"https://{os.environ['BUCKET_NAME']}.s3.amazonaws.com/scripts/threejs/{path}"
+    return Response(
+        body='',
+        status_code=302,
+        headers={'Location': bucket_url}
+    )
+
+
 """
     JAVASCRIPT, JSON, AND CSS ENDPOINTS
 """
