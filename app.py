@@ -182,13 +182,8 @@ def serve_threejs(animation):
         data_selected=data_selected,
         importmap=json.dumps(importmap, indent=4),
     )
-    compressed_html = brotli_compress(html_content.encode('utf-8'))
 
-    return Response(
-        body=compressed_html,
-        headers=create_response_headers('text/html; charset=UTF-8', compressed_html),
-        status_code=200
-    )
+    return create_compressed_response(html_content, skip_caching=True)
 
 
 """
