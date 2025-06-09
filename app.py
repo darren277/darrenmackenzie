@@ -1,5 +1,4 @@
 """"""
-import datetime
 from chalice import Chalice, Response
 import boto3 as boto3
 from jinja2 import Environment, FileSystemLoader, BaseLoader
@@ -8,10 +7,8 @@ import markdown
 from chalicelib.animation import animation_page_handler, load_img_handler
 from chalicelib.paginator_v2 import _unb64, list_articles
 from chalicelib.threejs_dict import ANIMATIONS_DICT
-from chalicelib.articles import articles_list_handler
 from chalicelib.caching import brotli_compress, create_response_headers, create_compressed_response
-from chalicelib.main import build_paginator_from_query_params, get_menu_items, get_s3_template, get_website_data, \
-    query_articles, build_pagination_urls, determine_page_status
+from chalicelib.main import get_menu_items, get_s3_template, get_website_data
 from chalicelib.payments import stripe_webhook_handler, checkout_session_handler
 from chalicelib.utils import datetime_filter, url_to_descriptive, icon_to_descriptive
 
