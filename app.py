@@ -187,7 +187,7 @@ def serve_threejs(animation):
     return Response(
         body=compressed_html,
         headers=create_response_headers('text/html; charset=UTF-8', compressed_html),
-        status_code=404
+        status_code=200
     )
 
 
