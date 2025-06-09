@@ -16,7 +16,7 @@ from chalicelib.threejs_helpers import populate_importmaps, grouped_nav_items
 from chalicelib.utils import datetime_filter, url_to_descriptive, icon_to_descriptive
 
 DEBUG = True
-LOCAL = False
+LOCAL = True
 THREEJS_VERSION = '0.169.0'
 
 
@@ -39,7 +39,8 @@ app.api.binary_types.extend([
     'application/json',
     'text/css',
     'text/html',
-    'application/xml'
+    'application/xml',
+    "image/x-icon"
 ])
 
 
@@ -597,11 +598,15 @@ def favicon():
 
     compressed_favicon = brotli_compress(favicon_content)
 
-    return Response(
-        body=compressed_favicon,
-        headers=create_response_headers('image/x-icon', compressed_favicon),
-        status_code=200
-    )
+    try:
+        return Response(
+            body=compressed_favicon,
+            headers=create_response_headers('image/x-icon', compressed_favicon),
+            status_code=200
+        )
+    except Exception as e:
+        print(f"Error serving favicon: {e}")
+        return Response(body='Error serving favicon', status_code=500)
 
 @app.route('/sitemap.xml')
 def sitemap():
