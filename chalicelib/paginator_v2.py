@@ -8,7 +8,7 @@ import boto3
 import functools
 
 
-PAGE_SIZE = 5
+PAGE_SIZE = 6
 
 # PK, SK, and url are reserved words so we alias them
 expression_attribute_names = {'#PK': 'PK', '#SK': 'SK', '#url': 'url'}
