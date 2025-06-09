@@ -151,7 +151,7 @@ def index_html():
 
 
 
-@app.route('/threejs/<animation>')
+@app.route('/threejs/{animation}')
 def serve_threejs(animation):
     print('ABOUT TO SERVE THREEJS ANIMATION:', animation)
     s3 = boto3.resource('s3')
