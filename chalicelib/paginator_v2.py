@@ -1,4 +1,5 @@
 """"""
+import os
 import json
 import base64
 from decimal import Decimal
@@ -43,9 +44,8 @@ def _unb64(s: str | None) -> dict | None:
 
 dynamodb = boto3.resource('dynamodb')
 
-articles_db = dynamodb.Table('darrenmackenzie-articles-v2')
-tag_index = dynamodb.Table('darrenmackenzie-articles-v2-tagindex')
-
+articles_db = dynamodb.Table(os.environ['ARTICLES_V2_TABLE'])
+tag_index = dynamodb.Table(os.environ['TAG_INDEX_TABLE'])
 
 
 def _encode_key(dynamo_key):

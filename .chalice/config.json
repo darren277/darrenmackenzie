@@ -14,7 +14,9 @@
                 "BUCKET_NAME": "darrenmackenzie-chalice-bucket",
                 "CONTACT_TABLE": "darrenmackenzie-contact",
                 "HOME_TABLE": "darrenmackenzie-home",
-                "ARTICLE_LIST_TABLE": "darrenmackenzie-articles-list"
+                "ARTICLE_LIST_TABLE": "darrenmackenzie-articles-list",
+                "ARTICLES_V2_TABLE": "darrenmackenzie-articles-v2",
+                "TAG_INDEX_TABLE": "darrenmackenzie-articles-v2-tagindex"
             },
             "iam_policy_file": "dev-policy.json",
             "layers": [
