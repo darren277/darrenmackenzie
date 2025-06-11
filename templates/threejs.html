@@ -108,6 +108,9 @@
     </style>
 </head>
 <body>
+{% if fullscreen %}
+<div style="font-size: 0.5em;">Empty div.</div>
+{% else %}
 <header>
     <h2>{{ threejs_drawings.name }}</h2>
     <label for="scene-select" style="margin-right: 0.5em;">Choose animation:</label>
@@ -131,13 +134,20 @@
     </select>
     {% endif %}
 </header>
+{% endif %}
 <main class="threejs">
     <div class="threejs-container" style="position: relative;">
         <!-- The Three.js canvas will be appended into this DIV -->
-        <div id="c" style="position: relative;">
-            <canvas></canvas>
-        </div>
-
+            <div
+                    id="c"
+                    {% if fullscreen %}
+                    style="position: relative;"
+                    {% else %}
+                    style="position: relative; height: 100%;"
+                    {% endif %}
+            >
+                <canvas></canvas>
+            </div>
         <!-- UI container (floating overlay) -->
         <div id="ui-container" style="position: absolute; top: 1em; right: 1em; z-index: 9999; background-color: rgba(255, 255, 255, 0.2); padding: 0.5em;">
             <!-- Orbit Toggle Button -->
@@ -165,6 +175,9 @@
     </div>
 </main>
 
+{% if fullscreen %}
+<div style="display: none;">Empty div.</div>
+{% else %}
 <script>
     const sceneSelect = document.getElementById('scene-select');
 
@@ -182,6 +195,7 @@
     });
     {% endif %}
 </script>
+{% endif %}
 
 <script type="module" src="https://darrenmackenzie-chalice-bucket.s3.us-east-1.amazonaws.com/scripts/threejs/main.js"></script>
 </body>
