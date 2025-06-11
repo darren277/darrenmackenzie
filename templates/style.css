@@ -140,9 +140,9 @@ main,
 .threejs-container {
 	position: relative;
 	width: 100%;
-	height: 600px;
+	/* height: 600px; */
 	background: #000;
-	z-index: 9999;
+	/* z-index: 9999; */
 }
 
 #c {
@@ -160,13 +160,13 @@ main,
 
 #c canvas {
 	background-color: rgba(255,0,0,0.2) !important;
-	z-index: 9999 !important;
+	/* z-index: 9999 !important; */
 	position: relative !important;
 }
 
 /* Three‑JS box: shrink gracefully */
 .threejs-container {
-    height: clamp(300px, 60vh, 600px);
+    /* height: clamp(300px, 60vh, 600px); */
 }
 
 .centered-text {
