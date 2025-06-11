@@ -308,6 +308,12 @@ def contact_form():
 """
     INDIVIDUAL PAGES
 """
+
+ARTICLE_SLUGS_TO_SK = {
+    'lambda-layers': 1
+}
+
+
 @app.route('/{section}/{article}')
 def articles(section, article):
     if DEBUG:
@@ -315,7 +321,7 @@ def articles(section, article):
 
     if section == 'threejs':
         return serve_threejs(article)
-    
+
     s3 = boto3.resource('s3')
     website_menu = [
         dict(title='Home', url='#'),
@@ -334,24 +340,40 @@ def articles(section, article):
             headers=create_response_headers('text/html; charset=UTF-8', compressed_html),
             status_code=404
         )
-    
+
     db = boto3.resource('dynamodb')
-    article_table = db.Table(os.environ['ARTICLE_TABLE'])
-    article_data = article_table.get_item(Key={'type_of_article': section, "slug": article}).get('Item')
+    article_table = db.Table(os.environ['ARTICLES_V2_TABLE'])
+
+    pk = 'ARTICLE' if section == 'blog' else section.upper()
+    sk = ARTICLE_SLUGS_TO_SK.get(article, None)
+
+    if not sk:
+        html_content = s3_env.from_string(
+            s3.Object(os.environ['BUCKET_NAME'], 'frontend/404.html').get()["Body"].read().decode('utf-8')).render(
+            menu=non_index_menu)
+        compressed_html = brotli_compress(html_content.encode('utf-8'))
+        return Response(
+            body=compressed_html,
+            headers=create_response_headers('text/html; charset=UTF-8', compressed_html),
+            status_code=404
+        )
+
+    article_data = article_table.get_item(Key={'PK': pk, 'SK': sk}).get('Item', None)
 
     if DEBUG:
+        print(f"[DEBUG] PK: {pk}. SK: {sk}.")
         print("[DEBUG] Section", section)
         print("[DEBUG] Article Slug", article)
-        print("[DEBUG] Article Table", os.environ['ARTICLE_TABLE'])
+        print("[DEBUG] Article Table", os.environ['ARTICLES_V2_TABLE'])
         print("[DEBUG] Article:", article_data)
-    
+
     if article_data:
         if LOCAL:
             full_article_html_string = open(join(cwd, 'templates', 'article.html'), 'r').read()
         else:
             full_article_html_string = s3.Object(os.environ['BUCKET_NAME'], 'frontend/article.html').get()["Body"].read().decode('utf-8')
         full_article_html = s3_env.from_string(full_article_html_string).render(section=section, article=article_data, menu=non_index_menu)
-        
+
         md_content = article_data['body']
 
         html_content = markdown.markdown(md_content, extensions=["fenced_code", "codehilite", "tables", "toc"])
