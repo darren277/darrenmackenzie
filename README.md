@@ -50,6 +50,12 @@ Do not forget to enable this each time you deploy:
 
 ![API Gateway Path Caching](APIGatewayPathCaching.png)
 
+##### Query String Parameter Level Caching
+
+This particular caching configuration is required for pagination to work:
+
+![API Gateway Query String Parameter Caching](APIGatewayQueryStringCaching.png)
+
 ### SEO and Accessibility
 
 #### TODO
