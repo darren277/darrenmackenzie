@@ -73,6 +73,33 @@ s3_env.filters['icon_to_descriptive'] = icon_to_descriptive
 """
 
 
+def create_threejs_data(animation: str, data_selected: str, fullscreen: bool = False, navbar: bool = False):
+    viz = ANIMATIONS_DICT.get(animation, ANIMATIONS_DICT['multiaxis'])
+    print('viz', viz, 'multiaxis', ANIMATIONS_DICT)
+
+    threejs_version = viz.get('threejs_version', THREEJS_VERSION)
+
+    # TODO: Too many imports by default, need to fix this.
+    importmap = populate_importmaps(animation, threejs_version)
+
+    threejs_template_data = dict(
+        threejs_version=THREEJS_VERSION,
+        threejs_drawings=viz,
+        data_selected=data_selected,
+        importmap=json.dumps(importmap, indent=4),
+        fullscreen=fullscreen,
+    )
+
+    if navbar:
+        nav_item_ordering = ['Special', 'Educational', 'Quantitative', 'Spatial', 'World Building', 'Experimental',
+                             'Component', 'Attribution', 'Work in Progress', 'Local']
+        ordered_grouped_nav_items = grouped_nav_items(nav_item_ordering)
+        threejs_template_data['grouped_nav_items'] = ordered_grouped_nav_items
+    else:
+        threejs_template_data['grouped_nav_items'] = dict()
+
+    return threejs_template_data
+
 
 @app.route('/')
 def index():
@@ -87,10 +114,10 @@ def index():
 
     tag = query_params.get('tag') if query_params else None
 
-    threejs_drawings = ['data']
-    threejs_drawing = query_params.get('threejs_drawing', None)
-    if threejs_drawing:
-        threejs_drawings = [threejs_drawing]
+    animation = query_params.get('animation', 'multiaxis') if query_params else 'multiaxis'
+    data_selected = query_params.get('data_selected', 'data') if query_params else 'data'
+
+    threejs_template_data = create_threejs_data(animation, data_selected)
     
     try:
         # Get menu items and parse query parameters
@@ -133,9 +160,8 @@ def index():
             'menu': menu,
             'prev_key': prev_key,
             'next_key': next_key,
-            'threejs_drawings': threejs_drawings
         }
-        html_content = template.render(**template_data)
+        html_content = template.render(**template_data, **threejs_template_data)
         
         # Create and return response
         return create_compressed_response(html_content, skip_caching=True)
@@ -151,9 +177,7 @@ def index_html():
     return Response(body='', headers={'Location': 'https://www.darrenmackenzie.com'}, status_code=301)
 
 
-
-@app.route('/threejs/{animation}')
-def serve_threejs(animation):
+def serve_threejs_helper(animation: str = 'multiaxis', query_params: dict = None, fullscreen: bool = False):
     print('ABOUT TO SERVE THREEJS ANIMATION:', animation)
     s3 = boto3.resource('s3')
 
@@ -162,54 +186,70 @@ def serve_threejs(animation):
     else:
         template_string = s3.Object(os.environ['BUCKET_NAME'], 'frontend/threejs.html').get()["Body"].read().decode('utf-8')
 
+    animation = animation.replace('_fullscreen', '')
     viz = ANIMATIONS_DICT.get(animation, ANIMATIONS_DICT['multiaxis'])
-    #data_selected_query_param = request.args.get('data_selected')
-    data_selected_query_param = app.current_request.query_params.get('data_selected', None) if app.current_request.query_params else None
+    print('viz:', animation, viz)
+    # data_selected_query_param = request.args.get('data_selected')
+    data_selected_query_param = query_params.get('data_selected', None) if query_params else None
     data_selected = data_selected_query_param if data_selected_query_param else viz.get('data_sources', [None])[0] if len(viz.get('data_sources', [])) > 0 else None
     print('data_selected:', data_selected)
 
-    threejs_version = viz.get('threejs_version', THREEJS_VERSION)
-    importmap = populate_importmaps(animation, threejs_version)
+    threejs_template_data = create_threejs_data(animation, data_selected, navbar=not fullscreen, fullscreen=fullscreen)
 
-    nav_item_ordering = ['Special', 'Educational', 'Quantitative', 'Spatial', 'World Building', 'Experimental', 'Component', 'Attribution', 'Work in Progress', 'Local']
-    ordered_grouped_nav_items = grouped_nav_items(nav_item_ordering)
-
-    html_content = s3_env.from_string(template_string).render(
-        threejs_version=THREEJS_VERSION,
-        threejs_drawings=viz,
-        grouped_nav_items=ordered_grouped_nav_items,
-        main_js_path='/threejs/scripts/main.js',
-        data_selected=data_selected,
-        importmap=json.dumps(importmap, indent=4),
-    )
+    html_content = s3_env.from_string(template_string).render(**threejs_template_data)
 
     return create_compressed_response(html_content, skip_caching=True)
+
+l = ['adventure1','adventure2','buildings','cards','cayley','clustering','data','experimental_1','experimental','familytree','force','force3d','forest','math','music','network','periodic','philpapers','resume']
+
+@app.route('/threejs/{animation}')
+def serve_threejs(animation):
+    query_params = app.current_request.query_params
+    fullscreen = True if animation.endswith('_fullscreen') or animation == 'resume' else False
+    if animation == 'resume':
+        query_params = dict(data_selected='resume')
+        animation = 'adventure'
+
+    # TODO: TIDY THIS ALL UP BEFORE PUSH.
+    if fullscreen and not query_params:
+        #if query_params['data_selected'] not in l:
+        #    print(f"WARNING: Data selected '{query_params['data_selected']}' is not in the predefined list {l}. Using 'data' instead.")
+        query_params = dict(data_selected='data')
+
+    return serve_threejs_helper(animation, query_params, fullscreen=fullscreen)
 
 
 @app.route('/threejs/imagery/{path+}', methods=['GET'])
 def imagery_fallback_to_s3():
-    path = app.current_request.uri_params['path']
+    path = app.current_request.uri_params['path+'] if LOCAL else app.current_request.uri_params['path']
     print("FALLBACK STATIC FILE ROUTER (imagery):", path)
     bucket_url = f"https://{os.environ['BUCKET_NAME']}.s3.amazonaws.com/scripts/threejs/imagery/{path}"
     return Response(body='', status_code=302, headers={'Location': bucket_url, 'Content-Type': 'text/plain'})
 
 @app.route('/threejs/textures/{path+}', methods=['GET'])
 def textures_fallback_to_s3():
-    path = app.current_request.uri_params['path']
+    path = app.current_request.uri_params['path+'] if LOCAL else app.current_request.uri_params['path']
     print("FALLBACK STATIC FILE ROUTER (textures):", path)
     bucket_url = f"https://{os.environ['BUCKET_NAME']}.s3.amazonaws.com/scripts/threejs/textures/{path}"
     return Response(body='', status_code=302, headers={'Location': bucket_url, 'Content-Type': 'text/plain'})
 
+@app.route('/threejs/config/{path+}', methods=['GET'])
+def config_fallback_to_s3():
+    path = app.current_request.uri_params['path+'] if LOCAL else app.current_request.uri_params['path']
+    print("FALLBACK STATIC FILE ROUTER (drawing):", path)
+    bucket_url = f"https://{os.environ['BUCKET_NAME']}.s3.amazonaws.com/scripts/threejs/config/{path}?v=1"
+    return Response(body='', status_code=302, headers={'Location': bucket_url, 'Content-Type': 'text/plain'})
+
 @app.route('/threejs/drawing/{path+}', methods=['GET'])
 def drawing_fallback_to_s3():
-    path = app.current_request.uri_params['path']
+    path = app.current_request.uri_params['path+'] if LOCAL else app.current_request.uri_params['path']
     print("FALLBACK STATIC FILE ROUTER (drawing):", path)
     bucket_url = f"https://{os.environ['BUCKET_NAME']}.s3.amazonaws.com/scripts/threejs/drawing/{path}"
     return Response(body='', status_code=302, headers={'Location': bucket_url, 'Content-Type': 'text/plain'})
 
 @app.route('/threejs/data/{path+}', methods=['GET'])
 def data_fallback_to_s3():
-    path = app.current_request.uri_params['path']
+    path = app.current_request.uri_params['path+'] if LOCAL else app.current_request.uri_params['path']
     print("FALLBACK STATIC FILE ROUTER (data):", path)
     bucket_url = f"https://{os.environ['BUCKET_NAME']}.s3.amazonaws.com/scripts/threejs/data/{path}"
     return Response(body='', status_code=302, headers={'Location': bucket_url, 'Content-Type': 'text/plain'})
