@@ -14,6 +14,15 @@
     <meta name="description" content="Personal website of Darren MacKenzie, a software developer and solution architect."></meta>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
     <link rel="stylesheet" href="/style.css"></link>
+
+    <meta name="threejs_drawing_name" content="{{ threejs_drawings.name|lower }}" />
+    <meta name="data_selected" content="home_{{ data_selected }}" />
+    <script type="importmap">
+        {
+            "imports":
+                {{importmap|safe}}
+        }
+    </script>
 </head>
 <body>
     <div class="layout">
@@ -96,7 +105,9 @@
             <section class="threejs">
                 <h1>Three JS</h1>
                 <div class="threejs-container">
-                    <div id="c"></div>
+                    <div id="c">
+                        <canvas></canvas>
+                    </div>
                     <div id="ui-container">
                         <button id="orbit-toggle-btn">Orbit: ON</button>
                         <label for="zoom-slider">Zoom:</label>
