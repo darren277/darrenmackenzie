@@ -54,7 +54,7 @@ def _encode_key(dynamo_key):
 
 
 
-def _query_primary_feed(page_size: int, projection_expression: str, expression_attribute_names: dict or None = None, start_key=None):
+def _query_primary_feed(page_size: int, projection_expression: str, expression_attribute_names: dict or None = None, start_key=None, article_type: str = 'ARTICLE'):
     # one‑time check: does this table have the GSI?
     functools.lru_cache(maxsize=1)
 
@@ -88,7 +88,7 @@ def _query_primary_feed(page_size: int, projection_expression: str, expression_a
     else:
         # GSI not present yet → fall back to base table + filter
         resp = articles_db.query(
-            KeyConditionExpression=Key('PK').eq('ARTICLE'),
+            KeyConditionExpression=Key('PK').eq(article_type),
             FilterExpression=(Attr('removed').not_exists() | Attr('removed').eq(False)),
             **kwargs
         )
@@ -97,7 +97,7 @@ def _query_primary_feed(page_size: int, projection_expression: str, expression_a
 
 
 
-def tag_fetch(tag: str, start_key: dict = None, projection_expression: str = None):
+def tag_fetch(tag: str, start_key: dict = None, projection_expression: str = None, expression_attribute_names: dict = None, article_type: str = 'ARTICLE'):
     # 1) get page of IDs for this tag
     tag_kwargs = dict(
         KeyConditionExpression=Key('PK').eq(tag),
@@ -121,7 +121,7 @@ def tag_fetch(tag: str, start_key: dict = None, projection_expression: str = Non
         batch = dynamodb.batch_get_item(
             RequestItems={
                 'Articles': {
-                    'Keys': [{'PK': 'ARTICLE', 'SK': uid} for uid in ids],
+                    'Keys': [{'PK': article_type, 'SK': uid} for uid in ids],
                     'ProjectionExpression': projection_expression,
                     'ExpressionAttributeNames': expression_attribute_names
                 }
@@ -144,12 +144,12 @@ def tag_fetch(tag: str, start_key: dict = None, projection_expression: str = Non
 # resp = articles.query(IndexName="removed-index", KeyConditionExpression=Key("removed").eq(0), **asc_kwargs, ProjectionExpression=projection_expression, ExpressionAttributeNames=expression_attribute_names)
 # TODO: [LOW PRIORITY] Implement 'removed-index'.
 
-def paginate_backwards(start_key, projection_expression):
+def paginate_backwards(start_key, projection_expression, article_type: str = 'ARTICLE'):
     # 1) fetch everything **newer** than the cursor, but in ascending order
     asc_kwargs = {"Limit": PAGE_SIZE + 1, "ScanIndexForward": True}
     try:
         resp = articles_db.query(
-            KeyConditionExpression=Key('PK').eq('ARTICLE') & Key('SK').gte(start_key['SK']),
+            KeyConditionExpression=Key('PK').eq(article_type) & Key('SK').gte(start_key['SK']),
             FilterExpression=(Attr('removed').not_exists() | Attr('removed').eq(False)),
             **asc_kwargs,
             ProjectionExpression=projection_expression,
@@ -174,7 +174,7 @@ def paginate_backwards(start_key, projection_expression):
 
     return items, next_key, prev_key
 
-def list_articles(tag: str = None, start_key: dict = None, full_articles: bool = True, direction: str = 'older'):
+def list_articles(tag: str = None, start_key: dict = None, full_articles: bool = True, direction: str = 'older', article_type: str = 'ARTICLE'):
     """
     ?lastKey=...  → continue after this id
     ?tag=foo      → filter by tag
@@ -189,12 +189,12 @@ def list_articles(tag: str = None, start_key: dict = None, full_articles: bool =
         try:
             if direction == "older":
                 # standard "Older" pagination on descending SK
-                items, raw_next = _query_primary_feed(PAGE_SIZE, projection_expression, expression_attribute_names, start_key=start_key)
+                items, raw_next = _query_primary_feed(PAGE_SIZE, projection_expression, expression_attribute_names, start_key=start_key, article_type=article_type)
                 next_key = _b64(raw_next)
                 prev_key = _b64(start_key) if start_key else None
                 return items, next_key, prev_key
             else:  # direction == "newer"
-                return paginate_backwards(start_key=start_key, projection_expression=projection_expression)
+                return paginate_backwards(start_key=start_key, projection_expression=projection_expression, article_type=article_type)
         except Exception as e:
             print("Error querying primary feed:", e)
             return [], None, None
