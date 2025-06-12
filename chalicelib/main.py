@@ -14,8 +14,8 @@ def get_menu_items():
     return [
         dict(title='Home', url='/'),
         #dict(title='About', url='#about'),
-        dict(title='Blog', url='#blogarticles'),
-        dict(title='Projects', url='/projects'),
+        dict(title='Blog', url='https://www.darrenmackenzie.com/#blogarticles'),
+        dict(title='Projects', url='https://www.darrenmackenzie.com/projects'),
         # dict(title='Contact', url='#contact')
     ]
 
