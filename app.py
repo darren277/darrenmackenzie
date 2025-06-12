@@ -101,6 +101,59 @@ def create_threejs_data(animation: str, data_selected: str, fullscreen: bool = F
     return threejs_template_data
 
 
+def fetch_paginated(after, before, tag, threejs_template_data, article_type: str = 'ARTICLE', page_name: str = 'Blog'):
+    try:
+        # Get menu items and parse query parameters
+        menu = get_menu_items()
+
+        # Get template from S3 and website data from DynamoDB
+        template = get_s3_template(s3_env, os.environ['BUCKET_NAME'], local=LOCAL)
+        website_data = get_website_data(os.environ['HOME_TABLE'])
+
+        # Query articles
+        try:
+            if before:
+                direction = 'newer'
+                cursor = before
+            else:
+                direction = 'older'
+                cursor = after
+
+            items, next_key, prev_key = list_articles(
+                tag=tag,
+                start_key=cursor,
+                full_articles=False,
+                direction=direction,
+                article_type=article_type,
+            )
+
+            print(f"[DEBUG] Direction: {direction}, Tag: {tag}, After: {after}, Before: {before}, Cursor: {cursor}, Number of items: {len(items)}")
+        except Exception as e:
+            print("Error querying DynamoDB:", e)
+            return Response(str(e), status_code=500)
+
+        print('[DEBUG] Queried articles:', len(items), items)
+
+        print('prev_key', prev_key)
+        print('next_key', next_key)
+
+        # Render template
+        template_data = {
+            'social': website_data['social'],
+            'articles': items,
+            'menu': menu,
+            'prev_key': prev_key,
+            'next_key': next_key,
+        }
+        html_content = template.render(**template_data, **threejs_template_data, page_name=page_name)
+
+        # Create and return response
+        return create_compressed_response(html_content, skip_caching=True)
+
+    except Exception as e:
+        print(f"Unexpected error in script_template: {e}")
+        return Response(str(e), status_code=500)
+
 @app.route('/')
 def index():
     """Handle the main website endpoint."""
