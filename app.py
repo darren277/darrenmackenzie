@@ -379,14 +379,9 @@ def articles(section, article):
         return serve_threejs(article)
 
     s3 = boto3.resource('s3')
-    website_menu = [
-        dict(title='Home', url='#'),
-        dict(title='About', url='#about'),
-        dict(title='Blog', url='#blogarticles'),
-        # dict(title='Contact', url='#contact')
-    ]
+    website_menu = get_menu_items()
     non_index_menu = [dict(title=item['title'], url=f"/index.html{item['url']}") for item in website_menu]
-    if section not in ['services', 'work', 'blog']:
+    if section not in ['services', 'work', 'blog', 'projects', 'articles']:
         html_content = s3_env.from_string(s3.Object(os.environ['BUCKET_NAME'], 'frontend/404.html').get()["Body"].read().decode('utf-8')).render(menu=non_index_menu)
 
         compressed_html = brotli_compress(html_content.encode('utf-8'))
@@ -400,10 +395,10 @@ def articles(section, article):
     db = boto3.resource('dynamodb')
     article_table = db.Table(os.environ['ARTICLES_V2_TABLE'])
 
-    pk = 'ARTICLE' if section == 'blog' else section.upper()
+    pk = SECTIONS_DICT.get(section, None)
     sk = ARTICLE_SLUGS_TO_SK.get(article, None)
 
-    if not sk:
+    if not pk or not sk:
         html_content = s3_env.from_string(
             s3.Object(os.environ['BUCKET_NAME'], 'frontend/404.html').get()["Body"].read().decode('utf-8')).render(
             menu=non_index_menu)
