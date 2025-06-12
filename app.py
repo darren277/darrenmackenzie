@@ -358,6 +358,13 @@ ARTICLE_SLUGS_TO_SK = {
     'lambda-layers': 1
 }
 
+SECTIONS_DICT = {
+    'articles': 'ARTICLE',
+    'blog': 'ARTICLE',
+    'projects': 'PROJECT',
+    'work': 'WORK',
+    'services': 'SERVICE',
+}
 
 @app.route('/{section}/{article}')
 def articles(section, article):
