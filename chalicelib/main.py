@@ -13,8 +13,9 @@ def get_menu_items():
     """Return a list of menu items for the website."""
     return [
         dict(title='Home', url='/'),
-        dict(title='About', url='#about'),
+        #dict(title='About', url='#about'),
         dict(title='Blog', url='#blogarticles'),
+        dict(title='Projects', url='/projects'),
         # dict(title='Contact', url='#contact')
     ]
 
