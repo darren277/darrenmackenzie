@@ -354,8 +354,12 @@ def contact_form():
     INDIVIDUAL PAGES
 """
 
+# TODO: Fetch these from a key-value store.
+
 ARTICLE_SLUGS_TO_SK = {
-    'lambda-layers': 1
+    'lambda-layers': 1,
+    'a-project': 1,
+    'some-work-i-did': 1
 }
 
 SECTIONS_DICT = {
