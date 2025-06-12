@@ -101,32 +101,15 @@ def create_threejs_data(animation: str, data_selected: str, fullscreen: bool = F
     return threejs_template_data
 
 
-@app.route('/')
-def index():
-    """Handle the main website endpoint."""
-    if DEBUG:
-        debug(app.current_request)
-
-    query_params = app.current_request.query_params or {}
-
-    after = _unb64(query_params.get("after"))
-    before = _unb64(query_params.get("before"))
-
-    tag = query_params.get('tag') if query_params else None
-
-    animation = query_params.get('animation', 'multiaxis') if query_params else 'multiaxis'
-    data_selected = query_params.get('data_selected', 'data') if query_params else 'data'
-
-    threejs_template_data = create_threejs_data(animation, data_selected)
-    
+def fetch_paginated(after, before, tag, threejs_template_data, article_type: str = 'ARTICLE', page_name: str = 'Blog'):
     try:
         # Get menu items and parse query parameters
         menu = get_menu_items()
-        
+
         # Get template from S3 and website data from DynamoDB
         template = get_s3_template(s3_env, os.environ['BUCKET_NAME'], local=LOCAL)
         website_data = get_website_data(os.environ['HOME_TABLE'])
-        
+
         # Query articles
         try:
             if before:
@@ -140,7 +123,8 @@ def index():
                 tag=tag,
                 start_key=cursor,
                 full_articles=False,
-                direction=direction
+                direction=direction,
+                article_type=article_type,
             )
 
             print(f"[DEBUG] Direction: {direction}, Tag: {tag}, After: {after}, Before: {before}, Cursor: {cursor}, Number of items: {len(items)}")
@@ -161,14 +145,34 @@ def index():
             'prev_key': prev_key,
             'next_key': next_key,
         }
-        html_content = template.render(**template_data, **threejs_template_data)
-        
+        html_content = template.render(**template_data, **threejs_template_data, page_name=page_name)
+
         # Create and return response
         return create_compressed_response(html_content, skip_caching=True)
-    
+
     except Exception as e:
         print(f"Unexpected error in script_template: {e}")
         return Response(str(e), status_code=500)
+
+@app.route('/')
+def index():
+    """Handle the main website endpoint."""
+    if DEBUG:
+        debug(app.current_request)
+
+    query_params = app.current_request.query_params or {}
+
+    after = _unb64(query_params.get("after"))
+    before = _unb64(query_params.get("before"))
+
+    tag = query_params.get('tag') if query_params else None
+
+    animation = query_params.get('animation', 'multiaxis') if query_params else 'multiaxis'
+    data_selected = query_params.get('data_selected', 'data') if query_params else 'data'
+
+    threejs_template_data = create_threejs_data(animation, data_selected)
+    
+    return fetch_paginated(after, before, tag, threejs_template_data)
 
 
 @app.route('/index.html')
@@ -176,6 +180,47 @@ def index_html():
     # redirect to `/`
     return Response(body='', headers={'Location': 'https://www.darrenmackenzie.com'}, status_code=301)
 
+
+@app.route('/projects')
+def projects():
+    """Handle the main website endpoint."""
+    if DEBUG:
+        debug(app.current_request)
+
+    query_params = app.current_request.query_params or {}
+
+    after = _unb64(query_params.get("after"))
+    before = _unb64(query_params.get("before"))
+
+    tag = query_params.get('tag') if query_params else None
+
+    animation = query_params.get('animation', 'multiaxis') if query_params else 'multiaxis'
+    data_selected = query_params.get('data_selected', 'data') if query_params else 'data'
+
+    threejs_template_data = create_threejs_data(animation, data_selected)
+
+    return fetch_paginated(after, before, tag, threejs_template_data, article_type='PROJECT', page_name='Projects')
+
+
+@app.route('/work')
+def work():
+    """Handle the main website endpoint."""
+    if DEBUG:
+        debug(app.current_request)
+
+    query_params = app.current_request.query_params or {}
+
+    after = _unb64(query_params.get("after"))
+    before = _unb64(query_params.get("before"))
+
+    tag = query_params.get('tag') if query_params else None
+
+    animation = query_params.get('animation', 'multiaxis') if query_params else 'multiaxis'
+    data_selected = query_params.get('data_selected', 'data') if query_params else 'data'
+
+    threejs_template_data = create_threejs_data(animation, data_selected)
+
+    return fetch_paginated(after, before, tag, threejs_template_data, article_type='WORK', page_name='Past Work')
 
 def serve_threejs_helper(animation: str = 'multiaxis', query_params: dict = None, fullscreen: bool = False):
     print('ABOUT TO SERVE THREEJS ANIMATION:', animation)
@@ -309,10 +354,13 @@ def contact_form():
     INDIVIDUAL PAGES
 """
 
-ARTICLE_SLUGS_TO_SK = {
-    'lambda-layers': 1
+SECTIONS_DICT = {
+    'articles': 'ARTICLE',
+    'blog': 'ARTICLE',
+    'projects': 'PROJECT',
+    'work': 'WORK',
+    'services': 'SERVICE',
 }
-
 
 @app.route('/{section}/{article}')
 def articles(section, article):
@@ -323,14 +371,9 @@ def articles(section, article):
         return serve_threejs(article)
 
     s3 = boto3.resource('s3')
-    website_menu = [
-        dict(title='Home', url='#'),
-        dict(title='About', url='#about'),
-        dict(title='Blog', url='#blogarticles'),
-        # dict(title='Contact', url='#contact')
-    ]
+    website_menu = get_menu_items()
     non_index_menu = [dict(title=item['title'], url=f"/index.html{item['url']}") for item in website_menu]
-    if section not in ['services', 'work', 'blog']:
+    if section not in ['services', 'work', 'blog', 'projects', 'articles']:
         html_content = s3_env.from_string(s3.Object(os.environ['BUCKET_NAME'], 'frontend/404.html').get()["Body"].read().decode('utf-8')).render(menu=non_index_menu)
 
         compressed_html = brotli_compress(html_content.encode('utf-8'))
@@ -344,10 +387,13 @@ def articles(section, article):
     db = boto3.resource('dynamodb')
     article_table = db.Table(os.environ['ARTICLES_V2_TABLE'])
 
-    pk = 'ARTICLE' if section == 'blog' else section.upper()
-    sk = ARTICLE_SLUGS_TO_SK.get(article, None)
+    pk = SECTIONS_DICT.get(section, None)
+    sk = article.split('-')[0] if '-' in article else None
 
-    if not sk:
+    try: sk = int(sk)
+    except ValueError: sk = None
+
+    if not pk or not sk:
         html_content = s3_env.from_string(
             s3.Object(os.environ['BUCKET_NAME'], 'frontend/404.html').get()["Body"].read().decode('utf-8')).render(
             menu=non_index_menu)
@@ -358,6 +404,7 @@ def articles(section, article):
             status_code=404
         )
 
+    print("[DEBUG] Fetching article with PK:", pk, "and SK:", sk)
     article_data = article_table.get_item(Key={'PK': pk, 'SK': sk}).get('Item', None)
 
     if DEBUG:

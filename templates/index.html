@@ -10,8 +10,8 @@
         media="print"
         onload="this.media='all'"
     ></link>
-    <title>dm creations - Home</title>
-    <meta name="description" content="Personal website of Darren MacKenzie, a software developer and solution architect."></meta>
+    <title>dm creations - {{ page_name }}</title>
+    <meta name="description" content="Personal website of Darren MacKenzie, a software developer and solution architect. The current page is {{ page_name }}."></meta>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
     <link rel="stylesheet" href="/style.css"></link>
 
@@ -45,7 +45,7 @@
 
         <main class="main-grid">
             <div class="service blogarticles" id="blogarticles">
-                <div class="title"><h2>Blog</h2></div>
+                <div class="title"><h2>{{ page_name }}</h2></div>
                 {% if not articles %}
                 <div class="centered-text">
                     <h3>You've reached the end.</h3>
