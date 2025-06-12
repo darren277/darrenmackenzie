@@ -354,14 +354,6 @@ def contact_form():
     INDIVIDUAL PAGES
 """
 
-# TODO: Fetch these from a key-value store.
-
-ARTICLE_SLUGS_TO_SK = {
-    'lambda-layers': 1,
-    'a-project': 1,
-    'some-work-i-did': 1
-}
-
 SECTIONS_DICT = {
     'articles': 'ARTICLE',
     'blog': 'ARTICLE',
@@ -396,7 +388,10 @@ def articles(section, article):
     article_table = db.Table(os.environ['ARTICLES_V2_TABLE'])
 
     pk = SECTIONS_DICT.get(section, None)
-    sk = ARTICLE_SLUGS_TO_SK.get(article, None)
+    sk = article.split('-')[0] if '-' in article else None
+
+    try: sk = int(sk)
+    except ValueError: sk = None
 
     if not pk or not sk:
         html_content = s3_env.from_string(
@@ -409,6 +404,7 @@ def articles(section, article):
             status_code=404
         )
 
+    print("[DEBUG] Fetching article with PK:", pk, "and SK:", sk)
     article_data = article_table.get_item(Key={'PK': pk, 'SK': sk}).get('Item', None)
 
     if DEBUG:
