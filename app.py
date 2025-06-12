@@ -181,6 +181,47 @@ def index_html():
     return Response(body='', headers={'Location': 'https://www.darrenmackenzie.com'}, status_code=301)
 
 
+@app.route('/projects')
+def projects():
+    """Handle the main website endpoint."""
+    if DEBUG:
+        debug(app.current_request)
+
+    query_params = app.current_request.query_params or {}
+
+    after = _unb64(query_params.get("after"))
+    before = _unb64(query_params.get("before"))
+
+    tag = query_params.get('tag') if query_params else None
+
+    animation = query_params.get('animation', 'multiaxis') if query_params else 'multiaxis'
+    data_selected = query_params.get('data_selected', 'data') if query_params else 'data'
+
+    threejs_template_data = create_threejs_data(animation, data_selected)
+
+    return fetch_paginated(after, before, tag, threejs_template_data, article_type='PROJECT', page_name='Projects')
+
+
+@app.route('/work')
+def work():
+    """Handle the main website endpoint."""
+    if DEBUG:
+        debug(app.current_request)
+
+    query_params = app.current_request.query_params or {}
+
+    after = _unb64(query_params.get("after"))
+    before = _unb64(query_params.get("before"))
+
+    tag = query_params.get('tag') if query_params else None
+
+    animation = query_params.get('animation', 'multiaxis') if query_params else 'multiaxis'
+    data_selected = query_params.get('data_selected', 'data') if query_params else 'data'
+
+    threejs_template_data = create_threejs_data(animation, data_selected)
+
+    return fetch_paginated(after, before, tag, threejs_template_data, article_type='WORK', page_name='Past Work')
+
 def serve_threejs_helper(animation: str = 'multiaxis', query_params: dict = None, fullscreen: bool = False):
     print('ABOUT TO SERVE THREEJS ANIMATION:', animation)
     s3 = boto3.resource('s3')
