@@ -593,7 +593,7 @@ ANIMATIONS_DICT = {
             'data_sources': ['complex'],
             'custom_meta': dict(),
             'custom_css': LIBRARY_CUSTOM_CSS,
-            # 'custom_overlays': [LIBRARY_RESOURCE_OVERLAYS],
+            'custom_overlays': [LIBRARY_RESOURCE_OVERLAYS],
             'custom_js': """""",
             'category': 'Special'
         },
