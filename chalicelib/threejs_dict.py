@@ -621,5 +621,13 @@ ANIMATIONS_DICT = {
             'custom_meta': dict(),
             'custom_css': "",
             'category': 'Educational',
-        }
+        },
+    'anatomy':
+        {
+            'name': 'Anatomy',
+            'data_sources': ['anatomy'],
+            'custom_meta': dict(),
+            'custom_css': "",
+            'category': 'Educational',
+        },
 }
