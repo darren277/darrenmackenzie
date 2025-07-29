@@ -614,4 +614,12 @@ ANIMATIONS_DICT = {
             # 'category': 'Special'
             'category': 'Work in Progress'
         },
+    'infographics':
+        {
+            'name': 'Infographics',
+            'data_sources': ['infographics', 'neuralnetworks', 'mlchooser'],
+            'custom_meta': dict(),
+            'custom_css': "",
+            'category': 'Educational',
+        }
 }
