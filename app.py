@@ -245,7 +245,11 @@ def serve_threejs_helper(animation: str = 'multiaxis', query_params: dict = None
 
     return create_compressed_response(html_content, skip_caching=True)
 
-l = ['adventure1','adventure2','buildings','cards','cayley','clustering','data','experimental_1','experimental','familytree','force','force3d','forest','math','music','network','periodic','philpapers','resume']
+l = [
+    'adventure1','adventure2','buildings','cards','cayley','clustering','data','experimental_1','experimental','familytree',
+    'force','force3d','forest','math','music','network','periodic','philpapers','resume', 'infographics', 'neuralnetworks', 'mlchooser',
+    'anatomy'
+]
 
 @app.route('/threejs/{animation}')
 def serve_threejs(animation):
