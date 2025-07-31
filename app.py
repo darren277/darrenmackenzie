@@ -264,9 +264,22 @@ def serve_threejs(animation):
     return serve_threejs_helper(animation, query_params, fullscreen=fullscreen)
 
 
+@app.route('/scripts/bundled/{path+}', methods=['GET'])
+def bundled_fallback_to_s3():
+    path = app.current_request.uri_params['path+'] if LOCAL else app.current_request.uri_params['path']
+    print("FALLBACK STATIC FILE ROUTER (bundled):", path)
+    bucket_url = f"https://{os.environ['BUCKET_NAME']}.s3.amazonaws.com/scripts/bundled/{path}"
+    return Response(body='', status_code=302, headers={'Location': bucket_url, 'Content-Type': 'text/plain'})
+
 @app.route('/threejs/imagery/{path+}', methods=['GET'])
+@app.route('/threejs/imagery/{optional_prefix+}/{path+}', methods=['GET'])
 def imagery_fallback_to_s3():
     path = app.current_request.uri_params['path+'] if LOCAL else app.current_request.uri_params['path']
+    if 'optional_prefix+' in app.current_request.uri_params:
+        optional_prefix = app.current_request.uri_params['optional_prefix+']
+        path = f"{optional_prefix}/{path}"
+    else:
+        optional_prefix = ''
     print("FALLBACK STATIC FILE ROUTER (imagery):", path)
     bucket_url = f"https://{os.environ['BUCKET_NAME']}.s3.amazonaws.com/scripts/threejs/imagery/{path}"
     return Response(body='', status_code=302, headers={'Location': bucket_url, 'Content-Type': 'text/plain'})
@@ -296,7 +309,7 @@ def drawing_fallback_to_s3():
 def data_fallback_to_s3():
     path = app.current_request.uri_params['path+'] if LOCAL else app.current_request.uri_params['path']
     print("FALLBACK STATIC FILE ROUTER (data):", path)
-    bucket_url = f"https://{os.environ['BUCKET_NAME']}.s3.amazonaws.com/scripts/threejs/data/{path}"
+    bucket_url = f"https://{os.environ['BUCKET_NAME']}.s3.amazonaws.com/scripts/threejs/data/{path}?v=1"
     return Response(body='', status_code=302, headers={'Location': bucket_url, 'Content-Type': 'text/plain'})
 
 
