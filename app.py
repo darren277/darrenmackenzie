@@ -271,8 +271,9 @@ def bundled_fallback_to_s3():
     bucket_url = f"https://{os.environ['BUCKET_NAME']}.s3.amazonaws.com/scripts/bundled/{path}"
     return Response(body='', status_code=302, headers={'Location': bucket_url, 'Content-Type': 'text/plain'})
 
+# @app.route('/threejs/imagery/{optional_prefix+}/{path+}', methods=['GET'])
+# Only one variable part in path allowed when deployed...
 @app.route('/threejs/imagery/{path+}', methods=['GET'])
-@app.route('/threejs/imagery/{optional_prefix+}/{path+}', methods=['GET'])
 def imagery_fallback_to_s3():
     path = app.current_request.uri_params['path+'] if LOCAL else app.current_request.uri_params['path']
     if 'optional_prefix+' in app.current_request.uri_params:
