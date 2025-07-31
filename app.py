@@ -436,7 +436,7 @@ def articles(section, article):
 
         md_content = article_data['body']
 
-        html_content = markdown.markdown(md_content, extensions=["fenced_code", "codehilite", "tables", "toc"])
+        html_content = markdown.markdown(md_content, extensions=["fenced_code", "codehilite", "tables", "toc", "md_mermaid"])
 
         full_article_html = full_article_html.replace('___ARTICLE___', html_content)
 
